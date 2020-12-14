@@ -4,7 +4,16 @@ library(biomaRt)
 library(ABAData)
 library(ABAEnrichment)
 library(dplyr)
-
+library(GGally)
+library(viridis)
+library(ggpubr)
+library(grid)
+library(gridExtra)
+library(lattice)
+library(xlsx)
+```
+#Extracting gene names from coordinate regions via bioMart
+```{r}
 #Genes within Desert region coordinates
 ##Using hg19 genome
 ensembl <- useMart(biomart = 'ENSEMBL_MART_ENSEMBL', 
@@ -19,7 +28,7 @@ results=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position",
 ##Save
 write.csv(results, file="2020_Genes_in_Deserts.csv")
 
-##Pey coordinates (Ensembl 1-based):  ##CHECK COORDINATES DEPENDING ON FILE (0-BASED vs 1-BASED)
+##Pey coordinates (Ensembl 1-based): ##MOVE TO ENSEMBL 1 BASED
 pey_coords <- read.delim("~/2020_pey_coords.bed", header=FALSE)
 ###Preparing bed file for input in bioMart
 pey_coords$V1 <- gsub("chr", "\\1", pey_coords$V1)
@@ -33,9 +42,20 @@ both <- results_pey[results_pey$hgnc_symbol %in% results$hgnc_symbol,]
 ###Cleaning - To be used later
 both <-  both[!(is.na(both$hgnc_symbol) | both$hgnc_symbol==""), ]
 
+###Rac coordinates #MOVE TO ENSEMBL 1 BASED
+rac_coords <- read.delim("~/2020_rac_coords.bed", header=FALSE)
+rac_coords$V1 <- gsub("chr", "\\1", rac_coords$V1)
+df1 <- paste(rac_coords$V1, rac_coords$V2, rac_coords$V3, sep = ":")
+results_rac=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+              filters = c("chromosomal_region","biotype"),
+              values = list(chromosomal_region=df1,biotype="protein_coding"), mart = ensembl)
+
+racAkey <- results_rac[results_rac$hgnc_symbol %in% results$hgnc_symbol,]
+racAkey <- racAkey[!(is.na(racAkey$hgnc_symbol) | racAkey$hgnc_symbol==""), ]
+```
 
 #Extracting gene expression data from Allen Brain Atlas
-
+```{r}
 ##Loading dataset
 data("dataset_5_stages") #Raül: dataset_adult (microarray data)
 unique(dataset_5_stages$structure) #Checking structures
@@ -60,9 +80,11 @@ for (r in 1:length(ab)){
   colnames(ab[[r]]) <- list1
   ab[[r]] <- as.data.frame(ab[[r]])
 }
+```
 
-
-#Selection of >q75 to select genes with high expression
+#SELECTION OF > q75
+```{r}
+#>q75 to select genes with high expression
 q75 = vector(mode="list", length = length(ab))
 for (i in 1:length(ab)){
   for (h in 1:length(names(ab[[i]]))){
@@ -80,41 +102,6 @@ for (i in 1:length(ab)){
     
   }
 }
-
-
-#q9 - Skip
-#q9 = vector(mode="list", length = length(ab))
-#for (i in 1:length(ab)){
-  #for (h in 1:length(names(ab[[i]]))){
-    #q9[[i]][[h]] <- ab[[i]][h] %>% filter(ab[[i]][h] > quantile(ab[[i]][[h]], 0.9))
-  #}
-#}
-
-#library('biomaRt')
-#mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
-#for (i in 1:length(ab)){
-  #for (h in 1:length(names(ab[[i]]))){
-    #G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(q9[[i]][[h]]),mart=ensembl)
-    #q9[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(q9[[i]][[h]]), G_list$ensembl_gene_id)]
-    #q9[[i]][[h]] <-q9[[i]][[h]][order(q9[[i]][[h]][[1]], decreasing = TRUE), ]
-  #}
-#}
-
-#qlower
-#qlower = vector(mode="list", length = length(ab))
-#for (i in 1:length(ab)){
-  #for (h in 1:length(names(ab[[i]]))){
-    #qlower[[i]][[h]] <- ab[[i]][h] %>% filter(ab[[i]][h] < quantile(ab[[i]][[h]], 0.25))
-  #}
-#}
-#for (i in 1:length(ab)){
-  #for (h in 1:length(names(ab[[i]]))){
-    #G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(qlower[[i]][[h]]),mart=ensembl)
-    #qlower[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(qlower[[i]][[h]]), G_list$ensembl_gene_id)]
-    #qlower[[i]][[h]] <-qlower[[i]][[h]][order(qlower[[i]][[h]][[1]], decreasing = TRUE), ]
-  #}
-#}
-
 #Intersecting q75 (high expression) with Akey
 akey075 = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
 #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
@@ -124,24 +111,6 @@ for (i in 1:length(ab)){
     akey075[[i]][[h]] <-  akey075[[i]][[h]][!(is.na(akey075[[i]][[h]][[2]]) | akey075[[i]][[h]][[2]]==""), ] #Cleaning
   }
 }
-
-##Akey09
-#akey = vector(mode="list", length = length(ab))
-#for (i in 1:length(ab)){
-  #for (h in 1:length(names(ab[[i]]))){
-    #akey[[i]][[h]] <- q9[[i]][[h]][q9[[i]][[h]][[2]] %in% results$hgnc_symbol,]
-    #akey[[i]][[h]] <-  akey[[i]][[h]][!(is.na( akey[[i]][[h]][[2]]) | akey[[i]][[h]][[2]]==""), #]
-  #}
-#}
-##AkeyLower
-#AkeyLower = vector(mode="list", length = length(ab))
-#for (i in 1:length(ab)){
-  #for (h in 1:length(names(ab[[i]]))){
-    #AkeyLower[[i]][[h]] <- qlower[[i]][[h]][qlower[[i]][[h]][[2]] %in% results$hgnc_symbol,]
-    #AkeyLower[[i]][[h]] <-  AkeyLower[[i]][[h]][!(is.na( AkeyLower[[i]][[h]][[2]]) |  AkeyLower[[i]][[h]][[2]]==""), ]
-  #}
-#}
-
 #Save results - Genes in deserts and pos. selection with high expression
 for (i in 1:length(ab)){
   for (h in 1:length(bothq75[[i]])){
@@ -149,8 +118,355 @@ for (i in 1:length(ab)){
     write.xlsx(bothq75[[i]][[h]], file="ABA_preliminar_AkeyPey_highExpr.xlsx", sheetName=paste(toString(i),toString(names(bothq75[[i]][[h]][1])), sep="_"), append = TRUE) #Add age data at the beginning of the sheet name
   }
 }
+```
 
 
+#ABA Data - All genes that are present in Akey
+```{r}
+#Global data
+ab1 <- ab
+for (i in 1:length(ab)){
+  for (h in 1:length(names(ab[[i]]))){
+    ab1[[i]][[h]] <- as.data.frame(ab[[i]][h])
+    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab1[[i]][[h]]),mart=ensembl)
+    ab1[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab1[[i]][[h]]), G_list$ensembl_gene_id)]
+    ab1[[i]][[h]] <-ab1[[i]][[h]][order(ab1[[i]][[h]][[1]], decreasing = TRUE), ]
+    
+  }
+}
+aba_akey = vector(mode="list", length = length(ab1))
+for (i in 1:length(ab1)){
+  for (h in 1:length(names(ab1[[i]]))){
+    aba_akey[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% results$hgnc_symbol,] #in Akey
+    aba_akey[[i]][[h]] <-  aba_akey[[i]][[h]][!(is.na(aba_akey[[i]][[h]][[2]]) | aba_akey[[i]][[h]][[2]]==""), ] #Cleaning
+  }
+}
+#Reporting mean
+trial = vector(mode="list", length = length(ab1))
+for (i in 1:length(ab1)){
+  for (h in 1:length(names(ab1[[i]]))){
+    trial[[i]][[h]] <- mean(aba_akey[[i]][[h]][[1]])
+    trial[[i]][[h]] <- as.data.frame(trial[[i]][[h]])
+    names(trial[[i]][[h]]) <- paste(names(aba_akey[[i]][[h]][1]), sep='_')
+  }
+}
+
+prenatal <- do.call("rbind", as.data.frame(trial[[1]]))
+colnames(prenatal) <- "prenatal"
+infant <- do.call("rbind", as.data.frame(trial[[2]]))
+colnames(infant) <- "infant"
+child <- do.call("rbind", as.data.frame(trial[[3]]))
+colnames(child) <- "child"
+adolescent <- do.call("rbind", as.data.frame(trial[[4]]))
+colnames(adolescent) <- "adolescent"
+adult <- do.call("rbind", as.data.frame(trial[[5]]))
+colnames(adult) <- "adult"
+
+final_merge <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
+#Save results - need to be updated
+library(xlsx)
+for (i in 1:length(colnames(final_merge))){
+  write.xlsx(arrange(final_merge[i], desc(final_merge[i])), file="ABA_testing.xlsx", sheetName=names(final_merge[i]), append = TRUE)
+}
+
+#Plot
+
+#For plot
+final_merge[[1]] <- sapply(strsplit(final_merge[[1]], "_"), "[", 1)
+final_merge <- tibble::rownames_to_column(final_merge, "Structure")
+
+a<-ggparcoord(final_merge,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
+b <- ggparcoord(final_merge,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+c<-ggparcoord(final_merge,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+a1<-arrangeGrob(a, left=textGrob("A"))
+b1<-arrangeGrob(b, left =textGrob("B"))
+c1<-arrangeGrob(c, left=textGrob("C"))
+grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+#grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = cbind(c(1,1,1), c(2,3,4)))
+grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+```
+
+
+#ABA Data - All genes that are present in both Akey and Pey
+```{r}
+#Global data
+ab2 <- ab
+for (i in 1:length(ab)){
+  for (h in 1:length(names(ab[[i]]))){
+    ab2[[i]][[h]] <- as.data.frame(ab[[i]][h])
+    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab2[[i]][[h]]),mart=ensembl)
+    ab2[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab2[[i]][[h]]), G_list$ensembl_gene_id)]
+    ab2[[i]][[h]] <-ab2[[i]][[h]][order(ab2[[i]][[h]][[1]], decreasing = TRUE), ]
+  }
+}
+
+aba_both = vector(mode="list", length = length(ab2))
+for (i in 1:length(ab2)){
+  for (h in 1:length(names(ab2[[i]]))){
+    aba_both[[i]][[h]] <- ab2[[i]][[h]][ab2[[i]][[h]][[2]] %in% both$hgnc_symbol,] #in both
+    aba_both[[i]][[h]] <-  aba_both[[i]][[h]][!(is.na(aba_both[[i]][[h]][[2]]) | aba_both[[i]][[h]][[2]]==""), ] #Cleaning
+  }
+}
+#Reporting mean
+trial2 = vector(mode="list", length = length(ab1))
+for (i in 1:length(ab1)){
+  for (h in 1:length(names(ab1[[i]]))){
+    trial2[[i]][[h]] <- mean(aba_both[[i]][[h]][[1]])
+    trial2[[i]][[h]] <- as.data.frame(trial2[[i]][[h]])
+    names(trial2[[i]][[h]]) <- paste(names(aba_both[[i]][[h]][1]), sep='_')
+  }
+}
+
+prenatal <- do.call("rbind", as.data.frame(trial2[[1]]))
+colnames(prenatal) <- "prenatal"
+infant <- do.call("rbind", as.data.frame(trial2[[2]]))
+colnames(infant) <- "infant"
+child <- do.call("rbind", as.data.frame(trial2[[3]]))
+colnames(child) <- "child"
+adolescent <- do.call("rbind", as.data.frame(trial2[[4]]))
+colnames(adolescent) <- "adolescent"
+adult <- do.call("rbind", as.data.frame(trial2[[5]]))
+colnames(adult) <- "adult"
+
+final_merge2 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
+#Save results - need to be updated
+library(xlsx)
+for (i in 1:length(colnames(final_merge2))){
+  write.xlsx(arrange(final_merge2[i], desc(final_merge2[i])), file="ABA_testing_both.xlsx", sheetName=names(final_merge2[i]), append = TRUE)
+}
+
+#For plot:
+final_merge2 <- tibble::rownames_to_column(final_merge2, "Structure")
+final_merge2[[1]] <- sapply(strsplit(final_merge2[[1]], "_"), "[", 1)
+
+a<-ggparcoord(final_merge2,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
+b <- ggparcoord(final_merge2,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+c<-ggparcoord(final_merge2,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+
+a1<-arrangeGrob(a, left=textGrob("A"))
+b1<-arrangeGrob(b, left =textGrob("B"))
+c1<-arrangeGrob(c, left=textGrob("C"))
+grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+#grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = cbind(c(1,1,1), c(2,3,4)))
+grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+
+d<-ggparcoord(final_merge2,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+d1<-arrangeGrob(d, left=textGrob("D"))
+grid.arrange(a1, c1, d1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+```
+
+#ABA Data - All genes that are present in Pey
+```{r}
+#Global data
+ab3 <- ab
+for (i in 1:length(ab)){
+  for (h in 1:length(names(ab[[i]]))){
+    ab3[[i]][[h]] <- as.data.frame(ab[[i]][h])
+    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab3[[i]][[h]]),mart=ensembl)
+    ab3[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab3[[i]][[h]]), G_list$ensembl_gene_id)]
+    ab3[[i]][[h]] <-ab3[[i]][[h]][order(ab3[[i]][[h]][[1]], decreasing = TRUE), ]
+    
+  }
+}
+aba_pey = vector(mode="list", length = length(ab3))
+for (i in 1:length(ab3)){
+  for (h in 1:length(names(ab3[[i]]))){
+    aba_pey[[i]][[h]] <- ab3[[i]][[h]][ab3[[i]][[h]][[2]] %in% results_pey$hgnc_symbol,] #in Pey
+    aba_pey[[i]][[h]] <-  aba_pey[[i]][[h]][!(is.na(aba_pey[[i]][[h]][[2]]) | aba_pey[[i]][[h]][[2]]==""), ] #Cleaning
+  }
+}
+#Reporting mean
+trial3 = vector(mode="list", length = length(ab3))
+for (i in 1:length(ab3)){
+  for (h in 1:length(names(ab3[[i]]))){
+    trial3[[i]][[h]] <- mean(aba_pey[[i]][[h]][[1]])
+    trial3[[i]][[h]] <- as.data.frame(trial3[[i]][[h]])
+    names(trial3[[i]][[h]]) <- paste(names(aba_pey[[i]][[h]][1]), sep='_')
+  }
+}
+
+prenatal <- do.call("rbind", as.data.frame(trial3[[1]]))
+colnames(prenatal) <- "prenatal"
+infant <- do.call("rbind", as.data.frame(trial3[[2]]))
+colnames(infant) <- "infant"
+child <- do.call("rbind", as.data.frame(trial3[[3]]))
+colnames(child) <- "child"
+adolescent <- do.call("rbind", as.data.frame(trial3[[4]]))
+colnames(adolescent) <- "adolescent"
+adult <- do.call("rbind", as.data.frame(trial3[[5]]))
+colnames(adult) <- "adult"
+
+final_merge3 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
+#Save results_pey - need to be updated
+library(xlsx)
+for (i in 1:length(colnames(final_merge3))){
+  if (dim(final_merge3[i])[1] == 0) next
+  write.xlsx(arrange(final_merge3[i], desc(final_merge3[i])), file="ABA_testingPey.xlsx", sheetName=names(final_merge3[i]), append = TRUE)
+}
+
+#Plot
+##For plot
+final_merge3 <- tibble::rownames_to_column(final_merge3, "Structure")
+final_merge3[[1]] <- sapply(strsplit(final_merge3[[1]], "_"), "[", 1)
+
+a<-ggparcoord(final_merge3,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Pey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
+b <- ggparcoord(final_merge3,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+c<-ggparcoord(final_merge3,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+a1<-arrangeGrob(a, left=textGrob("A"))
+b1<-arrangeGrob(b, left =textGrob("B"))
+c1<-arrangeGrob(c, left=textGrob("C"))
+grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+#grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = cbind(c(1,1,1), c(2,3,4)))
+grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+```
+
+#ABA Data - All genes that are present in Rac
+```{r}
+#Global data
+ab4 <- ab
+for (i in 1:length(ab)){
+  for (h in 1:length(names(ab[[i]]))){
+    ab4[[i]][[h]] <- as.data.frame(ab[[i]][h])
+    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab4[[i]][[h]]),mart=ensembl)
+    ab4[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab4[[i]][[h]]), G_list$ensembl_gene_id)]
+    ab4[[i]][[h]] <-ab4[[i]][[h]][order(ab4[[i]][[h]][[1]], decreasing = TRUE), ]
+    
+  }
+}
+aba_rac = vector(mode="list", length = length(ab4))
+for (i in 1:length(ab4)){
+  for (h in 1:length(names(ab4[[i]]))){
+    aba_rac[[i]][[h]] <- ab4[[i]][[h]][ab4[[i]][[h]][[2]] %in% results_rac$hgnc_symbol,] #in Rac
+    aba_rac[[i]][[h]] <-  aba_rac[[i]][[h]][!(is.na(aba_rac[[i]][[h]][[2]]) | aba_rac[[i]][[h]][[2]]==""), ] #Cleaning
+  }
+}
+#Reporting mean
+trial4 = vector(mode="list", length = length(ab4))
+for (i in 1:length(ab4)){
+  for (h in 1:length(names(ab4[[i]]))){
+    trial4[[i]][[h]] <- mean(aba_rac[[i]][[h]][[1]])
+    trial4[[i]][[h]] <- as.data.frame(trial4[[i]][[h]])
+    names(trial4[[i]][[h]]) <- paste(names(aba_rac[[i]][[h]][1]), sep='_')
+  }
+}
+
+prenatal <- do.call("rbind", as.data.frame(trial4[[1]]))
+colnames(prenatal) <- "prenatal"
+infant <- do.call("rbind", as.data.frame(trial4[[2]]))
+colnames(infant) <- "infant"
+child <- do.call("rbind", as.data.frame(trial4[[3]]))
+colnames(child) <- "child"
+adolescent <- do.call("rbind", as.data.frame(trial4[[4]]))
+colnames(adolescent) <- "adolescent"
+adult <- do.call("rbind", as.data.frame(trial4[[5]]))
+colnames(adult) <- "adult"
+
+final_merge4 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
+#Save results_rac - need to be updated
+for (i in 1:length(colnames(final_merge4))){
+  if (dim(final_merge4[i])[1] == 0) next
+  write.xlsx(arrange(final_merge4[i], desc(final_merge4[i])), file="ABA_testingRac.xlsx", sheetName=names(final_merge4[i]), append = TRUE)
+}
+
+#Plot
+
+##For plot
+final_merge4 <- tibble::rownames_to_column(final_merge4, "Structure")
+final_merge4[[1]] <- sapply(strsplit(final_merge4[[1]], "_"), "[", 1)
+
+a<-ggparcoord(final_merge4,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Rac")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
+b <- ggparcoord(final_merge4,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+c<-ggparcoord(final_merge4,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+a1<-arrangeGrob(a, left=textGrob("A"))
+b1<-arrangeGrob(b, left =textGrob("B"))
+c1<-arrangeGrob(c, left=textGrob("C"))
+grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+```
+
+#ABA Data - All genes that are present in Rac
+```{r}
+#Global data
+ab5 <- ab
+for (i in 1:length(ab)){
+  for (h in 1:length(names(ab[[i]]))){
+    ab5[[i]][[h]] <- as.data.frame(ab[[i]][h])
+    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab5[[i]][[h]]),mart=ensembl)
+    ab5[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab5[[i]][[h]]), G_list$ensembl_gene_id)]
+    ab5[[i]][[h]] <-ab5[[i]][[h]][order(ab5[[i]][[h]][[1]], decreasing = TRUE), ]
+    
+  }
+}
+aba_racAkey = vector(mode="list", length = length(ab5))
+for (i in 1:length(ab5)){
+  for (h in 1:length(names(ab5[[i]]))){
+    aba_racAkey[[i]][[h]] <- ab5[[i]][[h]][ab5[[i]][[h]][[2]] %in% racAkey$hgnc_symbol,] #in RacAkey
+    aba_racAkey[[i]][[h]] <-  aba_racAkey[[i]][[h]][!(is.na(aba_racAkey[[i]][[h]][[2]]) | aba_racAkey[[i]][[h]][[2]]==""), ] #Cleaning
+  }
+}
+#Reporting mean
+trial5 = vector(mode="list", length = length(ab5))
+for (i in 1:length(ab5)){
+  for (h in 1:length(names(ab5[[i]]))){
+    trial5[[i]][[h]] <- mean(aba_racAkey[[i]][[h]][[1]])
+    trial5[[i]][[h]] <- as.data.frame(trial5[[i]][[h]])
+    names(trial5[[i]][[h]]) <- paste(names(aba_racAkey[[i]][[h]][1]), sep='_')
+  }
+}
+
+prenatal <- do.call("rbind", as.data.frame(trial5[[1]]))
+colnames(prenatal) <- "prenatal"
+infant <- do.call("rbind", as.data.frame(trial5[[2]]))
+colnames(infant) <- "infant"
+child <- do.call("rbind", as.data.frame(trial5[[3]]))
+colnames(child) <- "child"
+adolescent <- do.call("rbind", as.data.frame(trial5[[4]]))
+colnames(adolescent) <- "adolescent"
+adult <- do.call("rbind", as.data.frame(trial5[[5]]))
+colnames(adult) <- "adult"
+
+final_merge5 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
+#Save racAkey - need to be updated
+for (i in 1:length(colnames(final_merge5))){
+  if (dim(final_merge5[i])[1] == 0) next
+  write.xlsx(arrange(final_merge5[i], desc(final_merge5[i])), file="ABA_testingRacAkey.xlsx", sheetName=names(final_merge5[i]), append = TRUE)
+}
+
+#Plot
+
+##For plot
+final_merge5 <- tibble::rownames_to_column(final_merge5, "Structure")
+final_merge5[[1]] <- sapply(strsplit(final_merge5[[1]], "_"), "[", 1)
+
+a<-ggparcoord(final_merge5,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Rac and Akey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
+b <- ggparcoord(final_merge5,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+c<-ggparcoord(final_merge5,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+a1<-arrangeGrob(a, left=textGrob("A"))
+b1<-arrangeGrob(b, left =textGrob("B"))
+c1<-arrangeGrob(c, left=textGrob("C"))
+grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+```
+
+
+#INTERSECTING q75 with Akey
+```{r}
 #--SKIP--
 #Plot example
 ##Highlight specific gene
@@ -190,8 +506,6 @@ df1subset <- df1subset[order(df1subset$max.cluster),]
 
 write.csv(df1subset, file="CellAtlas_GSE156793_inAkey.csv", row.names = FALSE)
 write.csv(df1subsetboth, file="CellAtlas_GSE156793_inAkeyPey.csv", row.names = FALSE)
-
-
 ```
 
 
