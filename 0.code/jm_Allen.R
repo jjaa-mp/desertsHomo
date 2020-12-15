@@ -25,31 +25,33 @@ filterlist <- c("1:105400000:120600000", "3:74100000:89300000", "7:106200000:123
 results=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
               filters = c("chromosomal_region","biotype"),
               values = list(chromosomal_region=filterlist,biotype="protein_coding"), mart = ensembl)
-##Save
-write.csv(results, file="2020_Genes_in_Deserts.csv")
+##Save:
+#write.csv(results, file="2020_Genes_in_Deserts.csv")
 
-##Pey coordinates (Ensembl 1-based): ##MOVE TO ENSEMBL 1 BASED
-pey_coords <- read.delim("~/2020_pey_coords.bed", header=FALSE)
+##Pey coordinates (Ensembl 1-based):
+pey_coords <- read.delim("~/2020_pey_coords.bed", header=FALSE) #File with start 0-based
 ###Preparing bed file for input in bioMart
 pey_coords$V1 <- gsub("chr", "\\1", pey_coords$V1)
-pey_coords
+pey_coords[2] <- pey_coords[2]+1 #Moving to 1-based for Ensembl
 df <- paste(pey_coords$V1, pey_coords$V2, pey_coords$V3, sep = ":")
 results_pey=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
               filters = c("chromosomal_region","biotype"),
               values = list(chromosomal_region=df,biotype="protein_coding"), mart = ensembl)
 ###Genes within Akey and Pey - RESULT
 both <- results_pey[results_pey$hgnc_symbol %in% results$hgnc_symbol,]
-###Cleaning - To be used later
-both <-  both[!(is.na(both$hgnc_symbol) | both$hgnc_symbol==""), ]
+both <-  both[!(is.na(both$hgnc_symbol) | both$hgnc_symbol==""), ] #Cleaning
 
 ###Rac coordinates #MOVE TO ENSEMBL 1 BASED
 rac_coords <- read.delim("~/2020_rac_coords.bed", header=FALSE)
 rac_coords$V1 <- gsub("chr", "\\1", rac_coords$V1)
+rac_coords[2] <- rac_coords[2]+1
+
 df1 <- paste(rac_coords$V1, rac_coords$V2, rac_coords$V3, sep = ":")
 results_rac=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
               filters = c("chromosomal_region","biotype"),
               values = list(chromosomal_region=df1,biotype="protein_coding"), mart = ensembl)
 
+###Genes within Akey and Rac - RESULT
 racAkey <- results_rac[results_rac$hgnc_symbol %in% results$hgnc_symbol,]
 racAkey <- racAkey[!(is.na(racAkey$hgnc_symbol) | racAkey$hgnc_symbol==""), ]
 ```
@@ -57,19 +59,18 @@ racAkey <- racAkey[!(is.na(racAkey$hgnc_symbol) | racAkey$hgnc_symbol==""), ]
 #Extracting gene expression data from Allen Brain Atlas
 ```{r}
 ##Loading dataset
-data("dataset_5_stages") #Raül: dataset_adult (microarray data)
-unique(dataset_5_stages$structure) #Checking structures
+data("dataset_5_stages")
+#unique(dataset_5_stages$structure) #Checking structures
 
 #(Perform enrichment on Genes from Deserts - Skip)
 #input_hyper = data.frame(results$hgnc_symbol, is_candidate=1)
 #res_devel = aba_enrich(input_hyper, dataset='5_stages')
 
-
 #Selecting genes ID and structures present in dataset
 id <- unique(dataset_5_stages$ensembl_gene_id)
 st <- unique(dataset_5_stages$structure)
 st_allen <- paste("Allen",st, sep=":") 
-#Expression data - Getting raw data for all structures and genes
+#Expression data for all structures and genes
 ab <- get_expression(structure_ids=st_allen, gene_ids = id, dataset='5_stages')
 
 #Converting data to a dataframe with useful format for later
@@ -82,7 +83,7 @@ for (r in 1:length(ab)){
 }
 ```
 
-#SELECTION OF > q75
+#SELECTION OF > q75 and generating file for genes within Akey
 ```{r}
 #>q75 to select genes with high expression
 q75 = vector(mode="list", length = length(ab))
@@ -91,21 +92,19 @@ for (i in 1:length(ab)){
     q75[[i]][[h]] <- ab[[i]][h] %>% filter(ab[[i]][h] > quantile(ab[[i]][[h]], 0.75))
   }
 }
-#Changing row names ENSG to hgnc_symbol (gene names; via bioMart); ordering values based on expression
+#Changing row names ENSG to hgnc_symbol (via bioMart); ordering values based on expression
 ##ab is a list of 5 elements (i); each element or 'sublist' has 16 dataframes (h)
-##q75[[1]][[3]][[1]] would denote  primer sublista (1), tercer dataframe (3), columna 1 (0-based)
+##q75[[1]][[3]][[1]] would denote  first sublist (1), third dataframe (3), column 1
 for (i in 1:length(ab)){
   for (h in 1:length(names(ab[[i]]))){
     G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(q75[[i]][[h]]),mart=ensembl)
     q75[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(q75[[i]][[h]]), G_list$ensembl_gene_id)]
     q75[[i]][[h]] <-q75[[i]][[h]][order(q75[[i]][[h]][[1]], decreasing = TRUE), ]
-    
   }
 }
 #Intersecting q75 (high expression) with Akey
 akey075 = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
-#(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
-for (i in 1:length(ab)){
+for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
   for (h in 1:length(names(ab[[i]]))){
     akey075[[i]][[h]] <- q75[[i]][[h]][q75[[i]][[h]][[2]] %in% results$hgnc_symbol,] #in Akey
     akey075[[i]][[h]] <-  akey075[[i]][[h]][!(is.na(akey075[[i]][[h]][[2]]) | akey075[[i]][[h]][[2]]==""), ] #Cleaning
@@ -113,9 +112,9 @@ for (i in 1:length(ab)){
 }
 #Save results - Genes in deserts and pos. selection with high expression
 for (i in 1:length(ab)){
-  for (h in 1:length(bothq75[[i]])){
-    if (dim(bothq75[[i]][[h]])[1] == 0) next #To skip empty dataframes
-    write.xlsx(bothq75[[i]][[h]], file="ABA_preliminar_AkeyPey_highExpr.xlsx", sheetName=paste(toString(i),toString(names(bothq75[[i]][[h]][1])), sep="_"), append = TRUE) #Add age data at the beginning of the sheet name
+  for (h in 1:length(akey075[[i]])){
+    if (dim(akey075[[i]][[h]])[1] == 0) next #To skip empty dataframes
+    write.xlsx(akey075[[i]][[h]], file="ABA_Akey_highExprq75.xlsx", sheetName=paste(toString(i),toString(names(akey075[[i]][[h]][1])), sep="_"), append = TRUE) #Add age number at the beginning of the sheet name
   }
 }
 ```
@@ -142,38 +141,38 @@ for (i in 1:length(ab1)){
   }
 }
 #Reporting mean
-trial = vector(mode="list", length = length(ab1))
+mean1 = vector(mode="list", length = length(ab1))
 for (i in 1:length(ab1)){
   for (h in 1:length(names(ab1[[i]]))){
-    trial[[i]][[h]] <- mean(aba_akey[[i]][[h]][[1]])
-    trial[[i]][[h]] <- as.data.frame(trial[[i]][[h]])
-    names(trial[[i]][[h]]) <- paste(names(aba_akey[[i]][[h]][1]), sep='_')
+    mean1[[i]][[h]] <- mean(aba_akey[[i]][[h]][[1]])
+    mean1[[i]][[h]] <- as.data.frame(mean1[[i]][[h]])
+    names(mean1[[i]][[h]]) <- paste(names(aba_akey[[i]][[h]][1]), sep='_')
   }
 }
 
-prenatal <- do.call("rbind", as.data.frame(trial[[1]]))
+prenatal <- do.call("rbind", as.data.frame(mean1[[1]]))
 colnames(prenatal) <- "prenatal"
-infant <- do.call("rbind", as.data.frame(trial[[2]]))
+infant <- do.call("rbind", as.data.frame(mean1[[2]]))
 colnames(infant) <- "infant"
-child <- do.call("rbind", as.data.frame(trial[[3]]))
+child <- do.call("rbind", as.data.frame(mean1[[3]]))
 colnames(child) <- "child"
-adolescent <- do.call("rbind", as.data.frame(trial[[4]]))
+adolescent <- do.call("rbind", as.data.frame(mean1[[4]]))
 colnames(adolescent) <- "adolescent"
-adult <- do.call("rbind", as.data.frame(trial[[5]]))
+adult <- do.call("rbind", as.data.frame(mean1[[5]]))
 colnames(adult) <- "adult"
 
 final_merge <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
 #Save results - need to be updated
 library(xlsx)
 for (i in 1:length(colnames(final_merge))){
-  write.xlsx(arrange(final_merge[i], desc(final_merge[i])), file="ABA_testing.xlsx", sheetName=names(final_merge[i]), append = TRUE)
+  write.xlsx(arrange(final_merge[i], desc(final_merge[i])), file="ABA_GenesAkey.xlsx", sheetName=names(final_merge[i]), append = TRUE)
 }
 
 #Plot
 
 #For plot
-final_merge[[1]] <- sapply(strsplit(final_merge[[1]], "_"), "[", 1)
 final_merge <- tibble::rownames_to_column(final_merge, "Structure")
+final_merge[[1]] <- sapply(strsplit(final_merge[[1]], "_"), "[", 1)
 
 a<-ggparcoord(final_merge,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
@@ -185,8 +184,10 @@ a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
-#grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = cbind(c(1,1,1), c(2,3,4)))
+
+pdf("ABA_GenesAkey.pdf")
 grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+dev.off()
 ```
 
 
@@ -211,31 +212,31 @@ for (i in 1:length(ab2)){
   }
 }
 #Reporting mean
-trial2 = vector(mode="list", length = length(ab1))
-for (i in 1:length(ab1)){
-  for (h in 1:length(names(ab1[[i]]))){
-    trial2[[i]][[h]] <- mean(aba_both[[i]][[h]][[1]])
-    trial2[[i]][[h]] <- as.data.frame(trial2[[i]][[h]])
-    names(trial2[[i]][[h]]) <- paste(names(aba_both[[i]][[h]][1]), sep='_')
+mean2 = vector(mode="list", length = length(ab2))
+for (i in 1:length(ab2)){
+  for (h in 1:length(names(ab2[[i]]))){
+    mean2[[i]][[h]] <- mean(aba_both[[i]][[h]][[1]])
+    mean2[[i]][[h]] <- as.data.frame(mean2[[i]][[h]])
+    names(mean2[[i]][[h]]) <- paste(names(aba_both[[i]][[h]][1]), sep='_')
   }
 }
 
-prenatal <- do.call("rbind", as.data.frame(trial2[[1]]))
+prenatal <- do.call("rbind", as.data.frame(mean2[[1]]))
 colnames(prenatal) <- "prenatal"
-infant <- do.call("rbind", as.data.frame(trial2[[2]]))
+infant <- do.call("rbind", as.data.frame(mean2[[2]]))
 colnames(infant) <- "infant"
-child <- do.call("rbind", as.data.frame(trial2[[3]]))
+child <- do.call("rbind", as.data.frame(mean2[[3]]))
 colnames(child) <- "child"
-adolescent <- do.call("rbind", as.data.frame(trial2[[4]]))
+adolescent <- do.call("rbind", as.data.frame(mean2[[4]]))
 colnames(adolescent) <- "adolescent"
-adult <- do.call("rbind", as.data.frame(trial2[[5]]))
+adult <- do.call("rbind", as.data.frame(mean2[[5]]))
 colnames(adult) <- "adult"
 
 final_merge2 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
 #Save results - need to be updated
 library(xlsx)
 for (i in 1:length(colnames(final_merge2))){
-  write.xlsx(arrange(final_merge2[i], desc(final_merge2[i])), file="ABA_testing_both.xlsx", sheetName=names(final_merge2[i]), append = TRUE)
+  write.xlsx(arrange(final_merge2[i], desc(final_merge2[i])), file="ABA_GenesAkeyPey.xlsx", sheetName=names(final_merge2[i]), append = TRUE)
 }
 
 #For plot:
@@ -253,13 +254,15 @@ a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
-#grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = cbind(c(1,1,1), c(2,3,4)))
 grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 
 d<-ggparcoord(final_merge2,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
 d1<-arrangeGrob(d, left=textGrob("D"))
+
+pdf("ABA_GenesAkeyPey.pdf")
 grid.arrange(a1, c1, d1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+dev.off()
 ```
 
 #ABA Data - All genes that are present in Pey
@@ -283,32 +286,31 @@ for (i in 1:length(ab3)){
   }
 }
 #Reporting mean
-trial3 = vector(mode="list", length = length(ab3))
+mean3 = vector(mode="list", length = length(ab3))
 for (i in 1:length(ab3)){
   for (h in 1:length(names(ab3[[i]]))){
-    trial3[[i]][[h]] <- mean(aba_pey[[i]][[h]][[1]])
-    trial3[[i]][[h]] <- as.data.frame(trial3[[i]][[h]])
-    names(trial3[[i]][[h]]) <- paste(names(aba_pey[[i]][[h]][1]), sep='_')
+    mean3[[i]][[h]] <- mean(aba_pey[[i]][[h]][[1]])
+    mean3[[i]][[h]] <- as.data.frame(mean3[[i]][[h]])
+    names(mean3[[i]][[h]]) <- paste(names(aba_pey[[i]][[h]][1]), sep='_')
   }
 }
 
-prenatal <- do.call("rbind", as.data.frame(trial3[[1]]))
+prenatal <- do.call("rbind", as.data.frame(mean3[[1]]))
 colnames(prenatal) <- "prenatal"
-infant <- do.call("rbind", as.data.frame(trial3[[2]]))
+infant <- do.call("rbind", as.data.frame(mean3[[2]]))
 colnames(infant) <- "infant"
-child <- do.call("rbind", as.data.frame(trial3[[3]]))
+child <- do.call("rbind", as.data.frame(mean3[[3]]))
 colnames(child) <- "child"
-adolescent <- do.call("rbind", as.data.frame(trial3[[4]]))
+adolescent <- do.call("rbind", as.data.frame(mean3[[4]]))
 colnames(adolescent) <- "adolescent"
-adult <- do.call("rbind", as.data.frame(trial3[[5]]))
+adult <- do.call("rbind", as.data.frame(mean3[[5]]))
 colnames(adult) <- "adult"
 
 final_merge3 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
-#Save results_pey - need to be updated
-library(xlsx)
+#Save:
 for (i in 1:length(colnames(final_merge3))){
   if (dim(final_merge3[i])[1] == 0) next
-  write.xlsx(arrange(final_merge3[i], desc(final_merge3[i])), file="ABA_testingPey.xlsx", sheetName=names(final_merge3[i]), append = TRUE)
+  write.xlsx(arrange(final_merge3[i], desc(final_merge3[i])), file="ABA_GenesPey.xlsx", sheetName=names(final_merge3[i]), append = TRUE)
 }
 
 #Plot
@@ -326,8 +328,10 @@ a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
-#grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = cbind(c(1,1,1), c(2,3,4)))
+
+pdf("ABA_GenesPey.pdf")
 grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+dev.off()
 ```
 
 #ABA Data - All genes that are present in Rac
@@ -351,31 +355,31 @@ for (i in 1:length(ab4)){
   }
 }
 #Reporting mean
-trial4 = vector(mode="list", length = length(ab4))
+mean4 = vector(mode="list", length = length(ab4))
 for (i in 1:length(ab4)){
   for (h in 1:length(names(ab4[[i]]))){
-    trial4[[i]][[h]] <- mean(aba_rac[[i]][[h]][[1]])
-    trial4[[i]][[h]] <- as.data.frame(trial4[[i]][[h]])
-    names(trial4[[i]][[h]]) <- paste(names(aba_rac[[i]][[h]][1]), sep='_')
+    mean4[[i]][[h]] <- mean(aba_rac[[i]][[h]][[1]])
+    mean4[[i]][[h]] <- as.data.frame(mean4[[i]][[h]])
+    names(mean4[[i]][[h]]) <- paste(names(aba_rac[[i]][[h]][1]), sep='_')
   }
 }
 
-prenatal <- do.call("rbind", as.data.frame(trial4[[1]]))
+prenatal <- do.call("rbind", as.data.frame(mean4[[1]]))
 colnames(prenatal) <- "prenatal"
-infant <- do.call("rbind", as.data.frame(trial4[[2]]))
+infant <- do.call("rbind", as.data.frame(mean4[[2]]))
 colnames(infant) <- "infant"
-child <- do.call("rbind", as.data.frame(trial4[[3]]))
+child <- do.call("rbind", as.data.frame(mean4[[3]]))
 colnames(child) <- "child"
-adolescent <- do.call("rbind", as.data.frame(trial4[[4]]))
+adolescent <- do.call("rbind", as.data.frame(mean4[[4]]))
 colnames(adolescent) <- "adolescent"
-adult <- do.call("rbind", as.data.frame(trial4[[5]]))
+adult <- do.call("rbind", as.data.frame(mean4[[5]]))
 colnames(adult) <- "adult"
 
 final_merge4 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
 #Save results_rac - need to be updated
 for (i in 1:length(colnames(final_merge4))){
   if (dim(final_merge4[i])[1] == 0) next
-  write.xlsx(arrange(final_merge4[i], desc(final_merge4[i])), file="ABA_testingRac.xlsx", sheetName=names(final_merge4[i]), append = TRUE)
+  write.xlsx(arrange(final_merge4[i], desc(final_merge4[i])), file="ABA_GenesRac.xlsx", sheetName=names(final_merge4[i]), append = TRUE)
 }
 
 #Plot
@@ -393,11 +397,15 @@ c<-ggparcoord(final_merge4,
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
+
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+
+pdf("ABA_GenesRac.pdf")
 grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+dev.off()
 ```
 
-#ABA Data - All genes that are present in Rac
+#ABA Data - All genes that are present in both Akey and Rac
 ```{r}
 #Global data
 ab5 <- ab
@@ -418,31 +426,31 @@ for (i in 1:length(ab5)){
   }
 }
 #Reporting mean
-trial5 = vector(mode="list", length = length(ab5))
+mean5 = vector(mode="list", length = length(ab5))
 for (i in 1:length(ab5)){
   for (h in 1:length(names(ab5[[i]]))){
-    trial5[[i]][[h]] <- mean(aba_racAkey[[i]][[h]][[1]])
-    trial5[[i]][[h]] <- as.data.frame(trial5[[i]][[h]])
-    names(trial5[[i]][[h]]) <- paste(names(aba_racAkey[[i]][[h]][1]), sep='_')
+    mean5[[i]][[h]] <- mean(aba_racAkey[[i]][[h]][[1]])
+    mean5[[i]][[h]] <- as.data.frame(mean5[[i]][[h]])
+    names(mean5[[i]][[h]]) <- paste(names(aba_racAkey[[i]][[h]][1]), sep='_')
   }
 }
 
-prenatal <- do.call("rbind", as.data.frame(trial5[[1]]))
+prenatal <- do.call("rbind", as.data.frame(mean5[[1]]))
 colnames(prenatal) <- "prenatal"
-infant <- do.call("rbind", as.data.frame(trial5[[2]]))
+infant <- do.call("rbind", as.data.frame(mean5[[2]]))
 colnames(infant) <- "infant"
-child <- do.call("rbind", as.data.frame(trial5[[3]]))
+child <- do.call("rbind", as.data.frame(mean5[[3]]))
 colnames(child) <- "child"
-adolescent <- do.call("rbind", as.data.frame(trial5[[4]]))
+adolescent <- do.call("rbind", as.data.frame(mean5[[4]]))
 colnames(adolescent) <- "adolescent"
-adult <- do.call("rbind", as.data.frame(trial5[[5]]))
+adult <- do.call("rbind", as.data.frame(mean5[[5]]))
 colnames(adult) <- "adult"
 
 final_merge5 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
 #Save racAkey - need to be updated
 for (i in 1:length(colnames(final_merge5))){
   if (dim(final_merge5[i])[1] == 0) next
-  write.xlsx(arrange(final_merge5[i], desc(final_merge5[i])), file="ABA_testingRacAkey.xlsx", sheetName=names(final_merge5[i]), append = TRUE)
+  write.xlsx(arrange(final_merge5[i], desc(final_merge5[i])), file="ABA_GenesAkeyRac.xlsx", sheetName=names(final_merge5[i]), append = TRUE)
 }
 
 #Plot
@@ -461,7 +469,12 @@ a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+
+pdf("ABA_GenesAkeyRac.pdf")
+
 grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+
+dev.off()
 ```
 
 
