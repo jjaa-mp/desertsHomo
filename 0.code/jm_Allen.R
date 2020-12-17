@@ -57,6 +57,7 @@ racAkey <- racAkey[!(is.na(racAkey$hgnc_symbol) | racAkey$hgnc_symbol==""), ]
 ```
 
 #Extracting gene expression data from Allen Brain Atlas
+
 ```{r}
 ##Loading dataset
 data("dataset_5_stages")
@@ -185,9 +186,13 @@ b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
-pdf("ABA_GenesAkey.pdf")
-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-dev.off()
+#pdf("ABA_GenesAkey.pdf", paper="a4")
+#grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+#dev.off()
+
+pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+ggsave(file="ABA_GenesAkey.pdf", pl1, width = 11.69, height = 8.27, units = "in")
+
 ```
 
 
@@ -260,9 +265,9 @@ d<-ggparcoord(final_merge2,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
 d1<-arrangeGrob(d, left=textGrob("D"))
 
-pdf("ABA_GenesAkeyPey.pdf")
-grid.arrange(a1, c1, d1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-dev.off()
+pl2 <- grid.arrange(a1, c1, d1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+ggsave(file="ABA_GenesAkeyPey.pdf", pl2, width = 11.69, height = 8.27, units = "in")
+
 ```
 
 #ABA Data - All genes that are present in Pey
@@ -329,9 +334,8 @@ b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
-pdf("ABA_GenesPey.pdf")
-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-dev.off()
+pl3 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+ggsave(file="ABA_GenesPey.pdf", pl3, width = 11.69, height = 8.27, units = "in")
 ```
 
 #ABA Data - All genes that are present in Rac
@@ -400,9 +404,8 @@ c1<-arrangeGrob(c, left=textGrob("C"))
 
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
-pdf("ABA_GenesRac.pdf")
-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-dev.off()
+pl4 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+ggsave(file="ABA_GenesRac.pdf", pl4, width = 11.69, height = 8.27, units = "in")
 ```
 
 #ABA Data - All genes that are present in both Akey and Rac
@@ -470,11 +473,8 @@ b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
-pdf("ABA_GenesAkeyRac.pdf")
-
-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-
-dev.off()
+pl5 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "in")
 ```
 
 
