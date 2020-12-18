@@ -12,6 +12,7 @@ library(gridExtra)
 library(lattice)
 library(xlsx)
 ```
+
 #Extracting gene names from coordinate regions via bioMart
 ```{r}
 #Genes within Desert region coordinates
@@ -25,6 +26,11 @@ filterlist <- c("1:105400000:120600000", "3:74100000:89300000", "7:106200000:123
 results=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
               filters = c("chromosomal_region","biotype"),
               values = list(chromosomal_region=filterlist,biotype="protein_coding"), mart = ensembl)
+
+#ALTERNATIVE: 800 genes (protein coding genes plus other genes)
+##results_alternative =getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position"),
+              #filters = c("chromosomal_region"),
+              #values = list(chromosomal_region=filterlist), mart = ensembl)
 ##Save:
 #write.csv(results, file="2020_Genes_in_Deserts.csv")
 
@@ -56,8 +62,42 @@ racAkey <- results_rac[results_rac$hgnc_symbol %in% results$hgnc_symbol,]
 racAkey <- racAkey[!(is.na(racAkey$hgnc_symbol) | racAkey$hgnc_symbol==""), ]
 ```
 
-#Extracting gene expression data from Allen Brain Atlas
+#Extracting gene expression data from Allen Brain Atlas - ADULT
+```{R}
+data("dataset_adult")
+id.adult <- unique(dataset_adult$ensembl_gene_id)
+st.adult <- unique(dataset_adult$structure)
+st.adult <- paste("Allen",st.adult, sep=":") 
+abadult <- get_expression(structure_ids=st.adult, gene_ids = id.adult, dataset='adult') 
+abadult <- t(abadult)
+listadult = vector(mode="list")
+listadult <- get_name(colnames(abadult))
+colnames(abadult) <- listadult
+abadult <- as.data.frame(abadult)
 
+G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(abadult),mart=ensembl)
+abadult['gene_name'] <-  G_list$hgnc_symbol[match(rownames(abadult), G_list$ensembl_gene_id)]
+nrow(abadult) # 15698
+abadult <- abadult[!(is.na(abadult$gene_name) | abadult$gene_name==""), ]
+nrow(abadult) # 15688
+row.names(abadult) <- G_list$hgnc_symbol[match(rownames(abadult), G_list$ensembl_gene_id)]
+#In Akey:
+abadultAkey  <- abadult[rownames(abadult) %in% results$hgnc_symbol,]
+abadultAkeyPey  <- abadult[rownames(abadult) %in% both$hgnc_symbol,]
+
+new <- as.data.frame(colMeans(abadultAkey[sapply(abadultAkey, is.numeric)]))
+names(new) <- "mean_expression"
+
+newboth <- as.data.frame(colMeans(abadultAkeyPey[sapply(abadultAkeyPey, is.numeric)]))
+names(newboth) <- "mean_expression"
+newboth1 <- newboth %>% filter(newboth$mean_expression > 6.15)
+nrow(newboth1)
+p<-ggplot(newboth1, aes(x=rownames(newboth1), y=newboth1$mean_expression)) + 
+  geom_dotplot(binaxis='y', stackdir='center')+theme(legend.position = "none")+labs(title="Genes in Akey and Pey",x="", y = "Mean expression")
+p + coord_flip()
+```
+
+#Extracting gene expression data from Allen Brain Atlas - 5 stages
 ```{r}
 ##Loading dataset
 data("dataset_5_stages")
@@ -192,7 +232,6 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
 pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 ggsave(file="ABA_GenesAkey.pdf", pl1, width = 11.69, height = 8.27, units = "in")
-
 ```
 
 
@@ -477,26 +516,6 @@ pl5 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1,
 ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "in")
 ```
 
-
-#INTERSECTING q75 with Akey
-```{r}
-#--SKIP--
-#Plot example
-##Highlight specific gene
-##Prenatal - WDR47
-library(dplyr)
-library(readxl)
-library(ggplot2)
-DLPFC_pre <- read_excel("~/ABA_preliminar.xlsx", sheet = 2)
-highlight1 <-  as.data.frame(DLPFC_pre %>% filter(DLPFC_pre$gene_name == "WDR47"))
-ggplot(DLPFC_pre, aes(x=DLPFC_pre$gene_name, y = DLPFC_pre$`DFC_dorsolateral prefrontal cortex`)) + 
-  geom_point(binaxis='y', stackdir='center',stackratio=1.5)+theme(axis.text.x = element_text(angle=90), legend.position = "none") +theme(axis.text.x = element_text(margin = margin(t = 4, r = 20, b = 0, l = 0))) +
-  geom_point(data=highlight1, aes(x=highlight1$gene_name, y = highlight1$`DFC_dorsolateral prefrontal cortex`, colour = "red", size=3))+
-  labs(x="Gene name",y="expression", title ="Allen Brain Atlas - Prenatal DLPFC - WDR47")
-# + coord_flip()
-
-```
-
 #Table Cell Atlas - Science
 ```{sh}
 #wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE156nnn/GSE156793/suppl/GSE156793%5FS8%5FDE%5Fgene%5Fcells%2Ecsv%2Egz 
@@ -519,6 +538,24 @@ df1subset <- df1subset[order(df1subset$max.cluster),]
 
 write.csv(df1subset, file="CellAtlas_GSE156793_inAkey.csv", row.names = FALSE)
 write.csv(df1subsetboth, file="CellAtlas_GSE156793_inAkeyPey.csv", row.names = FALSE)
+
+#Whole dataset - AKEY
+df$gene_short_name <- gsub("\\'", "", df$gene_short_name)
+dfakey <- df[df$gene_short_name %in% results$hgnc_symbol,]
+#dfakey <- dfakey[order(dfakey$max.cluster),]
+#dfakey %>% group_by(organ) %>% mutate(mean1=mean(max.expr), mean2=mean(second.expr))
+meanakey <- dfakey %>% group_by(organ) %>% summarize(Mean = mean(max.expr))
+meanakey[order(meanakey$Mean, decreasing = TRUE),]
+##Gene expression of genes in Akey - Preliminar test
+pairwise.t.test(dfakey$max.expr, dfakey$organ, p.adjust.method = "BH")
+
+#Whole dataset - AKEY PEY
+df1subsetboth <- df[df$gene_short_name %in% both$hgnc_symbol,]
+meanakeypey <- df1subsetboth %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
+meanakeypey[order(meanakeypey$Mean, decreasing = TRUE),]
+
+#Raw:
+df  %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
 ```
 
 
