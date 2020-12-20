@@ -93,11 +93,17 @@ names(new) <- "mean_expression"
 
 newboth <- as.data.frame(colMeans(abadultAkeyPey[sapply(abadultAkeyPey, is.numeric)]))
 names(newboth) <- "mean_expression"
-newboth1 <- newboth %>% filter(newboth$mean_expression > 6.15)
-nrow(newboth1)
+newboth1 <- newboth %>% slice(head(row_number(), 20)) #Top 20 structures
 p<-ggplot(newboth1, aes(x=rownames(newboth1), y=newboth1$mean_expression)) + 
-  geom_dotplot(binaxis='y', stackdir='center')+theme(legend.position = "none")+labs(title="Genes in Akey and Pey",x="", y = "Mean expression")
+  geom_dotplot(binaxis='y', stackdir='center', fill="#D55E00")+theme(legend.position = "none")+labs(title="Genes in Akey and Pey",x="", y = "Mean expression (top 20)")
 p + coord_flip()
+
+
+newboth2 <- newboth %>% slice(tail(row_number(), 20)) #Bottom 20 structures
+p2<-ggplot(newboth2, aes(x=rownames(newboth2), y=newboth2$mean_expression)) + 
+  geom_dotplot(binaxis='y', stackdir='center', fill="#0072B2")+theme(legend.position = "none")+labs(title="Genes in Akey and Pey",x="", y = "Mean expression (bottom 20)") 
+p2+ coord_flip()+scale_x_discrete(position = "top")
+
 ```
 
 #Extracting gene expression data from Allen Brain Atlas - 5 stages
@@ -528,6 +534,7 @@ ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "
 library(dplyr)
 df <- read.csv(file = "~/GSE156793_S8_DE_gene_cells.csv.gz")
 df1 <- df[which(df$organ=='Cerebellum'), ]
+brain <- df[which(df$organ=='Cerebrum'), ]
 write.csv(df1, file="CellAtlas_GSE156793_cerebellum.csv", row.names = FALSE)
 
 df1$gene_short_name <- gsub("\\'", "", df1$gene_short_name)
@@ -614,8 +621,108 @@ pl_fr <- ggplot(data = melted, aes(Var2, Var1, fill = value))+
  theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_y_discrete(position = "right")+
  coord_fixed()+ coord_flip()
 pl_fr
-ggsave(file="CellAtlas_MeanExpr_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
+ggsave(file="CellAtlas_MeanExprAkey_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
 
 ```
+
+#Friedman test - Genes in both Akey and Pey:
+```{r}
+s <- data.frame(df1subsetboth$organ, df1subsetboth$gene_short_name, df1subsetboth$max.expr)
+names(s) <- c("x", "y", "z")
+ss <- pivot_wider(s, names_from = x, values_from = z)
+ss3 <- as.matrix(ss)
+ss3 <-ss3[,-1]
+friedman.test(ss3)
+
+list2 <- vector(mode = "list")
+for (i in 1:length(colnames(ss3))){
+  list2[[i]] <- as.numeric(c(ss3[,i]))
+}
+res_F2 <- DunnettTest(list2, control = c(1:15)) #CAN ALSO TRY SNK Test
+organs <- colnames(ss3)
+
+list_dfs2 <- vector(mode="list")
+for (i in 1:length(res_F2)){
+  colnames(res_F2[[i]]) <- c("diff", "lwr.ci", "upr.ci", colnames(ss3)[i]) #control group: colnames(ss3)[i]
+  rownames(res_F2[[i]]) <- organs[-i] #comparison groups in rownames: all except i
+  list_dfs2[[i]] <- as.data.frame(res_F2[[i]])
+  list_dfs2[[i]] <- list_dfs2[[i]][4]
+  list_dfs2[[i]] <-  cbind(list_dfs2[[i]], group=rownames(list_dfs2[[i]]))
+  list_dfs2[[i]] <- list_dfs2[[i]][c(2,1)] #ordering columns for merging on index 'group'
+}
+library(tidyverse)
+pp2 <-reduce(list_dfs2, full_join, by="group") #Generating matrix for plot
+pp2[is.na(pp2)] <- 0 #replacing null values
+rownames(pp2) <- pp2[,1]
+pp2[,1] <- NULL
+pp2 <- pp2[c(2:15,1)] #Reordering columns for triangular matrix
+
+#Plot
+##Cell Atlas - Akey - Enrichment
+library(Matrix)
+library(reshape2)
+library(ggplot2)
+# Get upper triangle of the correlation matrix
+get_upper_tri <- function(cormat){
+cormat[lower.tri(cormat)]<- NA
+return(cormat)
+}
+upper_tri2 <- get_upper_tri(as.matrix(pp2))
+melted2 <- melt(upper_tri2, na.rm = TRUE)
+
+pl_fr2 <- ggplot(data = melted2, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "#F0E442", high = "#0072B2", mid = "#0072B2", 
+   midpoint = 0.5, limit = c(0,1), space = "Lab", 
+   name="p-value") +
+  theme_classic()+xlab("")+ylab("")+ 
+ theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_y_discrete(position = "right")+
+ coord_fixed()+ coord_flip()
+pl_fr2
+ggsave(file="CellAtlas_MeanExprAkeyPey_heatmap.pdf", pl_fr2,width = 11.69, height = 8.27, units = "in")
+```
+#Friedman test - Genes in Akey (Whole dataset):
+```{r}
+ct <- data.frame(dfakey$max.cluster, dfakey$gene_short_name, dfakey$max.expr)
+names(ct) <- c("x", "y", "z")
+ct1 <- pivot_wider(ct, names_from = x, values_from = z) #DOUBLE CHECK
+ct3 <- as.matrix(ct1)
+ct3 <-ct3[,-1]
+friedman.test(ct3) #No significant
+
+pt <- data.frame(df1subsetboth$max.cluster, df1subsetboth$gene_short_name, df1subsetboth$max.expr)
+names(pt) <- c("x", "y", "z")
+pt1 <- pivot_wider(pt, names_from = x, values_from = z) #DOUBLE CHECK
+pt3 <- as.matrix(pt1)
+pt3 <-pt3[,-1]
+friedman.test(pt3) #No significant
+```
+
+
+#CELL ATLAS - CELL TYPE DATA #CHECK OTHER KIND OF TESTS
+```{r}
+#Whole dataset - AKEY
+brain$gene_short_name <- gsub("\\'", "", brain$gene_short_name)
+brain_akey <- brain[brain$gene_short_name %in% results$hgnc_symbol,]
+
+ctb <- data.frame(brain_akey$max.cluster, brain_akey$gene_short_name, brain_akey$max.expr)
+names(ctb) <- c("x", "y", "z")
+ctb1 <- pivot_wider(ctb, names_from = x, values_from = z)
+ctb3 <- as.matrix(ctb1)
+ctb3 <-ctb3[,-1]
+friedman.test(ctb3) #Mostly NA values in the matrix
+
+df1$gene_short_name <- gsub("\\'", "", df1$gene_short_name)
+cbl_akey <- df1[df1$gene_short_name %in% results$hgnc_symbol,]
+
+cblt <- data.frame(cbl_akey$max.cluster, cbl_akey$gene_short_name, cbl_akey$max.expr)
+names(cblt) <- c("x", "y", "z")
+cblt1 <- pivot_wider(cblt, names_from = x, values_from = z)
+cblt2 <- as.matrix(cblt1)
+cblt3 <-cblt2[,-1]
+friedman.test(cblt3) #Mostly NA values in the matrix
+
+```
+
 
 
