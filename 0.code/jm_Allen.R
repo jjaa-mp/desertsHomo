@@ -3,6 +3,7 @@
 library(biomaRt)
 library(ABAData)
 library(ABAEnrichment)
+library(ggplot2)
 library(dplyr)
 library(GGally)
 library(viridis)
@@ -14,6 +15,7 @@ library(xlsx)
 library(tidyr)
 library(DescTools)
 library(reshape2)
+library(dplyr)
 ```
 
 #Extracting gene names from coordinate regions via bioMart
@@ -67,6 +69,9 @@ racAkey <- racAkey[!(is.na(racAkey$hgnc_symbol) | racAkey$hgnc_symbol==""), ]
 
 #Extracting gene expression data from Allen Brain Atlas - ADULT
 ```{R}
+library(ABAData)
+library(ABAEnrichment)
+library(biomaRt)
 data("dataset_adult")
 id.adult <- unique(dataset_adult$ensembl_gene_id)
 st.adult <- unique(dataset_adult$structure)
@@ -93,17 +98,17 @@ names(new) <- "mean_expression"
 
 newboth <- as.data.frame(colMeans(abadultAkeyPey[sapply(abadultAkeyPey, is.numeric)]))
 names(newboth) <- "mean_expression"
+newboth <- arrange(newboth, desc(newboth$mean_expression))
 newboth1 <- newboth %>% slice(head(row_number(), 20)) #Top 20 structures
 p<-ggplot(newboth1, aes(x=rownames(newboth1), y=newboth1$mean_expression)) + 
-  geom_dotplot(binaxis='y', stackdir='center', fill="#D55E00")+theme(legend.position = "none")+labs(title="Genes in Akey and Pey",x="", y = "Mean expression (top 20)")
-p + coord_flip()
+  geom_dotplot(binaxis='y', stackdir='center', fill="#D55E00")+theme(legend.position = "none")+labs(title="",x="", y = "Mean expression (top 20)")+coord_flip()
+ggsave(file="ABA_414_GenesAkeyPey_top20.pdf", p, width = 11.69, height = 8.27, units = "in")
 
 
 newboth2 <- newboth %>% slice(tail(row_number(), 20)) #Bottom 20 structures
 p2<-ggplot(newboth2, aes(x=rownames(newboth2), y=newboth2$mean_expression)) + 
-  geom_dotplot(binaxis='y', stackdir='center', fill="#0072B2")+theme(legend.position = "none")+labs(title="Genes in Akey and Pey",x="", y = "Mean expression (bottom 20)") 
-p2+ coord_flip()+scale_x_discrete(position = "top")
-
+  geom_dotplot(binaxis='y', stackdir='center', fill="#0072B2")+theme(legend.position = "none")+labs(title="",x="", y = "Mean expression (bottom 20)") + coord_flip()+scale_x_discrete(position = "top")
+ggsave(file="ABA_414_GenesAkeyPey_bottom20.pdf", p2, width = 11.69, height = 8.27, units = "in")
 ```
 
 #Extracting gene expression data from Allen Brain Atlas - 5 stages
