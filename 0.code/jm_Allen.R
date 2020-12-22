@@ -599,7 +599,7 @@ for (i in 1:length(res_F)){
 }
 library(tidyverse)
 pp <-reduce(list_dfs, full_join, by="group") #Generating matrix for plot
-pp[is.na(pp)] <- 0 #replacing null values
+pp[is.na(pp)] <- 2 #replacing null values
 rownames(pp) <- pp[,1]
 pp[,1] <- NULL
 pp <- pp[c(2:15,1)] #Reordering columns for triangular matrix
@@ -619,7 +619,7 @@ melted <- melt(upper_tri, na.rm = TRUE)
 
 pl_fr <- ggplot(data = melted, aes(Var2, Var1, fill = value))+
  geom_tile(color = "white")+
- scale_fill_gradient2(low = "#F0E442", high = "#0072B2", mid = "#0072B2", 
+ scale_fill_gradient2(low = "#F0E442", high = "#0072B2", mid = "#CC79A7", 
    midpoint = 0.5, limit = c(0,1), space = "Lab", 
    name="p-value") +
   theme_classic()+xlab("")+ylab("")+ 
@@ -657,7 +657,7 @@ for (i in 1:length(res_F2)){
 }
 library(tidyverse)
 pp2 <-reduce(list_dfs2, full_join, by="group") #Generating matrix for plot
-pp2[is.na(pp2)] <- 0 #replacing null values
+pp2[is.na(pp2)] <- 2 #replacing null values
 rownames(pp2) <- pp2[,1]
 pp2[,1] <- NULL
 pp2 <- pp2[c(2:15,1)] #Reordering columns for triangular matrix
@@ -677,7 +677,7 @@ melted2 <- melt(upper_tri2, na.rm = TRUE)
 
 pl_fr2 <- ggplot(data = melted2, aes(Var2, Var1, fill = value))+
  geom_tile(color = "white")+
- scale_fill_gradient2(low = "#F0E442", high = "#0072B2", mid = "#0072B2", 
+ scale_fill_gradient2(low = "#F0E442", high = "#0072B2", mid = "#CC79A7", 
    midpoint = 0.5, limit = c(0,1), space = "Lab", 
    name="p-value") +
   theme_classic()+xlab("")+ylab("")+ 
