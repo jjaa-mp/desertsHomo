@@ -11,8 +11,11 @@ the_plan <-
   	rac = load_data("file_dependencies/2020_rac_coords.bed"),
   	rac_coords = biominput(rac, results), # Genes within Akey and Racimo
 
-
-  	abadult_plots(abadult, 
+  	abadult_pl = abadult_plots(abadult, 
   	              results, 
-  	              pey_coords)
+  	              pey_coords),
+  	
+  	ab = abad_5_stages(),
+  	q75(ab, results),
+  	ab_global(ab, results)
 )
