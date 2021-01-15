@@ -16,6 +16,7 @@ library(xlsx)
 library(tidyr)
 library(DescTools)
 library(reshape2)
+library(Matrix)
 
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("reorder.factor", "gplots")

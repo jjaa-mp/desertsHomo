@@ -2,22 +2,22 @@
 
 the_plan <-
   drake_plan(
-  	results = retrieve_GenesDeserts(),
+  	akey = retrieve_GenesDeserts(),
   	abadult = dt_adults(),
   	
   	pey = load_data("file_dependencies/2020_pey_coords.bed"),
-  	pey_coords = biominput(pey, results, TRUE), # Genes within Akey and Peyregne
+  	pey_coords = biominput(pey, akey, TRUE), # Genes within Akey and Peyregne
 
   	rac = load_data("file_dependencies/2020_rac_coords.bed"),
-  	rac_coords = biominput(rac, results, TRUE), # Genes within Akey and Racimo
+  	rac_coords = biominput(rac, akey, TRUE), # Genes within Akey and Racimo
 
   	abadult_pl = abadult_plots(abadult, 
-  	              results, 
+  	              akey, 
   	              pey_coords),
   	
   	ab = abad_5_stages(),
-  	q75(ab, results),
-  	abakey_data = ab_data_plots(ab, results),
+  	q75(ab, akey),
+  	abakey_data = ab_data_plots(ab, akey),
   	abakey_plots = ab_plots(abakey_data, "Akey", " Deserts", "Striatum"),
   	
   	abakeypey_data = ab_data_plots(ab, pey_coords),
@@ -26,11 +26,19 @@ the_plan <-
   	abakeyrac_data = ab_data_plots(ab, rac_coords),
   	abakeyrac_plots = ab_plots(abakeyrac_data, "AkeyRac", " Rac and Akey", "Striatum"),
   	
-  	rac_coords_noakey = biominput(rac, results, FALSE),
+  	rac_coords_noakey = biominput(rac, akey, FALSE),
   	abrac_data = ab_data_plots(ab, rac_coords_noakey),
   	abrac_plots = ab_plots(abrac_data, "Rac", " Rac", "Striatum"),
   	
-  	pey_coords_noakey = biominput(pey, results, FALSE),
+  	pey_coords_noakey = biominput(pey, akey, FALSE),
   	abpey_data = ab_data_plots(ab, pey_coords_noakey),
-  	abpey_plots = ab_plots(abpey_data, "Pey", " Pey", "Striatum")
+  	abpey_plots = ab_plots(abpey_data, "Pey", " Pey", "Striatum"),
+  	
+  	GSEakey = GSE_data(akey, pey_coords, "akey"),
+  	ttest_result = ttest(GSEakey),
+  	akey_fried = friedman(GSEakey, "akey"),
+  	
+  	GSEpey = GSE_data(akey, pey_coords, "akeypey"),
+  	pey_fried = friedman(GSEpey, "pey")
+  	
 )
