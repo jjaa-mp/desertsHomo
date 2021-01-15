@@ -1,4 +1,4 @@
-biominput <- function(bedfile, results) {
+biominput <- function(bedfile, results, akey) {
   bedfile$V1 <- gsub("chr", "\\1", bedfile$V1) 
   bedfile[2] <- bedfile[2]+1 #Moving to 1-based for Ensembl
   df <- paste(bedfile$V1, bedfile$V2, bedfile$V3, sep = ":") #join
@@ -12,8 +12,11 @@ ensembl <- useMart(biomart = 'ENSEMBL_MART_ENSEMBL',
               filters = c("chromosomal_region","biotype"),
               values = list(chromosomal_region=df,biotype="protein_coding"), mart = ensembl)
   
-  both <- results_bed[results_bed$hgnc_symbol %in% results$hgnc_symbol,] #returns overlap
-  both <-  both[!(is.na(both$hgnc_symbol) | both$hgnc_symbol==""), ] #Cleaning
-  
-  return(both)
+  if (akey == TRUE) {
+    both <- results_bed[results_bed$hgnc_symbol %in% results$hgnc_symbol,] #returns overlap
+    both <-  both[!(is.na(both$hgnc_symbol) | both$hgnc_symbol==""), ] #Cleaning
+    return(both)}
+  else {
+    return(results_bed)
+    }
 } 
