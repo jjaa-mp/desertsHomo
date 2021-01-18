@@ -1,7 +1,7 @@
 # Observations
 ## Highlights from the data analysis
 
-Key for me: make clear why we focus on Akey, why we further focus on Pey (I suggest we just focus on the 'extended', not 'core' set), and point to differences from the early, tentative Vernot conclusion
+For intro: go back to work by Martin (his FOXP2 paper, and his Bioessays piece) to introduce the relevance of introgression deserts fo human uniqueness (in this content, see also Evo Letters 2020 piece on "genomic islands of divergence/speciation" in introgression contexts). Also briefly recap Vernot results, then say why we focus on Akey, and further examine the overlap with Pey.
 
 From results:
 
