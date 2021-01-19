@@ -13,9 +13,11 @@ library(gridExtra)
 library(lattice)
 library(xlsx)
 library(tidyr)
+library(tidyverse)
 library(DescTools)
 library(reshape2)
 library(dplyr)
+library(Matrix)
 ```
 
 #Extracting gene names from coordinate regions via bioMart
@@ -686,39 +688,37 @@ ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "
 ```{r}
 library(dplyr)
 df <- read.csv(file = "~/GSE156793_S8_DE_gene_cells.csv.gz")
-df1 <- df[which(df$organ=='Cerebellum'), ]
-brain <- df[which(df$organ=='Cerebrum'), ]
-write.csv(df1, file="CellAtlas_GSE156793_cerebellum.csv", row.names = FALSE)
-
-df1$gene_short_name <- gsub("\\'", "", df1$gene_short_name)
-df1subset <- df1[df1$gene_short_name %in% results$hgnc_symbol,]
-df1subset <- df1subset[order(df1subset$max.cluster),]
-
-df1subsetboth <- df1[df1$gene_short_name %in% both$hgnc_symbol,]
-df1subsetboth <- df1subsetboth[order(df1subsetboth$max.cluster),]
-df1subset <- df1subset[order(df1subset$max.cluster),]
-
-
-write.csv(df1subset, file="CellAtlas_GSE156793_inAkey.csv", row.names = FALSE)
-write.csv(df1subsetboth, file="CellAtlas_GSE156793_inAkeyPey.csv", row.names = FALSE)
-
-#Whole dataset - AKEY
+#Whole dataset - in AKEY
 df$gene_short_name <- gsub("\\'", "", df$gene_short_name)
 dfakey <- df[df$gene_short_name %in% results$hgnc_symbol,]
-#dfakey <- dfakey[order(dfakey$max.cluster),]
-#dfakey %>% group_by(organ) %>% mutate(mean1=mean(max.expr), mean2=mean(second.expr))
 meanakey <- dfakey %>% group_by(organ) %>% summarize(Mean = mean(max.expr))
 meanakey[order(meanakey$Mean, decreasing = TRUE),]
 ##Gene expression of genes in Akey - Preliminar test
-pairwise.t.test(dfakey$max.expr, dfakey$organ, p.adjust.method = "BH")
+#pairwise.t.test(dfakey$max.expr, dfakey$organ, p.adjust.method = "BH")
 
-#Whole dataset - AKEY PEY
-df1subsetboth <- df[df$gene_short_name %in% both$hgnc_symbol,]
-meanakeypey <- df1subsetboth %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
+#Whole dataset - in AKEY & PEY
+dfsubsetboth <- df[df$gene_short_name %in% both$hgnc_symbol,]
+meanakeypey <- dfsubsetboth %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
 meanakeypey[order(meanakeypey$Mean, decreasing = TRUE),]
 
 #Raw:
 df  %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
+
+df1 <- df[which(df$organ=='Cerebellum'), ]
+brain <- df[which(df$organ=='Cerebrum'), ]
+#write.csv(df1, file="CellAtlas_GSE156793_cerebellum.csv", row.names = FALSE)
+
+# CBL - AKEY
+df1$gene_short_name <- gsub("\\'", "", df1$gene_short_name)
+df1subset <- df1[df1$gene_short_name %in% results$hgnc_symbol,]
+df1subset <- df1subset[order(df1subset$max.cluster),]
+# CBL - AKEY & PEY
+df1subsetboth <- df1[df1$gene_short_name %in% both$hgnc_symbol,]
+df1subsetboth <- df1subsetboth[order(df1subsetboth$max.cluster),]
+df1subset <- df1subset[order(df1subset$max.cluster),]
+#Cerebellum FILES:
+#write.csv(df1subset, file="CellAtlas_GSE156793_CBL_inAkey.csv", row.names = FALSE)
+#write.csv(df1subsetboth, file="CellAtlas_GSE156793_CBL_inAkeyPey.csv", row.names = FALSE)
 ```
 
 #Friedman test - Genes in Akey:
@@ -745,7 +745,6 @@ for (i in 1:length(res_F)){
   list_dfs[[i]] <-  cbind(list_dfs[[i]], group=rownames(list_dfs[[i]]))
   list_dfs[[i]] <- list_dfs[[i]][c(2,1)] #ordering columns for merging on index 'group'
 }
-library(tidyverse)
 pp <-reduce(list_dfs, full_join, by="group") #Generating matrix for plot
 pp[is.na(pp)] <- 2 #replacing null values
 rownames(pp) <- pp[,1]
@@ -754,9 +753,7 @@ pp <- pp[c(2:15,1)] #Reordering columns for triangular matrix
 
 #Plot
 ##Cell Atlas - Akey - Enrichment
-library(Matrix)
-library(reshape2)
-library(ggplot2)
+
   # Get upper triangle of the correlation matrix
   get_upper_tri <- function(cormat){
     cormat[lower.tri(cormat)]<- NA
@@ -780,7 +777,7 @@ ggsave(file="CellAtlas_MeanExprAkey_heatmap.pdf", pl_fr,width = 11.69, height = 
 
 #Friedman test - Genes in both Akey and Pey:
 ```{r}
-s <- data.frame(df1subsetboth$organ, df1subsetboth$gene_short_name, df1subsetboth$max.expr)
+s <- data.frame(dfsubsetboth$organ, dfsubsetboth$gene_short_name, dfsubsetboth$max.expr)
 names(s) <- c("x", "y", "z")
 ss <- pivot_wider(s, names_from = x, values_from = z)
 ss3 <- as.matrix(ss)
@@ -803,7 +800,7 @@ for (i in 1:length(res_F2)){
   list_dfs2[[i]] <-  cbind(list_dfs2[[i]], group=rownames(list_dfs2[[i]]))
   list_dfs2[[i]] <- list_dfs2[[i]][c(2,1)] #ordering columns for merging on index 'group'
 }
-library(tidyverse)
+
 pp2 <-reduce(list_dfs2, full_join, by="group") #Generating matrix for plot
 pp2[is.na(pp2)] <- 2 #replacing null values
 rownames(pp2) <- pp2[,1]
@@ -812,9 +809,7 @@ pp2 <- pp2[c(2:15,1)] #Reordering columns for triangular matrix
 
 #Plot
 ##Cell Atlas - Akey - Enrichment
-library(Matrix)
-library(reshape2)
-library(ggplot2)
+
 # Get upper triangle of the correlation matrix
 get_upper_tri <- function(cormat){
 cormat[lower.tri(cormat)]<- NA
@@ -834,46 +829,39 @@ pl_fr2 <- ggplot(data = melted2, aes(Var2, Var1, fill = value))+
 pl_fr2
 ggsave(file="CellAtlas_MeanExprAkeyPey_heatmap.pdf", pl_fr2,width = 11.69, height = 8.27, units = "in")
 ```
-#Friedman test - Genes in Akey (Whole dataset):
+
+#CELL ATLAS - CELL TYPE ENRICHMENT
 ```{r}
-ct <- data.frame(dfakey$max.cluster, dfakey$gene_short_name, dfakey$max.expr)
-names(ct) <- c("x", "y", "z")
-ct1 <- pivot_wider(ct, names_from = x, values_from = z) #DOUBLE CHECK
-ct3 <- as.matrix(ct1)
-ct3 <-ct3[,-1]
-friedman.test(ct3) #No significant
-
-pt <- data.frame(df1subsetboth$max.cluster, df1subsetboth$gene_short_name, df1subsetboth$max.expr)
-names(pt) <- c("x", "y", "z")
-pt1 <- pivot_wider(pt, names_from = x, values_from = z) #DOUBLE CHECK
-pt3 <- as.matrix(pt1)
-pt3 <-pt3[,-1]
-friedman.test(pt3) #No significant
-```
-
-
-#CELL ATLAS - CELL TYPE DATA #CHECK OTHER KIND OF TESTS
-```{r}
-#Whole dataset - AKEY
+#CEREBRUM - AKEY
 brain$gene_short_name <- gsub("\\'", "", brain$gene_short_name)
 brain_akey <- brain[brain$gene_short_name %in% results$hgnc_symbol,]
-
 ctb <- data.frame(brain_akey$max.cluster, brain_akey$gene_short_name, brain_akey$max.expr)
 names(ctb) <- c("x", "y", "z")
 ctb1 <- pivot_wider(ctb, names_from = x, values_from = z)
-ctb3 <- as.matrix(ctb1)
-ctb3 <-ctb3[,-1]
-friedman.test(ctb3) #Mostly NA values in the matrix
+colSums(!is.na(ctb1))
 
+#CEREBELLUM - AKEY
 df1$gene_short_name <- gsub("\\'", "", df1$gene_short_name)
 cbl_akey <- df1[df1$gene_short_name %in% results$hgnc_symbol,]
-
 cblt <- data.frame(cbl_akey$max.cluster, cbl_akey$gene_short_name, cbl_akey$max.expr)
 names(cblt) <- c("x", "y", "z")
 cblt1 <- pivot_wider(cblt, names_from = x, values_from = z)
-cblt2 <- as.matrix(cblt1)
-cblt3 <-cblt2[,-1]
-friedman.test(cblt3) #Mostly NA values in the matrix
+colSums(!is.na(cblt1))
+
+#CEREBRUM - AKEY & PEY
+#brain$gene_short_name <- gsub("\\'", "", brain$gene_short_name)
+brain_akeypey <- brain[brain$gene_short_name %in% both$hgnc_symbol,]
+brain_akeypey1 <- data.frame(brain_akeypey$max.cluster, brain_akeypey$gene_short_name, brain_akeypey$max.expr)
+names(brain_akeypey1) <- c("x", "y", "z")
+brain_akeypey2 <- pivot_wider(brain_akeypey1, names_from = x, values_from = z)
+colSums(!is.na(brain_akeypey2))
+#CEREBELLUM - AKEY & PEY
+#df1$gene_short_name <- gsub("\\'", "", df1$gene_short_name)
+cbl_akeypey <- df1[df1$gene_short_name %in% both$hgnc_symbol,]
+cbl_akeypey1 <- data.frame(cbl_akeypey$max.cluster, cbl_akeypey$gene_short_name, cbl_akeypey$max.expr)
+names(cbl_akeypey1) <- c("x", "y", "z")
+cbl_akeypey2 <- pivot_wider(cbl_akeypey1, names_from = x, values_from = z)
+colSums(!is.na(cbl_akeypey2))
 
 ```
 
