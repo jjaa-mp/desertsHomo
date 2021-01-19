@@ -111,6 +111,154 @@ p2<-ggplot(newboth2, aes(x=rownames(newboth2), y=newboth2$mean_expression)) +
 ggsave(file="ABA_414_GenesAkeyPey_bottom20.pdf", p2, width = 11.69, height = 8.27, units = "in")
 ```
 
+
+#PC - ABA adult 414 - Akey & Pey
+```{r}
+#Adult dataset
+testing0 <- t(abadult)
+rowremove <- "gene_name"
+testing0 <- testing0[!(row.names(testing0) %in% rowremove), ]
+testing0 <- as.data.frame(testing0)
+setDT(testing0, keep.rownames = "structures")
+write.csv(testing0, "testingABAadult.csv", row.names = FALSE)
+#Loading data
+testingABAadult <- read.csv("testingABAadult.csv")
+
+#Formatting
+testingABAadult$Groups <- testingABAadult$structures
+testingABAadult$Groups <- str_replace(testingABAadult$Groups, ".*Left.*", "LEFT")
+testingABAadult$Groups <- str_replace(testingABAadult$Groups, ".*Right.*", "RIGHT")
+testingABAadult$Groups <- str_replace(testingABAadult$Groups, ".*Ve-.*", "VERMIS")
+testingABAadult$Groups <- str_replace(testingABAadult$Groups, ".*[^LEFT|^RIGHT|^VERMIS].*", "Other")
+categories <- names(testingABAadult) %in% c("structures", "Groups") #to skip columns with nominal values
+
+#Consider scaling as well.
+#
+res <- princomp(testingABAadult[!(categories)])
+fviz_eig(res, geom = "bar", bar_width = 0.4) + ggtitle("")
+
+a0 <- fviz_pca_var(res,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+)+coord_fixed()
+
+groups <- as.factor(testingABAadult$Groups)
+a00 <- fviz_pca_ind(res,
+             col.ind = groups, # color by groups
+             palette = c("#000000", "#E69F00", "#0072B2",  "#009E73"),
+             repel = TRUE
+)+coord_fixed()
+
+grid.arrange(a0, a00, nrow = 1)
+
+#Pheatmap:
+pheatmap(cor(testingAkeyPey[!(categories)]))
+
+fviz_pca_biplot(res, geom = "point", habillage = testingAkeyPey$Groups,
+                col.var = "violet", addEllipses = TRUE, ellipse.level = 0.69) +
+  ggtitle("") + coord_fixed()
+
+testing <- t(abadultAkeyPey)
+rowremove <- "gene_name"
+testing <- testing[!(row.names(testing) %in% rowremove), ]
+testing <- as.data.frame(testing)
+setDT(testing, keep.rownames = "structures")
+write.csv(testing, "testingAkeyPey.csv", row.names = FALSE)
+#Loading data
+testingAkeyPey <- read.csv("testingAkeyPey.csv")
+
+#Formatting1
+testingAkeyPey$Groups <- testingAkeyPey$structures
+testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Left.*", "LEFT")
+testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Right.*", "RIGHT")
+testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Ve-.*", "VERMIS")
+testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*[^LEFT|^RIGHT|^VERMIS].*", "Other")
+categories <- names(testingAkeyPey) %in% c("structures", "Groups") #to skip columns with nominal values
+#Formatting2
+testingAkeyPey$Groups <- testingAkeyPey$structures
+testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Left Lateral Hemisphere*", "LEFT CB")
+testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Right Lateral Hemisphere*", "RIGHT CB")
+testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Ve-.*", "VERMIS")
+testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*[^LEFT CB|^RIGHT CB|^VERMIS].*", "Other")
+categories <- names(testingAkeyPey) %in% c("structures", "Groups") #to skip columns with nominal values
+
+
+##Correlation:
+ggpairs(testingAkeyPey[!(categories)])
+##Pheatmap:
+pheatmap(cor(testingAkeyPey[!(categories)]))
+
+#Consider scaling as well.
+
+#PC
+res <- princomp(testingAkeyPey[!(categories)])
+fviz_eig(res, geom = "bar", bar_width = 0.4) + ggtitle("")
+
+a1 <- fviz_pca_var(res,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+)+coord_fixed()
+
+groups <- as.factor(testingAkeyPey$Groups)
+a2 <- fviz_pca_ind(res,
+             col.ind = groups, # color by groups
+             palette = c("#000000", "#E69F00", "#0072B2",  "#009E73"),
+             repel = TRUE
+)+coord_fixed()
+
+grid.arrange(a1, a2, nrow = 1)
+
+fviz_pca_biplot(res, geom = "point", habillage = testingAkeyPey$Groups,
+                col.var = "violet", addEllipses = TRUE, ellipse.level = 0.69) +
+  ggtitle("") + coord_fixed()
+
+
+#PC - ABA adult 414 - Akey
+testing2 <- t(abadultAkey)
+rowremove <- "gene_name"
+testing2 <- testing2[!(row.names(testing2) %in% rowremove), ]
+testing2 <- as.data.frame(testing2)
+setDT(testing2, keep.rownames = "structures")
+write.csv(testing2, "testingAkey.csv", row.names = FALSE)
+#Loading data
+testingAkey <- read.csv("testingAkey.csv")
+#Formatting
+testingAkey$Groups <- testingAkeyPey$structures
+testingAkey$Groups <- str_replace(testingAkey$Groups, ".*Left.*", "LEFT")
+testingAkey$Groups <- str_replace(testingAkey$Groups, ".*Right.*", "RIGHT")
+testingAkey$Groups <- str_replace(testingAkey$Groups, ".*Ve-.*", "VERMIS")
+testingAkey$Groups <- str_replace(testingAkey$Groups, ".*[^LEFT|^RIGHT|^VERMIS].*", "Other")
+categories2 <- names(testingAkey) %in% c("structures", "Groups") #to skip columns with nominal values
+
+res2 <- princomp(testingAkey[!(categories2)])
+fviz_eig(res2, geom = "bar", bar_width = 0.4) + ggtitle("")
+
+b1 <- fviz_pca_var(res2,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+)+coord_fixed()
+
+groups <- as.factor(testingAkey$Groups)
+b2 <- fviz_pca_ind(res2,
+             col.ind = groups, # color by groups
+             palette = c("#000000", "#E69F00", "#0072B2",  "#009E73"),
+             repel = TRUE
+)+coord_fixed()
+
+grid.arrange(b1, b2, nrow = 1)
+
+#Pheatmap:
+pheatmap(cor(testingAkey[!(categories2)]), treeheight_row=0, fontsize = 2, angle_col = 45)
+fviz_pca_biplot(res2, geom = "point", habillage = testingAkeyPey$Groups,
+                col.var = "violet", addEllipses = TRUE, ellipse.level = 0.69) +
+  ggtitle("") + coord_fixed()
+
+```
+
+
 #Extracting gene expression data from Allen Brain Atlas - 5 stages
 ```{r}
 ##Loading dataset
