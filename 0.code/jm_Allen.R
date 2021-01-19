@@ -841,7 +841,7 @@ ctb1 <- pivot_wider(ctb, names_from = x, values_from = z)
 colSums(!is.na(ctb1))
 
 #CEREBELLUM - AKEY
-df1$gene_short_name <- gsub("\\'", "", df1$gene_short_name)
+df1$gene_short_name <- gsub("\\'",  "", df1$gene_short_name)
 cbl_akey <- df1[df1$gene_short_name %in% results$hgnc_symbol,]
 cblt <- data.frame(cbl_akey$max.cluster, cbl_akey$gene_short_name, cbl_akey$max.expr)
 names(cblt) <- c("x", "y", "z")
