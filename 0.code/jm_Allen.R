@@ -713,7 +713,134 @@ meanakeypey[order(meanakeypey$Mean, decreasing = TRUE),]
 
 #Raw:
 df  %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
+df1 <- df[which(df$organ=='Cerebellum'), ]
+brain <- df[which(df$organ=='Cerebrum'), ]
+#write.csv(df1, file="CellAtlas_GSE156793_cerebellum.csv", row.names = FALSE)
 
+# CBL - AKEY
+df1$gene_short_name <- gsub("\\'", "", df1$gene_short_name)
+df1subset <- df1[df1$gene_short_name %in% results$hgnc_symbol,]
+df1subset <- df1subset[order(df1subset$max.cluster),]
+# CBL - AKEY & PEY
+df1subsetboth <- df1[df1$gene_short_name %in% both$hgnc_symbol,]
+df1subsetboth <- df1subsetboth[order(df1subsetboth$max.cluster),]
+df1subset <- df1subset[order(df1subset$max.cluster),]
+#Cerebellum FILES:
+#write.csv(df1subset, file="CellAtlas_GSE156793_CBL_inAkey.csv", row.names = FALSE)
+#write.csv(df1subsetboth, file="CellAtlas_GSE156793_CBL_inAkeyPey.csv", row.names = FALSE)
+```
+
+#Friedman test - Genes in Akey:
+```{r}
+r <- data.frame(dfakey$organ, dfakey$gene_short_name, dfakey$max.expr)
+names(r) <- c("x", "y", "z")
+rr <- pivot_wider(r, names_from = x, values_from = z)
+rr3 <- as.matrix(rr)
+rr3 <-rr3[,-1]
+friedman.test(rr3)
+
+list1 <- vector(mode = "list")
+for (i in 1:length(colnames(rr3))){
+  list1[[i]] <- as.numeric(c(rr3[,i]))
+}
+res_F <- DunnettTest(list1, control = c(1:15)) #CAN ALSO TRY SNK Test
+organs <- colnames(rr3)
+list_dfs <- vector(mode="list")
+for (i in 1:length(res_F)){
+  colnames(res_F[[i]]) <- c("diff", "lwr.ci", "upr.ci", colnames(rr3)[i]) #control group: colnames(rr3)[i]
+  rownames(res_F[[i]]) <- organs[-i] #comparison groups in rownames: all except i
+  list_dfs[[i]] <- as.data.frame(res_F[[i]])
+  list_dfs[[i]] <- list_dfs[[i]][4]
+  list_dfs[[i]] <-  cbind(list_dfs[[i]], group=rownames(list_dfs[[i]]))
+  list_dfs[[i]] <- list_dfs[[i]][c(2,1)] #ordering columns for merging on index 'group'
+}
+pp <-reduce(list_dfs, full_join, by="group") #Generating matrix for plot
+pp[is.na(pp)] <- 2 #replacing null values
+rownames(pp) <- pp[,1]
+pp[,1] <- NULL
+pp <- pp[c(2:15,1)] #Reordering columns for triangular matrix
+
+#Plot
+##Cell Atlas - Akey - Enrichment
+
+  # Get upper triangle of the correlation matrix
+  get_upper_tri <- function(cormat){
+    cormat[lower.tri(cormat)]<- NA
+    return(cormat)
+  }
+upper_tri <- get_upper_tri(as.matrix(pp))
+melted <- melt(upper_tri, na.rm = TRUE)
+
+pl_fr <- ggplot(data = melted, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "#F0E442", high = "#0072B2", mid = "#CC79A7", 
+   midpoint = 0.5, limit = c(0,1), space = "Lab", 
+   name="p-value") +
+  theme_classic()+xlab("")+ylab("")+ 
+ theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_y_discrete(position = "right")+
+ coord_fixed()+ coord_flip()
+pl_fr
+ggsave(file="CellAtlas_MeanExprAkey_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
+
+```
+
+#Friedman test - Genes in both Akey and Pey:
+```{r}
+s <- data.frame(dfsubsetboth$organ, dfsubsetboth$gene_short_name, dfsubsetboth$max.expr)
+names(s) <- c("x", "y", "z")
+ss <- pivot_wider(s, names_from = x, values_from = z)
+ss3 <- as.matrix(ss)
+ss3 <-ss3[,-1]
+friedman.test(ss3)
+
+list2 <- vector(mode = "list")
+for (i in 1:length(colnames(ss3))){
+  list2[[i]] <- as.numeric(c(ss3[,i]))
+}
+res_F2 <- DunnettTest(list2, control = c(1:15)) #CAN ALSO TRY SNK Test
+organs <- colnames(ss3)
+
+list_dfs2 <- vector(mode="list")
+for (i in 1:length(res_F2)){
+  colnames(res_F2[[i]]) <- c("diff", "lwr.ci", "upr.ci", colnames(ss3)[i]) #control group: colnames(ss3)[i]
+  rownames(res_F2[[i]]) <- organs[-i] #comparison groups in rownames: all except i
+  list_dfs2[[i]] <- as.data.frame(res_F2[[i]])
+  list_dfs2[[i]] <- list_dfs2[[i]][4]
+  list_dfs2[[i]] <-  cbind(list_dfs2[[i]], group=rownames(list_dfs2[[i]]))
+  list_dfs2[[i]] <- list_dfs2[[i]][c(2,1)] #ordering columns for merging on index 'group'
+}
+
+pp2 <-reduce(list_dfs2, full_join, by="group") #Generating matrix for plot
+pp2[is.na(pp2)] <- 2 #replacing null values
+rownames(pp2) <- pp2[,1]
+pp2[,1] <- NULL
+pp2 <- pp2[c(2:15,1)] #Reordering columns for triangular matrix
+
+#Plot
+##Cell Atlas - Akey - Enrichment
+
+# Get upper triangle of the correlation matrix
+get_upper_tri <- function(cormat){
+cormat[lower.tri(cormat)]<- NA
+return(cormat)
+}
+upper_tri2 <- get_upper_tri(as.matrix(pp2))
+melted2 <- melt(upper_tri2, na.rm = TRUE)
+
+pl_fr2 <- ggplot(data = melted2, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "#F0E442", high = "#0072B2", mid = "#CC79A7", 
+   midpoint = 0.5, limit = c(0,1), space = "Lab", 
+   name="p-value") +
+  theme_classic()+xlab("")+ylab("")+ 
+ theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_y_discrete(position = "right")+
+ coord_fixed()+ coord_flip()
+pl_fr2
+ggsave(file="CellAtlas_MeanExprAkeyPey_heatmap.pdf", pl_fr2,width = 11.69, height = 8.27, units = "in")
+```
+
+#CELL ATLAS - CELL TYPE ENRICHMENT
+```{r}
 #CEREBRUM - Hyper geom
 brain$gene_short_name <- gsub("\\'", "", brain$gene_short_name)
 brain_akey <- brain[brain$gene_short_name %in% results$hgnc_symbol,]
