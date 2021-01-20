@@ -3,6 +3,7 @@
 library(biomaRt)
 library(ABAData)
 library(ABAEnrichment)
+library(data.table)
 library(ggplot2)
 library(dplyr)
 library(GGally)
@@ -686,7 +687,6 @@ ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "
 ```
 
 ```{r}
-library(dplyr)
 df <- read.csv(file = "~/GSE156793_S8_DE_gene_cells.csv.gz")
 #Whole dataset - in AKEY
 df$gene_short_name <- gsub("\\'", "", df$gene_short_name)
@@ -838,7 +838,20 @@ brain_akey <- brain[brain$gene_short_name %in% results$hgnc_symbol,]
 ctb <- data.frame(brain_akey$max.cluster, brain_akey$gene_short_name, brain_akey$max.expr)
 names(ctb) <- c("x", "y", "z")
 ctb1 <- pivot_wider(ctb, names_from = x, values_from = z)
-colSums(!is.na(ctb1))
+z0 <- as.data.frame(colSums(!is.na(ctb1[,-1]))) #removing y
+names(z0) <- "Akey genes"
+setDT(z0, keep.rownames = "Var1")
+z0 <- as.data.frame(z0)
+#testing
+gr <- data.frame(brain$max.cluster, brain$gene_short_name, brain$max.expr)
+names(gr) <- c("x", "y", "z")
+gr1 <- as.data.frame(table(gr$x))
+gr1<-gr1[which(gr1$Freq != 0),]
+names(gr1) <- c("Var1", "Total DEG")
+
+finaltable <- merge(gr1, z0, by="Var1")
+
+
 
 #CEREBELLUM - AKEY
 df1$gene_short_name <- gsub("\\'",  "", df1$gene_short_name)
