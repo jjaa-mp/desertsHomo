@@ -19,6 +19,7 @@ library(DescTools)
 library(reshape2)
 library(dplyr)
 library(Matrix)
+library(pheatmap)
 ```
 
 #Extracting gene names from coordinate regions via bioMart
@@ -839,7 +840,7 @@ pl_fr2
 ggsave(file="CellAtlas_MeanExprAkeyPey_heatmap.pdf", pl_fr2,width = 11.69, height = 8.27, units = "in")
 ```
 
-#CELL ATLAS - CELL TYPE ENRICHMENT
+#CELL ATLAS - CELL TYPE ENRICHMENT - AKEY
 ```{r}
 #CEREBRUM - Hyper geom
 brain$gene_short_name <- gsub("\\'", "", brain$gene_short_name)
@@ -927,6 +928,81 @@ cbl_akeypey1 <- data.frame(cbl_akeypey$max.cluster, cbl_akeypey$gene_short_name,
 names(cbl_akeypey1) <- c("x", "y", "z")
 cbl_akeypey2 <- pivot_wider(cbl_akeypey1, names_from = x, values_from = z)
 colSums(!is.na(cbl_akeypey2))
+```
+
+#CELL ATLAS - CELL TYPE ENRICHMENT - AKEYPEY (low numbers; no significant)
+```{r}
+# #CEREBRUM - Hyper geom
+# brain$gene_short_name <- gsub("\\'", "", brain$gene_short_name)
+# brain_akeypey <- brain[brain$gene_short_name %in% both$hgnc_symbol,]
+# ctb <- data.frame(brain_akeypey$max.cluster, brain_akeypey$gene_short_name, brain_akeypey$max.expr)
+# names(ctb) <- c("x", "y", "z")
+# ctb1 <- pivot_wider(ctb, names_from = x, values_from = z)
+# colSums(!is.na(ctb1))#sample size 228
+# z0 <- as.data.frame(colSums(!is.na(ctb1[,-1]))) #removing y
+# names(z0) <- "akeypey genes"
+# setDT(z0, keep.rownames = "Var1")
+# z0 <- as.data.frame(z0)
+# #testing
+# gr <- data.frame(brain$max.cluster, brain$gene_short_name, brain$max.expr)
+# names(gr) <- c("x", "y", "z")
+# gr1 <- as.data.frame(table(gr$x))
+# gr1<-gr1[which(gr1$Freq != 0),]
+# names(gr1) <- c("Var1", "Total Cerebrum DEG")
+# finaltable <- merge(gr1, z0, by="Var1")
+# ##Hyper geom:
+# finaltable$pvalue <- phyper(finaltable$`akeypey genes`-1, 255, 19238-255, finaltable$`Total Cerebrum DEG`, lower.tail = FALSE, log.p = FALSE)
+# 
+# #CBL - Hyper geom
+# df1$gene_short_name <- gsub("\\'",  "", df1$gene_short_name)
+# cbl_akeypey <- df1[df1$gene_short_name %in% both$hgnc_symbol,]
+# cblt <- data.frame(cbl_akeypey$max.cluster, cbl_akeypey$gene_short_name, cbl_akeypey$max.expr)
+# names(cblt) <- c("x", "y", "z")
+# cblt1 <- pivot_wider(cblt, names_from = x, values_from = z)
+# colSums(!is.na(cblt1))
+# cblt1
+# colSums(!is.na(cblt1))
+# z1 <- as.data.frame(colSums(!is.na(cblt1[,-1]))) #removing y
+# names(z1) <- "akeypey genes"
+# setDT(z1, keep.rownames = "Var1")
+# z1 <- as.data.frame(z1)
+# #testing
+# fi1 <- data.frame(df1$max.cluster, df1$gene_short_name, df1$max.expr)
+# names(fi1) <- c("x", "y", "z")
+# fi1 <- as.data.frame(table(fi1$x))
+# fi1<-fi1[which(fi1$Freq != 0),]
+# #testing
+# fi1 <- data.frame(df1$max.cluster, df1$gene_short_name, df1$max.expr)
+# names(fi1) <- c("x", "y", "z")
+# fi1 <- as.data.frame(table(fi1$x))
+# fi1<-fi1[which(fi1$Freq != 0),]
+# names(fi1) <- c("Var1", "Total CBL DEG")
+# finaltable2 <- merge(fi1, z1, by="Var1")
+# finaltable2
+# finaltable2$pvalue <- phyper(finaltable2$`akeypey genes`-1, 255, 19238-255, finaltable2$`Total CBL DEG`, lower.tail = FALSE, log.p = FALSE)
+# 
+# 
+# #EYE - Hyper geom
+# eye <- df[which(df$organ=='Eye'), ]
+# eye$gene_short_name <- gsub("\\'",  "", eye$gene_short_name)
+# eye_akeypey <- eye[eye$gene_short_name %in% both$hgnc_symbol,]
+# eyelt <- data.frame(eye_akeypey$max.cluster, eye_akeypey$gene_short_name, eye_akeypey$max.expr)
+# names(eyelt) <- c("x", "y", "z")
+# eyelt <- pivot_wider(eyelt, names_from = x, values_from = z)
+# colSums(!is.na(eyelt)) #Sample size 215
+# z2 <- as.data.frame(colSums(!is.na(eyelt[,-1]))) #removing y
+# names(z2) <- "akeypey genes"
+# setDT(z2, keep.rownames = "Var1")
+# z2 <- as.data.frame(z2)
+# #testing
+# fi2 <- data.frame(eye$max.cluster, eye$gene_short_name, eye$max.expr)
+# names(fi2) <- c("x", "y", "z")
+# fi2 <- as.data.frame(table(fi2$x))
+# fi2<-fi2[which(fi2$Freq != 0),]
+# names(fi2) <- c("Var1", "Total EYE DEG")
+# finaltable3 <- merge(fi2, z2, by="Var1")
+# #hyper geom test
+finaltable3$pvalue <- phyper(finaltable3$`akeypey genes`-1, 255, 19238-255, finaltable3$`Total EYE DEG`, lower.tail = FALSE, log.p = FALSE)
 ```
 
 
