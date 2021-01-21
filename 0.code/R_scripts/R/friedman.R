@@ -4,7 +4,7 @@ friedman <- function(df, title) {
   rr <- pivot_wider(r, names_from = x, values_from = z)
   rr3 <- as.matrix(rr)
   rr3 <-rr3[,-1]
-  friedman.test(rr3)
+  return(friedman.test(rr3))
   
   
   list1 <- vector(mode = "list")

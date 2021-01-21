@@ -17,6 +17,8 @@ library(tidyr)
 library(DescTools)
 library(reshape2)
 library(Matrix)
+library(nlme)
 
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("reorder.factor", "gplots")
+conflicted::conflict_prefer("melt", "reshape2")

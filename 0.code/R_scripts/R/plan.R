@@ -3,42 +3,49 @@
 the_plan <-
   drake_plan(
   	akey = retrieve_GenesDeserts(),
-  	abadult = dt_adults(),
+  	abadult = dt_adults(), #gets ab data
   	
-  	pey = load_data("file_dependencies/2020_pey_coords.bed"),
+  	pey = load_data("file_dependencies/2020_pey_coords.bed"), 
   	pey_coords = biominput(pey, akey, TRUE), # Genes within Akey and Peyregne
 
   	rac = load_data("file_dependencies/2020_rac_coords.bed"),
   	rac_coords = biominput(rac, akey, TRUE), # Genes within Akey and Racimo
 
-  	abadult_pl = abadult_plots(abadult, 
+  	abadult_pl = abadult_plots(abadult,  #gets ab plots
   	              akey, 
   	              pey_coords),
   	
-  	ab = abad_5_stages(),
-  	q75(ab, akey),
-  	abakey_data = ab_data_plots(ab, akey),
+  	ab = abad_5_stages(), 
+  	q75(ab, akey),  #gets quantile 75 plots in desertss
+  	abakey_data = ab_data_plots(ab, akey, TRUE), # prepares akey data for ab plots
   	abakey_plots = ab_plots(abakey_data, "Akey", " Deserts", "Striatum"),
   	
-  	abakeypey_data = ab_data_plots(ab, pey_coords),
+  	abakeypey_data = ab_data_plots(ab, pey_coords, TRUE), # prepares pey+akey data for ab plots
   	abakepey_plots = ab_plots(abakeypey_data, "AkeyPey", " Deserts and Pey", "Somato - Motor - Parietal - Aud Ctxm"),
   	
-  	abakeyrac_data = ab_data_plots(ab, rac_coords),
+  	abakeyrac_data = ab_data_plots(ab, rac_coords, TRUE), # prepares rac+akey data for ab plots
   	abakeyrac_plots = ab_plots(abakeyrac_data, "AkeyRac", " Rac and Akey", "Striatum"),
   	
-  	rac_coords_noakey = biominput(rac, akey, FALSE),
-  	abrac_data = ab_data_plots(ab, rac_coords_noakey),
+  	rac_coords_noakey = biominput(rac, akey, FALSE), # prepares rac data for ab plots
+  	abrac_data = ab_data_plots(ab, rac_coords_noakey, TRUE),
   	abrac_plots = ab_plots(abrac_data, "Rac", " Rac", "Striatum"),
   	
-  	pey_coords_noakey = biominput(pey, akey, FALSE),
-  	abpey_data = ab_data_plots(ab, pey_coords_noakey),
+  	abakeypey_stats = ab_data_plots(ab, pey_coords, FALSE), 
+   abakey_stats = ab_data_plots(ab, akey, FALSE), 
+   # prepares akey data for ab plots
+  	#Same as abakeypey_data, but without means to calculate stats
+  	
+   anova = testing_nested_anova(abakey_stats),
+   
+  	pey_coords_noakey = biominput(pey, akey, FALSE), # prepares pey data for ab plots
+  	abpey_data = ab_data_plots(ab, pey_coords_noakey, TRUE),
   	abpey_plots = ab_plots(abpey_data, "Pey", " Pey", "Striatum"),
   	
-  	GSEakey = GSE_data(akey, pey_coords, "akey"),
-  	ttest_result = ttest(GSEakey),
-  	akey_fried = friedman(GSEakey, "akey"),
+  	GSEakey = GSE_data(akey, pey_coords, "akey"), # prepares GSE data
+  	ttest_result = ttest(GSEakey), 
+  	akey_fried = friedman(GSEakey, "akey"), # friedman test for akey
   	
   	GSEpey = GSE_data(akey, pey_coords, "akeypey"),
-  	pey_fried = friedman(GSEpey, "pey")
+  	pey_fried = friedman(GSEpey, "pey") # friedman test for pey
   	
 )

@@ -1,4 +1,4 @@
-ab_data_plots <- function(ab, where, out, title, structuretitle) {
+ab_data_plots <- function(ab, where, means) {
   ab1 <- ab
   
   ensembl <- useMart(biomart = 'ENSEMBL_MART_ENSEMBL', 
@@ -33,6 +33,7 @@ ab_data_plots <- function(ab, where, out, title, structuretitle) {
     }
   }
   
+  if (means == TRUE){
   prenatal <- do.call("rbind", as.data.frame(mean1[[1]]))
   colnames(prenatal) <- "prenatal"
   infant <- do.call("rbind", as.data.frame(mean1[[2]]))
@@ -43,12 +44,16 @@ ab_data_plots <- function(ab, where, out, title, structuretitle) {
   colnames(adolescent) <- "adolescent"
   adult <- do.call("rbind", as.data.frame(mean1[[5]]))
   colnames(adult) <- "adult"
-  
   final_merge <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
-  #Save results - need to be updated
+  return(final_merge)
+  }
+  else if (means == FALSE){
+    return(aba_akey)
+  }
+ #Save results - need to be updated
   #for (i in 1:length(colnames(final_merge))){
   #  write.xlsx(arrange(final_merge[i], desc(final_merge[i])), file=paste0("ABA_Genes", where, ".xlsx"), sheetName=names(final_merge[i]), append = TRUE)
   #}
   
-  return(final_merge)
+
 }

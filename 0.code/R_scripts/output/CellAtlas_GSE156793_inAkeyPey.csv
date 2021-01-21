@@ -1,0 +1,12 @@
+"organ","gene_id","gene_short_name","gene_type","max.cluster","second.cluster","max.expr","second.expr","fold.change","pval","qval"
+"Cerebellum","ENSG00000185008.13","ROBO2","protein_coding","Granule neurons","SLC24A4_PEX5L positive cells",3831.738638,2687.822675,1.425590467,0,0
+"Cerebellum","ENSG00000235631.1","RNF148","protein_coding","Granule neurons","Unipolar brush cells",0.68312707,0.622258629,1.096271427,0.00456904,0.006289642
+"Cerebellum","ENSG00000004866.14","ST7","protein_coding","Inhibitory interneurons","Granule neurons",348.1856722,313.6643586,1.110054624,0,0
+"Cerebellum","ENSG00000134207.10","SYT6","protein_coding","Microglia","Unipolar brush cells",359.4673301,109.885931,3.27107043,0,0
+"Cerebellum","ENSG00000164597.9","COG5","protein_coding","Microglia","Astrocytes",341.9420139,201.2005882,1.699473258,2.26e-200,1.7e-199
+"Cerebellum","ENSG00000184408.5","KCND2","protein_coding","Oligodendrocytes","Granule neurons",8991.18816,4720.410309,1.90474525,0,0
+"Cerebellum","ENSG00000172209.4","GPR22","protein_coding","Oligodendrocytes","Inhibitory interneurons",6.629861437,6.302747874,1.051817936,1.17e-17,2.68e-17
+"Cerebellum","ENSG00000105865.6","DUS4L","protein_coding","Purkinje neurons","Astrocytes",10.90279576,9.207877584,1.183872932,0.00722113,0.009745857
+"Cerebellum","ENSG00000081803.11","CADPS2","protein_coding","Unipolar brush cells","Granule neurons",1400.580277,1259.672438,1.111859811,0,0
+"Cerebellum","ENSG00000155380.7","SLC16A1","protein_coding","Vascular endothelial cells","Astrocytes",684.5854897,49.84209684,13.73253149,0,0
+"Cerebellum","ENSG00000075790.6","BCAP29","protein_coding","Vascular endothelial cells","Astrocytes",155.1670686,86.49192585,1.793914611,3.74e-265,3.35e-264
