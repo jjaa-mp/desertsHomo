@@ -83,9 +83,6 @@ racAkey <- racAkey[!(is.na(racAkey$hgnc_symbol) | racAkey$hgnc_symbol==""), ]
 
 #Extracting gene expression data from Allen Brain Atlas - ADULT
 ```{R}
-library(ABAData)
-library(ABAEnrichment)
-library(biomaRt)
 data("dataset_adult")
 id.adult <- unique(dataset_adult$ensembl_gene_id)
 st.adult <- unique(dataset_adult$structure)
@@ -336,7 +333,79 @@ for (i in 1:length(ab)){
 }
 ```
 
+#ABA Data - All genes
+```{r}
+#ab
+ab0 <- ab
+for (i in 1:length(ab)){
+  for (h in 1:length(names(ab[[i]]))){
+    ab0[[i]][[h]] <- as.data.frame(ab[[i]][h])
+    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab0[[i]][[h]]),mart=ensembl)
+    ab0[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab0[[i]][[h]]), G_list$ensembl_gene_id)]
+    ab0[[i]][[h]] <-ab0[[i]][[h]][order(ab0[[i]][[h]][[1]], decreasing = TRUE), ]
+    
+  }
+}
 
+aba_all = vector(mode="list", length = length(ab0))
+for (i in 1:length(ab0)){
+  for (h in 1:length(names(ab0[[i]]))){
+    aba_all[[i]][[h]] <- ab0[[i]][[h]][ab0[[i]][[h]][[2]] %in% resP$hgnc_symbol,]
+    aba_all[[i]][[h]] <-  aba_all[[i]][[h]][!(is.na(aba_all[[i]][[h]][[2]]) | aba_all[[i]][[h]][[2]]==""), ] #Cleaning
+  }
+}
+#Reporting mean
+mean0 = vector(mode="list", length = length(ab0))
+for (i in 1:length(ab0)){
+  for (h in 1:length(names(ab0[[i]]))){
+    mean0[[i]][[h]] <- mean(aba_all[[i]][[h]][[1]])
+    mean0[[i]][[h]] <- as.data.frame(mean0[[i]][[h]])
+    names(mean0[[i]][[h]]) <- paste(names(aba_all[[i]][[h]][1]), sep='_')
+  }
+}
+
+prenatal <- do.call("rbind", as.data.frame(mean0[[1]]))
+colnames(prenatal) <- "prenatal"
+infant <- do.call("rbind", as.data.frame(mean0[[2]]))
+colnames(infant) <- "infant"
+child <- do.call("rbind", as.data.frame(mean0[[3]]))
+colnames(child) <- "child"
+adolescent <- do.call("rbind", as.data.frame(mean0[[4]]))
+colnames(adolescent) <- "adolescent"
+adult <- do.call("rbind", as.data.frame(mean0[[5]]))
+colnames(adult) <- "adult"
+
+final_merge0 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
+#Save results - need to be updated
+#for (i in 1:length(colnames(final_merge0))){
+  #write.xlsx(arrange(final_merge0[i], desc(final_merge0[i])), file="ABA_GenesAll.xlsx", sheetName=names(final_merge0[i]), append = TRUE)
+#}
+
+#Plot
+
+#For plot
+final_merge0 <- tibble::rownames_to_column(final_merge0, "Structure")
+final_merge0[[1]] <- sapply(strsplit(final_merge0[[1]], "_"), "[", 1)
+
+a<-ggparcoord(final_merge0,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes Raw Data")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
+b <- ggparcoord(final_merge0,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+c<-ggparcoord(final_merge0,
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+a1<-arrangeGrob(a, left=textGrob("A"))
+b1<-arrangeGrob(b, left =textGrob("B"))
+c1<-arrangeGrob(c, left=textGrob("C"))
+grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+
+#pdf("ABA_GenesAkey.pdf", paper="a4")
+#grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+#dev.off()
+
+pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+ggsave(file="ABA_GenesAll.pdf", pl1, width = 11.69, height = 8.27, units = "in")
+
+```
 #ABA Data - All genes that are present in Akey
 ```{r}
 #Global data
@@ -691,6 +760,7 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 pl5 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "in")
 ```
+
 
 #Table Cell Atlas - Science
 ```{sh}
