@@ -774,13 +774,12 @@ df$gene_short_name <- gsub("\\'", "", df$gene_short_name)
 dfakey <- df[df$gene_short_name %in% results$hgnc_symbol,]
 meanakey <- dfakey %>% group_by(organ) %>% summarize(Mean = mean(max.expr))
 meanakey[order(meanakey$Mean, decreasing = TRUE),]
-##Gene expression of genes in Akey - Preliminar test
-#pairwise.t.test(dfakey$max.expr, dfakey$organ, p.adjust.method = "BH")
 
 #Whole dataset - in AKEY & PEY
 dfsubsetboth <- df[df$gene_short_name %in% both$hgnc_symbol,]
 meanakeypey <- dfsubsetboth %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
 meanakeypey[order(meanakeypey$Mean, decreasing = TRUE),]
+pairwise.t.test(dfsubsetboth$max.expr, dfsubsetboth$organ, p.adjust.method = "BH")
 
 #Raw:
 df  %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
@@ -800,12 +799,12 @@ df1subset <- df1subset[order(df1subset$max.cluster),]
 #write.csv(df1subset, file="CellAtlas_GSE156793_CBL_inAkey.csv", row.names = FALSE)
 #write.csv(df1subsetboth, file="CellAtlas_GSE156793_CBL_inAkeyPey.csv", row.names = FALSE)
 ```
-
 #Friedman test - Genes in Akey:
 ```{r}
 r <- data.frame(dfakey$organ, dfakey$gene_short_name, dfakey$max.expr)
 names(r) <- c("x", "y", "z")
 rr <- pivot_wider(r, names_from = x, values_from = z)
+rr <- rr[complete.cases(rr),]
 rr3 <- as.matrix(rr)
 rr3 <-rr3[,-1]
 friedman.test(rr3)
@@ -814,7 +813,7 @@ list1 <- vector(mode = "list")
 for (i in 1:length(colnames(rr3))){
   list1[[i]] <- as.numeric(c(rr3[,i]))
 }
-res_F <- DunnettTest(list1, control = c(1:15)) #CAN ALSO TRY SNK Test
+res_F <- DunnettTest(list1, control = c(1:15))
 organs <- colnames(rr3)
 list_dfs <- vector(mode="list")
 for (i in 1:length(res_F)){
@@ -835,7 +834,7 @@ pp <- pp[c(2:15,1)] #Reordering columns for triangular matrix
 ##Cell Atlas - Akey - Enrichment
 
   # Get upper triangle of the correlation matrix
-  get_upper_tri <- function(cormat){
+get_upper_tri <- function(cormat){
     cormat[lower.tri(cormat)]<- NA
     return(cormat)
   }
@@ -860,6 +859,7 @@ ggsave(file="CellAtlas_MeanExprAkey_heatmap.pdf", pl_fr,width = 11.69, height = 
 s <- data.frame(dfsubsetboth$organ, dfsubsetboth$gene_short_name, dfsubsetboth$max.expr)
 names(s) <- c("x", "y", "z")
 ss <- pivot_wider(s, names_from = x, values_from = z)
+ss <- ss[complete.cases(ss),]
 ss3 <- as.matrix(ss)
 ss3 <-ss3[,-1]
 friedman.test(ss3)
