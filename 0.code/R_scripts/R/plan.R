@@ -37,8 +37,8 @@ the_plan <-
    # prepares akey data for ab plots
   	#Same as abakeypey_data, but without means to calculate stats
   	
-   anova_akey = testing_nested_anova(abakey_stats), 
-   anova_akeypey = testing_nested_anova(abakeypey_stats), 
+   anova_akey = testing_nested_anova(abakey_stats, fulldf = FALSE), 
+   anova_akeypey = testing_nested_anova(abakeypey_stats, fulldf = FALSE), 
    
   	pey_coords_noakey = biominput(pey, akey, FALSE), # prepares pey data for ab plots
   	abpey_data = ab_data_plots(ab, pey_coords_noakey, TRUE),
