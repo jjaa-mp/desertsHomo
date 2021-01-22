@@ -1,5 +1,6 @@
 testing_nested_anova <- function(input) {
-
+  
+  #Extracting relevant data from input
   cerebellum <- lapply(input,'[[',16)
   striatum <- lapply(input,'[[',13)
   
@@ -17,13 +18,16 @@ testing_nested_anova <- function(input) {
   colnames(values) <- c("cerebellum", "striatum", "stage")
   test <- reshape2::melt(values[1:2])
   test$stage <- values$stage
+  #test, the input for the anova, should be tidy now
   
   #stats
   test$stage <- as.factor(test$stage)
-  model <- lme(value ~ variable, random=~1|stage,
+  model <- lme(value ~ 1+ variable, random=~1|stage,
                data=test,
                method="REML")
   
   anova_results <- anova.lme(model, type="sequential", adjustSigma = FALSE)
   print(anova_results) #Variable p-vale = 0.035
+  
+  return(test)
 } 
