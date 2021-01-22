@@ -7,7 +7,7 @@ For intro: go back to work by Martin (his FOXP2 paper, and his Bioessays piece) 
 From results:
 
 - **SNP count and frequency** (in process)
-- **Enrichment in Cerebrum and Cerebellum** We investigated the expression patterns across organs. Genes present in deserts showed enrichment for Cerebrum, Cerebellum, and Eye (neuroectoderm-derived structures), while no structures passed the significance threshold for genes present in AkeyPey.
+- **Enrichment in Cerebrum and Cerebellum** We investigated the expression patterns across organs. We observe that genes present in deserts and expressed in the Cerebrum, Cerebellum, and Eye (neuroectoderm-derived structures) are significantly different from the rest of structures, while no structures passed the significance threshold for genes present in AkeyPey.
   + Mean expression of genes in Akey higher in Cerebrum, Cerebellum and Eye; bigger difference when considering genes in Akey and Pey in Cerebrum and Cerebellum (stats pending).
   + *Cell type enrichment*. No significant results were found for any cell type in neither organ (Cerebrum, Cerebellum, Eye).
 - **414 structures** (in process).
