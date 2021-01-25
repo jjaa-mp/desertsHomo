@@ -1,0 +1,121 @@
+"","contrast","estimate","SE","df","t.ratio","p.value"
+"1","M1C_primary motor cortex (area M1, area 4) - DFC_dorsolateral prefrontal cortex",39.7779166666687,223.107262138639,19120,0.178290550855985,1
+"2","M1C_primary motor cortex (area M1, area 4) - VFC_ventrolateral prefrontal cortex",42.6150000000016,223.107262138639,19120,0.191006781184562,1
+"3","M1C_primary motor cortex (area M1, area 4) - OFC_orbital frontal cortex",-117.6075,223.107262138639,19120,-0.527134342793908,0.999999965721048
+"4","M1C_primary motor cortex (area M1, area 4) - S1C_primary somatosensory cortex (area S1, areas 3,1,2)",6.94249999999987,223.107262138639,19120,0.0311173196849406,1
+"5","M1C_primary motor cortex (area M1, area 4) - IPC_posteroventral (inferior) parietal cortex",37.0275000000005,223.107262138639,19120,0.165962773443885,1
+"6","M1C_primary motor cortex (area M1, area 4) - A1C_primary auditory cortex (core)",-51.9891666666662,223.107262138639,19120,-0.233023193276246,1
+"7","M1C_primary motor cortex (area M1, area 4) - STC_posterior (caudal) superior temporal cortex (area 22c)",49.9295833333348,223.107262138639,19120,0.223791833823448,1
+"8","M1C_primary motor cortex (area M1, area 4) - ITC_inferolateral temporal cortex (area TEv, area 20)",-112.294166666666,223.107262138639,19120,-0.503319190914037,0.999999982274182
+"9","M1C_primary motor cortex (area M1, area 4) - (V1C_primary visual cortex (striate cortex, area V1/17))",105.128333333334,223.107262138639,19120,0.471200857944318,0.999999993115274
+"10","M1C_primary motor cortex (area M1, area 4) - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",-84.6441666666655,223.107262138639,19120,-0.379387770058635,0.999999999702692
+"11","M1C_primary motor cortex (area M1, area 4) - HIP_hippocampus (hippocampal formation)",-149.635,223.107262138639,19120,-0.670686371055984,0.999998996935759
+"12","M1C_primary motor cortex (area M1, area 4) - STR_striatum",-55.9983333333327,223.107262138639,19120,-0.250992875787859,0.999999999999556
+"13","M1C_primary motor cortex (area M1, area 4) - AMY_amygdaloid complex",-215.1,223.107262138639,19120,-0.964110257721402,0.999878384861632
+"14","M1C_primary motor cortex (area M1, area 4) - MD_mediodorsal nucleus of thalamus",-75.8624999999988,223.107262138639,19120,-0.340027031270985,0.999999999940188
+"15","M1C_primary motor cortex (area M1, area 4) - CBC_cerebellar cortex",-18.8100000000013,223.107262138639,19120,-0.0843092233739695,1
+"16","DFC_dorsolateral prefrontal cortex - VFC_ventrolateral prefrontal cortex",2.83708333333297,223.107262138639,19120,0.0127162303285762,1
+"17","DFC_dorsolateral prefrontal cortex - OFC_orbital frontal cortex",-157.385416666668,223.107262138639,19120,-0.705424893649894,0.999997995729928
+"18","DFC_dorsolateral prefrontal cortex - S1C_primary somatosensory cortex (area S1, areas 3,1,2)",-32.8354166666688,223.107262138639,19120,-0.147173231171045,1
+"19","DFC_dorsolateral prefrontal cortex - IPC_posteroventral (inferior) parietal cortex",-2.75041666666822,223.107262138639,19120,-0.0123277774121001,1
+"20","DFC_dorsolateral prefrontal cortex - A1C_primary auditory cortex (core)",-91.7670833333349,223.107262138639,19120,-0.411313744132232,0.999999999035554
+"21","DFC_dorsolateral prefrontal cortex - STC_posterior (caudal) superior temporal cortex (area 22c)",10.1516666666661,223.107262138639,19120,0.045501282967463,1
+"22","DFC_dorsolateral prefrontal cortex - ITC_inferolateral temporal cortex (area TEv, area 20)",-152.072083333334,223.107262138639,19120,-0.681609741770023,0.999998747417829
+"23","DFC_dorsolateral prefrontal cortex - (V1C_primary visual cortex (striate cortex, area V1/17))",65.3504166666658,223.107262138639,19120,0.292910307088333,0.99999999999337
+"24","DFC_dorsolateral prefrontal cortex - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",-124.422083333334,223.107262138639,19120,-0.55767832091462,0.999999923776124
+"25","DFC_dorsolateral prefrontal cortex - HIP_hippocampus (hippocampal formation)",-189.412916666669,223.107262138639,19120,-0.848976921911969,0.999976149665143
+"26","DFC_dorsolateral prefrontal cortex - STR_striatum",-95.7762500000014,223.107262138639,19120,-0.429283426643845,0.999999998206455
+"27","DFC_dorsolateral prefrontal cortex - AMY_amygdaloid complex",-254.877916666668,223.107262138639,19120,-1.14240080857739,0.999051925933537
+"28","DFC_dorsolateral prefrontal cortex - MD_mediodorsal nucleus of thalamus",-115.640416666668,223.107262138639,19120,-0.518317582126971,0.999999973042293
+"29","DFC_dorsolateral prefrontal cortex - CBC_cerebellar cortex",-58.5879166666699,223.107262138639,19120,-0.262599774229955,0.999999999998783
+"30","VFC_ventrolateral prefrontal cortex - OFC_orbital frontal cortex",-160.222500000001,223.107262138639,19120,-0.718141123978469,0.999997443582314
+"31","VFC_ventrolateral prefrontal cortex - S1C_primary somatosensory cortex (area S1, areas 3,1,2)",-35.6725000000018,223.107262138639,19120,-0.159889461499621,1
+"32","VFC_ventrolateral prefrontal cortex - IPC_posteroventral (inferior) parietal cortex",-5.58750000000119,223.107262138639,19120,-0.0250440077406764,1
+"33","VFC_ventrolateral prefrontal cortex - A1C_primary auditory cortex (core)",-94.6041666666679,223.107262138639,19120,-0.424029974460808,0.999999998499599
+"34","VFC_ventrolateral prefrontal cortex - STC_posterior (caudal) superior temporal cortex (area 22c)",7.31458333333318,223.107262138639,19120,0.0327850526388867,1
+"35","VFC_ventrolateral prefrontal cortex - ITC_inferolateral temporal cortex (area TEv, area 20)",-154.909166666667,223.107262138639,19120,-0.694325972098599,0.999998386210542
+"36","VFC_ventrolateral prefrontal cortex - (V1C_primary visual cortex (striate cortex, area V1/17))",62.5133333333329,223.107262138639,19120,0.280194076759756,0.999999999996587
+"37","VFC_ventrolateral prefrontal cortex - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",-127.259166666667,223.107262138639,19120,-0.570394551243196,0.999999895196792
+"38","VFC_ventrolateral prefrontal cortex - HIP_hippocampus (hippocampal formation)",-192.250000000001,223.107262138639,19120,-0.861693152240545,0.999971049051804
+"39","VFC_ventrolateral prefrontal cortex - STR_striatum",-98.6133333333344,223.107262138639,19120,-0.441999656972421,0.99999999726354
+"40","VFC_ventrolateral prefrontal cortex - AMY_amygdaloid complex",-257.715000000001,223.107262138639,19120,-1.15511703890596,0.998922133698384
+"41","VFC_ventrolateral prefrontal cortex - MD_mediodorsal nucleus of thalamus",-118.4775,223.107262138639,19120,-0.531033812455547,0.999999961931714
+"42","VFC_ventrolateral prefrontal cortex - CBC_cerebellar cortex",-61.4250000000029,223.107262138639,19120,-0.275316004558531,0.999999999997544
+"43","OFC_orbital frontal cortex - S1C_primary somatosensory cortex (area S1, areas 3,1,2)",124.549999999999,223.107262138639,19120,0.558251662478848,0.999999922660448
+"44","OFC_orbital frontal cortex - IPC_posteroventral (inferior) parietal cortex",154.635,223.107262138639,19120,0.693097116237793,0.999998424866304
+"45","OFC_orbital frontal cortex - A1C_primary auditory cortex (core)",65.6183333333334,223.107262138639,19120,0.294111149517662,0.999999999992957
+"46","OFC_orbital frontal cortex - STC_posterior (caudal) superior temporal cortex (area 22c)",167.537083333334,223.107262138639,19120,0.750926176617356,0.999995322537616
+"47","OFC_orbital frontal cortex - ITC_inferolateral temporal cortex (area TEv, area 20)",5.31333333333383,223.107262138639,19120,0.0238151518798708,1
+"48","OFC_orbital frontal cortex - (V1C_primary visual cortex (striate cortex, area V1/17))",222.735833333334,223.107262138639,19120,0.998335200738226,0.999812215230226
+"49","OFC_orbital frontal cortex - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",32.9633333333341,223.107262138639,19120,0.147746572735273,1
+"50","OFC_orbital frontal cortex - HIP_hippocampus (hippocampal formation)",-32.0275000000003,223.107262138639,19120,-0.143552028262076,1
+"51","OFC_orbital frontal cortex - STR_striatum",61.6091666666669,223.107262138639,19120,0.276141467006049,0.999999999997433
+"52","OFC_orbital frontal cortex - AMY_amygdaloid complex",-97.4925,223.107262138639,19120,-0.436975914927494,0.999999997680531
+"53","OFC_orbital frontal cortex - MD_mediodorsal nucleus of thalamus",41.7450000000007,223.107262138639,19120,0.187107311522923,1
+"54","OFC_orbital frontal cortex - CBC_cerebellar cortex",98.7974999999983,223.107262138639,19120,0.442825119419939,0.999999997188724
+"55","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - IPC_posteroventral (inferior) parietal cortex",30.0850000000006,223.107262138639,19120,0.134845453758945,1
+"56","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - A1C_primary auditory cortex (core)",-58.9316666666661,223.107262138639,19120,-0.264140512961187,0.999999999998673
+"57","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - STC_posterior (caudal) superior temporal cortex (area 22c)",42.9870833333349,223.107262138639,19120,0.192674514138508,1
+"58","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - ITC_inferolateral temporal cortex (area TEv, area 20)",-119.236666666666,223.107262138639,19120,-0.534436510598978,0.999999958313394
+"59","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - (V1C_primary visual cortex (striate cortex, area V1/17))",98.1858333333346,223.107262138639,19120,0.440083538259377,0.999999997430153
+"60","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",-91.5866666666654,223.107262138639,19120,-0.410505089743575,0.999999999062741
+"61","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - HIP_hippocampus (hippocampal formation)",-156.5775,223.107262138639,19120,-0.701803690740924,0.999998131701376
+"62","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - STR_striatum",-62.9408333333326,223.107262138639,19120,-0.2821101954728,0.999999999996193
+"63","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - AMY_amygdaloid complex",-222.0425,223.107262138639,19120,-0.995227577406343,0.999819323594255
+"64","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - MD_mediodorsal nucleus of thalamus",-82.8049999999987,223.107262138639,19120,-0.371144350955926,0.999999999784302
+"65","S1C_primary somatosensory cortex (area S1, areas 3,1,2) - CBC_cerebellar cortex",-25.7525000000011,223.107262138639,19120,-0.11542654305891,1
+"66","IPC_posteroventral (inferior) parietal cortex - A1C_primary auditory cortex (core)",-89.0166666666667,223.107262138639,19120,-0.398985966720132,0.999999999380436
+"67","IPC_posteroventral (inferior) parietal cortex - STC_posterior (caudal) superior temporal cortex (area 22c)",12.9020833333344,223.107262138639,19120,0.0578290603795631,1
+"68","IPC_posteroventral (inferior) parietal cortex - ITC_inferolateral temporal cortex (area TEv, area 20)",-149.321666666666,223.107262138639,19120,-0.669281964357923,0.999999025479753
+"69","IPC_posteroventral (inferior) parietal cortex - (V1C_primary visual cortex (striate cortex, area V1/17))",68.1008333333341,223.107262138639,19120,0.305238084500433,0.999999999987822
+"70","IPC_posteroventral (inferior) parietal cortex - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",-121.671666666666,223.107262138639,19120,-0.54535054350252,0.999999944458013
+"71","IPC_posteroventral (inferior) parietal cortex - HIP_hippocampus (hippocampal formation)",-186.6625,223.107262138639,19120,-0.836649144499869,0.999980305763316
+"72","IPC_posteroventral (inferior) parietal cortex - STR_striatum",-93.0258333333332,223.107262138639,19120,-0.416955649231744,0.999999998824554
+"73","IPC_posteroventral (inferior) parietal cortex - AMY_amygdaloid complex",-252.1275,223.107262138639,19120,-1.13007303116529,0.999164574074386
+"74","IPC_posteroventral (inferior) parietal cortex - MD_mediodorsal nucleus of thalamus",-112.889999999999,223.107262138639,19120,-0.505989804714871,0.999999980881245
+"75","IPC_posteroventral (inferior) parietal cortex - CBC_cerebellar cortex",-55.8375000000017,223.107262138639,19120,-0.250271996817855,0.999999999999575
+"76","A1C_primary auditory cortex (core) - STC_posterior (caudal) superior temporal cortex (area 22c)",101.918750000001,223.107262138639,19120,0.456815027099695,0.999999995594966
+"77","A1C_primary auditory cortex (core) - ITC_inferolateral temporal cortex (area TEv, area 20)",-60.3049999999995,223.107262138639,19120,-0.270295997637791,0.999999999998134
+"78","A1C_primary auditory cortex (core) - (V1C_primary visual cortex (striate cortex, area V1/17))",157.117500000001,223.107262138639,19120,0.704224051220564,0.999998041789249
+"79","A1C_primary auditory cortex (core) - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",-32.6549999999993,223.107262138639,19120,-0.146364576782388,1
+"80","A1C_primary auditory cortex (core) - HIP_hippocampus (hippocampal formation)",-97.6458333333336,223.107262138639,19120,-0.437663177779738,0.999999997627189
+"81","A1C_primary auditory cortex (core) - STR_striatum",-4.00916666666649,223.107262138639,19120,-0.0179696825116127,1
+"82","A1C_primary auditory cortex (core) - AMY_amygdaloid complex",-163.110833333333,223.107262138639,19120,-0.731087064445156,0.999996742121266
+"83","A1C_primary auditory cortex (core) - MD_mediodorsal nucleus of thalamus",-23.8733333333326,223.107262138639,19120,-0.107003837994739,1
+"84","A1C_primary auditory cortex (core) - CBC_cerebellar cortex",33.179166666665,223.107262138639,19120,0.148713969902277,1
+"85","STC_posterior (caudal) superior temporal cortex (area 22c) - ITC_inferolateral temporal cortex (area TEv, area 20)",-162.223750000001,223.107262138639,19120,-0.727111024737486,0.99999697424376
+"86","STC_posterior (caudal) superior temporal cortex (area 22c) - (V1C_primary visual cortex (striate cortex, area V1/17))",55.1987499999997,223.107262138639,19120,0.24740902412087,0.999999999999665
+"87","STC_posterior (caudal) superior temporal cortex (area 22c) - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",-134.57375,223.107262138639,19120,-0.603179603882083,0.999999770151647
+"88","STC_posterior (caudal) superior temporal cortex (area 22c) - HIP_hippocampus (hippocampal formation)",-199.564583333335,223.107262138639,19120,-0.894478204879432,0.999953071469522
+"89","STC_posterior (caudal) superior temporal cortex (area 22c) - STR_striatum",-105.927916666668,223.107262138639,19120,-0.474784709611307,0.999999992322784
+"90","STC_posterior (caudal) superior temporal cortex (area 22c) - AMY_amygdaloid complex",-265.029583333334,223.107262138639,19120,-1.18790209154485,0.998514260832089
+"91","STC_posterior (caudal) superior temporal cortex (area 22c) - MD_mediodorsal nucleus of thalamus",-125.792083333334,223.107262138639,19120,-0.563818865094434,0.999999911017717
+"92","STC_posterior (caudal) superior temporal cortex (area 22c) - CBC_cerebellar cortex",-68.7395833333361,223.107262138639,19120,-0.308101057197418,0.999999999986025
+"93","ITC_inferolateral temporal cortex (area TEv, area 20) - (V1C_primary visual cortex (striate cortex, area V1/17))",217.4225,223.107262138639,19120,0.974520048858355,0.999860895501337
+"94","ITC_inferolateral temporal cortex (area TEv, area 20) - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",27.6500000000002,223.107262138639,19120,0.123931420855402,1
+"95","ITC_inferolateral temporal cortex (area TEv, area 20) - HIP_hippocampus (hippocampal formation)",-37.3408333333341,223.107262138639,19120,-0.167367180141947,1
+"96","ITC_inferolateral temporal cortex (area TEv, area 20) - STR_striatum",56.295833333333,223.107262138639,19120,0.252326315126178,0.999999999999418
+"97","ITC_inferolateral temporal cortex (area TEv, area 20) - AMY_amygdaloid complex",-102.805833333334,223.107262138639,19120,-0.460791066807365,0.999999995008809
+"98","ITC_inferolateral temporal cortex (area TEv, area 20) - MD_mediodorsal nucleus of thalamus",36.4316666666669,223.107262138639,19120,0.163292159643052,1
+"99","ITC_inferolateral temporal cortex (area TEv, area 20) - CBC_cerebellar cortex",93.4841666666645,223.107262138639,19120,0.419009967540068,0.999999998737644
+"100","(V1C_primary visual cortex (striate cortex, area V1/17)) - MFC_anterior (rostral) cingulate (medial prefrontal) cortex",-189.7725,223.107262138639,19120,-0.850588628002953,0.999975551527122
+"101","(V1C_primary visual cortex (striate cortex, area V1/17)) - HIP_hippocampus (hippocampal formation)",-254.763333333334,223.107262138639,19120,-1.1418872290003,0.999056869547426
+"102","(V1C_primary visual cortex (striate cortex, area V1/17)) - STR_striatum",-161.126666666667,223.107262138639,19120,-0.722193733732177,0.999997240439376
+"103","(V1C_primary visual cortex (striate cortex, area V1/17)) - AMY_amygdaloid complex",-320.228333333334,223.107262138639,19120,-1.43531111566572,0.988773757562422
+"104","(V1C_primary visual cortex (striate cortex, area V1/17)) - MD_mediodorsal nucleus of thalamus",-180.990833333333,223.107262138639,19120,-0.811227889215303,0.999986882846399
+"105","(V1C_primary visual cortex (striate cortex, area V1/17)) - CBC_cerebellar cortex",-123.938333333336,223.107262138639,19120,-0.555510081318288,0.999999927862681
+"106","MFC_anterior (rostral) cingulate (medial prefrontal) cortex - HIP_hippocampus (hippocampal formation)",-64.9908333333343,223.107262138639,19120,-0.291298600997349,0.999999999993888
+"107","MFC_anterior (rostral) cingulate (medial prefrontal) cortex - STR_striatum",28.6458333333328,223.107262138639,19120,0.128394894270776,1
+"108","MFC_anterior (rostral) cingulate (medial prefrontal) cortex - AMY_amygdaloid complex",-130.455833333334,223.107262138639,19120,-0.584722487662767,0.999999851375822
+"109","MFC_anterior (rostral) cingulate (medial prefrontal) cortex - MD_mediodorsal nucleus of thalamus",8.78166666666666,223.107262138639,19120,0.0393607387876497,1
+"110","MFC_anterior (rostral) cingulate (medial prefrontal) cortex - CBC_cerebellar cortex",65.8341666666642,223.107262138639,19120,0.295078546684665,0.999999999992607
+"111","HIP_hippocampus (hippocampal formation) - STR_striatum",93.6366666666671,223.107262138639,19120,0.419693495268125,0.999999998707432
+"112","HIP_hippocampus (hippocampal formation) - AMY_amygdaloid complex",-65.4649999999998,223.107262138639,19120,-0.293423886665418,0.999999999993196
+"113","HIP_hippocampus (hippocampal formation) - MD_mediodorsal nucleus of thalamus",73.772500000001,223.107262138639,19120,0.330659339784999,0.999999999960475
+"114","HIP_hippocampus (hippocampal formation) - CBC_cerebellar cortex",130.824999999999,223.107262138639,19120,0.586377147682015,0.999999845353727
+"115","STR_striatum - AMY_amygdaloid complex",-159.101666666667,223.107262138639,19120,-0.713117381933543,0.999997676447069
+"116","STR_striatum - MD_mediodorsal nucleus of thalamus",-19.8641666666661,223.107262138639,19120,-0.089034155483126,1
+"117","STR_striatum - CBC_cerebellar cortex",37.1883333333314,223.107262138639,19120,0.16668365241389,1
+"118","AMY_amygdaloid complex - MD_mediodorsal nucleus of thalamus",139.237500000001,223.107262138639,19120,0.624083226450417,0.999999630108941
+"119","AMY_amygdaloid complex - CBC_cerebellar cortex",196.289999999998,223.107262138639,19120,0.879801034347433,0.999962087187177
+"120","MD_mediodorsal nucleus of thalamus - CBC_cerebellar cortex",57.0524999999976,223.107262138639,19120,0.255717807897016,0.999999999999179

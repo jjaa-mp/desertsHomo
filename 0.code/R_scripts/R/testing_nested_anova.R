@@ -1,3 +1,5 @@
+#Deprecrated - data is non-normal 
+
 testing_nested_anova <- function(input, fulldf) {
   
   if (fulldf == FALSE) {
