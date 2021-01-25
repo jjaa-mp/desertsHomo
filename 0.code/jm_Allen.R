@@ -779,7 +779,7 @@ meanakey[order(meanakey$Mean, decreasing = TRUE),]
 dfsubsetboth <- df[df$gene_short_name %in% both$hgnc_symbol,]
 meanakeypey <- dfsubsetboth %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
 meanakeypey[order(meanakeypey$Mean, decreasing = TRUE),]
-pairwise.t.test(dfsubsetboth$max.expr, dfsubsetboth$organ, p.adjust.method = "BH")
+#pairwise.t.test(dfsubsetboth$max.expr, dfsubsetboth$organ, p.adjust.method = "BH")
 
 #Raw:
 df  %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
@@ -799,8 +799,15 @@ df1subset <- df1subset[order(df1subset$max.cluster),]
 #write.csv(df1subset, file="CellAtlas_GSE156793_CBL_inAkey.csv", row.names = FALSE)
 #write.csv(df1subsetboth, file="CellAtlas_GSE156793_CBL_inAkeyPey.csv", row.names = FALSE)
 ```
+
 #Friedman test - Genes in Akey:
 ```{r}
+#Checking normality
+ggplot(r, aes(z)) + geom_histogram()
+
+ggplot(r[which(r$z > 0 & r$z < 500),], aes(z)) +geom_histogram()
+
+
 r <- data.frame(dfakey$organ, dfakey$gene_short_name, dfakey$max.expr)
 names(r) <- c("x", "y", "z")
 rr <- pivot_wider(r, names_from = x, values_from = z)
@@ -850,12 +857,17 @@ pl_fr <- ggplot(data = melted, aes(Var2, Var1, fill = value))+
  theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_y_discrete(position = "right")+
  coord_fixed()+ coord_flip()
 pl_fr
-ggsave(file="CellAtlas_MeanExprAkey_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
+#ggsave(file="CellAtlas_MeanExprAkey_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
 
 ```
 
 #Friedman test - Genes in both Akey and Pey:
 ```{r}
+ggplot(s, aes(z)) + geom_histogram()
+
+ggplot(s[which(s$z > 0 & s$z < 500),], aes(z)) +
+    geom_histogram()
+
 s <- data.frame(dfsubsetboth$organ, dfsubsetboth$gene_short_name, dfsubsetboth$max.expr)
 names(s) <- c("x", "y", "z")
 ss <- pivot_wider(s, names_from = x, values_from = z)
@@ -907,8 +919,34 @@ pl_fr2 <- ggplot(data = melted2, aes(Var2, Var1, fill = value))+
  theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_y_discrete(position = "right")+
  coord_fixed()+ coord_flip()
 pl_fr2
-ggsave(file="CellAtlas_MeanExprAkeyPey_heatmap.pdf", pl_fr2,width = 11.69, height = 8.27, units = "in")
+#ggsave(file="CellAtlas_MeanExprAkeyPey_heatmap.pdf", pl_fr2,width = 11.69, height = 8.27, units = "in")
 ```
+
+```{r}
+library(rstatix)
+s <- data.frame(dfsubsetboth$organ, dfsubsetboth$gene_short_name, dfsubsetboth$max.expr)
+names(s) <- c("x", "y", "z")
+ss <- pivot_wider(s, names_from = x, values_from = z)
+ss1 <- ss[complete.cases(ss),]
+ss2 <- ss1 %>%
+    gather(key = "block", value = "expression", colnames(ss1[-1])) %>% convert_as_factor(y, block)
+ss2$y <- factor(ss2$y)
+
+
+ss2 %>% friedman_test(expression ~ block | y)
+ss2 %>% friedman_effsize(expression ~ block | y)
+
+# pairwise comparisons
+pw <- ss2 %>%
+  wilcox_test(expression ~ block, paired = TRUE, p.adjust.method = "BH")
+
+library(DescTools)
+DunnettTest(x=ss2$expression, ss2$block)
+
+library(agricolae)
+friedman(ss2$y,ss2$block,ss2$expression,alpha=0.05,group=TRUE, console = TRUE, main = TRUE)
+```
+
 
 #CELL ATLAS - CELL TYPE ENRICHMENT - AKEY
 ```{r}
