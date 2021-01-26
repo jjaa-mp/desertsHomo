@@ -12,7 +12,7 @@ From results:
 | ------------- | ------------- | ------------- |
 | Deserts  | 0.969864  |  16.182913  |
 | No deserts (chr)  | 0.963944  | 8.319130  |
-| Deserts + Pey  | 0.994599  |  | 46.218487  |
+| Deserts + Pey  | 0.994599  | 46.218487  |
 
 
 - **Enrichment in Cerebrum and Cerebellum** We investigated the expression patterns across organs. We observe that genes present in deserts and expressed in the Cerebrum, Cerebellum, and Eye (neuroectoderm-derived structures) are significantly different from the rest of structures, while no structures passed the significance threshold for genes present in AkeyPey.
