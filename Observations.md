@@ -17,6 +17,4 @@ From results:
 ## Stats
 
 ## Anova
-In an nested anova derived from the data from the Chen + Pey data, cerebellum and striatum have significantly different gene expression values (as expected from the plots) (p = 0.035). That is not the case in the Chen data only (p = 0.4415).
 
-In a comparison between Chen + Pey and Chen only... 

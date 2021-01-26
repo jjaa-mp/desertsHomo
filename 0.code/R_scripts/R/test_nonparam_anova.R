@@ -22,14 +22,14 @@ test_nonparam_anova <- function(df, output) {
   print("Contrast of main effect: Stages only")
   res <- contrast(emmeans(artlm(model, "stage"), ~ stage), method="pairwise")
   print(summary(res))
-  write.csv(res, file = paste0("output/anova/", output, "stages.csv"))
+  write.csv(res, file = paste0("output/anova/", output, "_stages.csv"))
   
   print("Contrast of main effect: organs only")
   res <- contrast(emmeans(artlm(model, "variable"), ~ variable), method="pairwise")
   print(summary(res))
-  write.csv(res, file = paste0("output/anova/", output, "organs.csv"))
+  write.csv(res, file = paste0("output/anova/", output, "_organs.csv"))
   
   print("Contrast of main effects: organs and stages")
   res <- contrast(emmeans(artlm(model, "variable:stage"), ~ variable:stage), method="pairwise", interaction=TRUE)
-  write.csv(res, file = paste0("output/anova/", output, "stages_organs.csv"))
+  write.csv(res, file = paste0("output/anova/", output, "_stages_organs.csv"))
 }

@@ -1,7 +1,6 @@
 # list of functions to call, as stored in .R files
 
-the_plan <-
-  drake_plan(
+the_plan <- drake_plan(
   	akey = retrieve_GenesDeserts(),
   	abadult = dt_adults(), #gets ab data
   	
@@ -16,8 +15,10 @@ the_plan <-
   	              pey_coords),
   	
   	ab = abad_5_stages(), 
-  	q75(ab, akey),  #gets quantile 75 plots in deserts
   	
+  
+  	q75(ab, akey),  #gets quantile 75 plots in deserts
+
   	abakey_data = ab_data_plots(ab, akey, TRUE), # prepares akey data for ab plots
   	abakey_plots = ab_plots(abakey_data, "Akey", " Deserts", "Striatum"),  #generates plots
   	
@@ -36,13 +37,16 @@ the_plan <-
   	abpey_data = ab_data_plots(ab, pey_coords_noakey, TRUE),
   	abpey_plots = ab_plots(abpey_data, "Pey", " Pey", "Striatum"),
   	
-  	#Anova stats
+
+  	
   	abakeypey_stats = ab_data_plots(ab, pey_coords, FALSE), #without means to calculate stats
-  	anova_akeypey = test_nonparam_anova(abakeypey_stats, "chen_pey"), 
+  	anova_akeypey = test_nonparam_anova(abakeypey_stats, "chenpey"), 
+  	kw_akeypey = test_kruskalwallis(abakeypey_stats),
   	
   	abakey_stats = ab_data_plots(ab, akey, FALSE),  #without means to calculate stats
-  	anova_akey = test_nonparam_anova(abakey_stats, "chen"), 
-  	
+  	anova_akey = test_nonparam_anova(abakey_stats, "chen"),
+  	kw_akey = test_kruskalwallis(abakey_stats),
+	
   	GSEakey = GSE_data(akey, pey_coords, "akey"), # prepares GSE data
   	ttest_result = ttest(GSEakey), 
   	akey_fried = friedman(GSEakey, "akey"), # friedman test for akey

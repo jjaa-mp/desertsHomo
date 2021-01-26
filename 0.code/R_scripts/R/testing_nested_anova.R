@@ -40,20 +40,12 @@ testing_nested_anova <- function(input, fulldf) {
   #stats
   #With tissues as variables
   test$stage <- as.factor(test$stage)
-  model <- lmerTest::lmer(value ~ 1+ variable + (1|stage),
-                          data=test)
-  anova(model)
+  model <- art(value ~ variable*stage, data=df)
+  summary(model)
+  print(anova(model))
+  
   qqnorm(resid(model), main = "Residuals") 
   # Residuals look terrible - model not valid
-  
-  #Same, but with stages as variables
-  # Residuals still look terrible  - model not valid
-  test$stage <- as.factor(test$stage)
-  model <- lmerTest::lmer(value ~ 1+ stage + (1|variable),
-                          data=test)
-  anova(model)
-  summary(model)
-  plot(model)
-  qqnorm(resid(model), main = "Residuals") 
+
 }
 
