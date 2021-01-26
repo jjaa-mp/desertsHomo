@@ -24,4 +24,4 @@ Results on a series of aligned rank transform anovas (non-parametric) on the ABA
 For both the deserts of introgression and deserts + Peyrégne et al.
 
 ## Kruskal Wallis
-A series of Kruskal Wallis tests show that the difference in expression values between brain regions (regardless of stages) in both files is not significant. A post-hoc Dunn test also fails to highlight any region. A Wilcoxon signed-rank focusing on those stages significant in the anovas confirms this.
+A series of Kruskal Wallis tests show that the difference in expression values between brain regions (regardless of stages) in both files is not significant (p-values 0.7746, 0.9965). A post-hoc Dunn test also fails to highlight any region as well. A Wilcoxon signed-rank focusing on those stages significant in the anovas confirms this when ran specifically on the cerebellum and the prenatal-child stages explicitely.
