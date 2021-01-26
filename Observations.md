@@ -6,7 +6,7 @@ For intro: go back to work by Martin (his FOXP2 paper, and his Bioessays piece) 
 
 From results:
 
-- **SNP count and frequency** (*State importance of MartinBoeckx approach*). We evaluated the mean frequency of the HF variants identified in deserts and putative positively-selected regions. Being the differences small, we found significant differences in the mean frequency of variants within deserts and non-desertic regions, as well as when compared to those falling within both deserts and positive selected regions (Wilcoxon rank sum test with Benjamini-Hochberg multiple comparison correction), where we find degree of fixation (>0.99).
+- **SNP count and frequency** (*State importance of MartinBoeckx approach*). We evaluated the mean frequency of the HF variants identified in deserts and putative positively-selected regions. Being the differences small, we found significant results when comparing the mean frequency of variants within deserts and non-desertic regions, as well as to those falling within both deserts and positive selected regions (Wilcoxon rank sum test with Benjamini-Hochberg multiple comparison correction), where we find degree of fixation (>0.99).
 
 | Regions  | Frequency | % Fixed alleles |
 | ------------- | ------------- | ------------- |
