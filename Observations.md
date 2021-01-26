@@ -17,4 +17,11 @@ From results:
 ## Stats
 
 ## Anova
+Results on a series of aligned rank transform anovas (non-parametric) on the ABA temporal progression data can be seen [here](https://github.com/jjaa-mp/raul_tesina/tree/master/0.code/R_scripts/output/anova). It includes pairwise comparison in:
+- Brain regions only
+- Developmental stages only
+- The interaction between brain region and developmental stages
+For both the deserts of introgression and deserts + Peyrégne et al.
 
+## Kruskal Wallis
+A series of Kruskal Wallis tests show that the difference in expression values between brain regions (regardless of stages) in both files is not significant. A post-hoc Dunn test also fails to highlight any region. A Wilcoxon signed-rank focusing on those stages significant in the anovas confirms this.

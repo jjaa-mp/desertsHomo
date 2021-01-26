@@ -1,55 +1,21 @@
 test_kruskalwallis <- function(input){
   
-  #print("Is the cerebellum specifically different to the rest of tissues in prenatal and child stages?")
-  #Extracting relevant data from input
-  selected_stages_df <- NULL
-  selected_stages_df$prenatal <- input[[1]]
-  selected_stages_df$child <- input[[3]]
-  
-  #shape
-  selected_stages_df <- lapply(selected_stages_df, melt)
-  selected_stages_df <- ldply(selected_stages_df, data.frame)
-  selected_stages_df <-  selected_stages_df %>% 
-    dplyr::select(".id", "variable", "value") %>% 
-    group_by(variable, .id) %>% 
-    dplyr::summarise(mean = mean(value)) 
-
-  #stats
-  a <- selected_stages_df %>% 
-    filter(.id=="prenatal")
-  
-  b <- selected_stages_df %>% 
-    filter(.id=="child")
+  #shape dataframe
+  df <- lapply(input, melt)
+  df <- ldply(df, data.frame)
   
   #With brain regions as variables
-  print("Comparison between child and prenatal stages for all tissues:")
-  test <- wilcox.test(a$mean,
-                      b$mean,
-                      paired=TRUE)
+  #ignoring stages - just overall means difference
+  test <- kruskal.test(value ~ variable,
+                       data = df)
   print(test)
   
-  #With cerebellum as variable
-  print("Comparison between child and prenatal stages for cerebellum:")
-  selected_stages_df <- NULL
-  selected_stages_df$prenatal <- input[[1]]
-  selected_stages_df$child <- input[[3]]
+  #post <-  dunnTest(value ~ variable,
+  #                  data=df,
+  #                  method="bh")   
   
-  #shape
-  selected_stages_df <- lapply(selected_stages_df, melt)
-  selected_stages_df <- ldply(selected_stages_df, data.frame)
-  selected_stages_df <-  selected_stages_df %>% 
-    dplyr::select(".id", "variable", "value") 
+  #In case you want to include it, requires FSA library
+  #print(post)
   
-  a <- selected_stages_df %>% 
-    filter(.id=="prenatal", variable == "CBC_cerebellar cortex")
-  
-  b <- selected_stages_df %>% 
-    filter(.id=="child", variable == "CBC_cerebellar cortex")
-  
-  #With brain regions as variables
-  test <- wilcox.test(a$value,
-                      b$value,
-                      paired=TRUE)
-  print(test)
 
 }
