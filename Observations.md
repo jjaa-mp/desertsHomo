@@ -6,7 +6,15 @@ For intro: go back to work by Martin (his FOXP2 paper, and his Bioessays piece) 
 
 From results:
 
-- **SNP count and frequency** (in process)
+- **SNP count and frequency** (*State importance of MartinBoeckx approach*). We evaluated the mean frequency of the HF variants identified in deserts and putative positively-selected regions. Being the differences small, we found significant results when comparing the mean frequency of variants within deserts and non-desertic regions, as well as to those falling within both deserts and positive selected regions -where we find a very high degree of fixation (>0.99)- (Wilcoxon rank sum test with Benjamini-Hochberg multiple comparison correction). Additionally, we found that the ratio of fixed alleles to total alleles is much higher in both deserts and positive selected regions (~46%) than in deserts (~16%) and non-desertic (~8%) regions (being all these differences statistically significant; Chi-squared test, p-value adjusted by Benjamini-Hochberg correction).
+
+| Regions  | Frequency | % Fixed alleles |
+| ------------- | ------------- | ------------- |
+| Deserts  | 0.969864  |  16.182913  |
+| No deserts (chr)  | 0.963944  | 8.319130  |
+| Deserts + Pey  | 0.994599  | 46.218487  |
+
+
 - **Enrichment in Cerebrum and Cerebellum** We investigated the expression patterns across organs. We observe that genes present in deserts and expressed in the Cerebrum, Cerebellum, and Eye (neuroectoderm-derived structures) are significantly different from the rest of structures, while no structures passed the significance threshold for genes present in AkeyPey.
   + Mean expression of genes in Akey higher in Cerebrum, Cerebellum and Eye; bigger difference when considering genes in Akey and Pey in Cerebrum and Cerebellum (stats pending).
   + *Cell type enrichment*. No significant results were found for any cell type in neither organ (Cerebrum, Cerebellum, Eye).
