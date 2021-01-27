@@ -22,6 +22,7 @@ library(nlme)
 library(multcomp)
 library(ARTool)
 library(emmeans)
+library(PMCMRplus)
 
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("reorder.factor", "gplots")

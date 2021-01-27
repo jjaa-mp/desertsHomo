@@ -35,11 +35,11 @@ the_plan <- drake_plan(
   	
   	abakeypey_stats = ab_data_plots(ab, pey_coords, FALSE), #without means to calculate stats
   	anova_akeypey = test_nonparam_anova(abakeypey_stats, "chenpey"), 
-  	fr_akeypey = friedman_only(abakeypey_stats),
+  	fr_akeypey = friedman_only(abakeypey_stats, "chenpey"),
   	
   	abakey_stats = ab_data_plots(ab, akey, FALSE),  #without means to calculate stats
   	anova_akey = test_nonparam_anova(abakey_stats, "chen"),
-  	fr_akey = friedman_only(abakey_stats),
+  	fr_akey = friedman_only(abakey_stats, "chen"),
 	
   	GSEakey = GSE_data(akey, pey_coords, "akey"), # prepares GSE data
   	ttest_result = ttest(GSEakey), 
