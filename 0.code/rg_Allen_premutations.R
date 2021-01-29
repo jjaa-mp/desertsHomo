@@ -46,12 +46,10 @@ st <- unique(dataset_adult$structure)
 st_allen <- paste("Allen",st, sep=":") 
 #Expression data - Getting raw data for all structures and genes
 ab1 <- get_expression(structure_ids=st_allen, gene_ids = id, dataset='adult')
-dataset_adult$
+#dataset_adult$
 #Converting data to a dataframe with useful format for later
 list1 = vector(mode="list")
 abtemp<-t(ab1)
-
-
 ```
 # NOW I'll perform the permutation test to evaluate the results
 #First Performing the same process but now for 50 alternative sets of random regions
@@ -81,7 +79,7 @@ rownames(meansSubstructTemp) <- 1:nrow(meansSubstructTemp)
 
 #This variable will contain all the ABAData per all the alternative permutations
 randomABAData<-list()
-for (i in 1:50){
+for (i in 1:1000){
   sprintf("%d randomset",i)
   desert1<-c(runValue(seqnames(randReg50set1)[i]),start(randReg50set1)[i],end(randReg50set1)[i])
   desert2<-c(runValue(seqnames(randReg50set2)[i]),start(randReg50set2)[i],end(randReg50set2)[i])
