@@ -15,7 +15,7 @@ From results:
 | Deserts + Pey  | 0.994599  | 46.218487  |
 
 
-- **Enrichment in Cerebrum and Cerebellum** We investigated the expression patterns across organs (Cell Atlas Science). All structures are statistically different when compare to most of the rest of the other structures when subsetting by genes in deserts. No differences were identified when subsetting by genes in both deserts and positive selection.
+- **Enrichment in Cerebrum and Cerebellum** We investigated the expression patterns across organs (Cell Atlas Science). Most of structures are statistically different when compare to each other subsetting by genes in deserts. No differences were identified when subsetting by genes in both deserts and positive selection.
 
 **Chen**
 | Organ  | Mean | 
