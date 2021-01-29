@@ -46,13 +46,16 @@ From results:
   + For genes within deserts and positively selected regions, a one-way repeated measures ANOVA was performed to examine the effect of the stages on the expression profile of each structure. The mean expression profile of the hippocampus is found to be significantly different across stages (pvalue < .05). For genes within deserts alone, most of the structures' trajectories significantly change across stages, except for the superior temporal cortex, V1C, and the ventrolateral prefrontal cortex (one-way repeated measures ANOVA; pvalue < .05).
 
 
-**Other stats on ABA temporal progression***
-	These stats were run with the raw data, and don't require normal data (since they are non-parametric). However, using log values and adding an expression cutoff might change them:
-	+ Anova: Results on a series of aligned rank transform anovas (non-parametric) on the ABA temporal progression data can be seen [here](https://github.com/jjaa-mp/raul_tesina/tree/master/0.code/R_scripts/output/anova). It includes pairwise comparison in:
+- **Other stats on ABA temporal progression**
+
+These stats were run with the raw data, and don't require normal data (since they are non-parametric). However, using log values and adding an expression cutoff might change them if we decide to do so.
+	Anova: Results on a series of aligned rank transform anovas (non-parametric) on the ABA temporal progression data can be seen [here](https://github.com/jjaa-mp/raul_tesina/tree/master/0.code/R_scripts/output/anova). It includes pairwise comparison in:
 		- Brain regions only
 		- Developmental stages only
 		- The interaction between brain region and developmental stages
 	(For both the deserts of introgression and deserts + Peyrégne et al.)
 
-**Does cerebellum have a particular profile?**
-A series of Kruskal Wallis tests show that the difference in expression values between brain regions (regardless of stages) in both files is not significant (p-values 0.7746, 0.9965). A post-hoc Dunn test also fails to highlight any region as well. A Wilcoxon signed-rank focusing on those stages significant in the anovas confirms this when ran specifically on the cerebellum and the prenatal-child stages explicitely. However, account for genes as groups does solve this, as a Friedmann test made with the data of each stage independently of Chen and Chen + Pey shows significance for everything except the prenatal stage of Chen + Pey (corrected by Bonferroni).
+- **Does cerebellum have a particular profile in ABA data?**
+
+Motivated by the peculiar shape of the cerebellum in the means plots, we did a series of a series of Kruskal Wallis tests show that the difference in expression values between brain regions (regardless of stages) in both files is not significant (p-values 0.7746, 0.9965). A post-hoc Dunn test also fails to highlight any region as well. A Wilcoxon signed-rank focusing on those stages significant in the anovas confirms this when ran specifically on the cerebellum and the prenatal-child stages explicitely. However, account for genes as groups does solve this, as a Friedmann test made with the data of each stage independently of Chen and Chen + Pey shows significance for everything except the prenatal stage of Chen + Pey (corrected by Bonferroni). 
+
