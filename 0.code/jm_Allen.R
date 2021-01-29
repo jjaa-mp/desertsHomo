@@ -947,8 +947,6 @@ colSums(!is.na(cbl_akeypey2))
 finaltable3$pvalue <- phyper(finaltable3$`akeypey genes`-1, 255, 19238-255, finaltable3$`Total EYE DEG`, lower.tail = FALSE, log.p = FALSE)
 ```
 
-
-
 #PC - ABA adult 414 - Akey & Pey
 ##Raül
 ```{r}
@@ -1131,7 +1129,6 @@ for (i in 1:length(ab)){
   }
 }
 ```
-
 
 #ABA Data - All genes that are present in Rac no log
 ```{r}
