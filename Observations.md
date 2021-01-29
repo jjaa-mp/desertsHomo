@@ -26,7 +26,7 @@ From results:
 *Cerebrum 13th; CBL 14th (out of 15)
 
 **Chen+Pey**
-| Organ  | Mean | 
+| Organ | Mean | 
 | ------------- | ------------- | 
 | Cerebrum  | 8.47  |  
 | Eye  | 8.27  |
