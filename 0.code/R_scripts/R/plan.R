@@ -49,6 +49,11 @@ the_plan <- drake_plan(
   	#anova_GSEakey = alt_anova(GSEakey), # checking with anova + Tukey if Friedman is alright
    
   	GSEpey = GSE_data(akey, pey_coords, "akeypey"),
-  	pey_fried = friedman(GSEpey, "pey") # friedman test for pey
+  	pey_fried = friedman(GSEpey, "pey"), # friedman test for pey
    #anova_GSEpey = alt_anova(GSEpey) # checking with anova + Tukey if Friedman is alright
+
+   #Permutations
+   akey = get_data_perms(akey)
+   
 )
+#to do: include log values for plots

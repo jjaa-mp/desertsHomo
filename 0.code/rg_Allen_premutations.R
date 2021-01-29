@@ -49,7 +49,7 @@ ab1 <- get_expression(structure_ids=st_allen, gene_ids = id, dataset='adult')
 #dataset_adult$
 #Converting data to a dataframe with useful format for later
 list1 = vector(mode="list")
-abtemp<-t(ab1)
+abtemp<-t(ab1) #AA: this breaks the subsequent code - fixed by removing it
 ```
 # NOW I'll perform the permutation test to evaluate the results
 #First Performing the same process but now for 50 alternative sets of random regions
@@ -61,11 +61,14 @@ randReg50set1<-createRandomRegions(nregions = 50,length.mean = 15000000,length.s
 randReg50set2<-createRandomRegions(nregions = 50,length.mean = 15000000,length.sd = 1000000,genome = "hg19", mask = mask)
 randReg50set3<-createRandomRegions(nregions = 50,length.mean = 15000000,length.sd = 1000000,genome = "hg19", mask = mask)
 randReg50set4<-createRandomRegions(nregions = 50,length.mean = 15000000,length.sd = 1000000,genome = "hg19", mask = mask)
+# AA: Lots of questions at this point. Why creat 4 regions if each of them includes coordinates from the 4 deserts? I thought here what you wanted to do is randomize a region from each desert, but I don't understand why doing 4 then here if they are combined
+
+
 
 #Here I generate a proper dataframe that will be usefull later on
 abtemp2 <- cbind(idGene = rownames(abtemp), abtemp)
 rownames(abtemp2) <- 1:nrow(abtemp2)
-abDeserts<-abtempFin<-abtemp2[abtemp2$idGene %in% resultsEnsembl$ensembl_gene_id,]
+abDeserts <- abtemp2[abtemp2$idGene %in% resultsEnsembl$ensembl_gene_id,] #AA: removed breaking code
 abDeserts$idGene<-NULL
 drop(abDeserts$idGene)
 
@@ -93,6 +96,7 @@ for (i in 1:1000){
                     filters = c("chromosomal_region","biotype"),
                     values = list(chromosomal_region=filterlistTemp,biotype="protein_coding"), mart = ensembl)
   abtempFin<-abtemp2[abtemp2$idGene %in% resultsTemp$ensembl_gene_id,]
+
   abtempFin$idGene<-NULL
   drop(abtempFin$idGene)
   #Here we safe all the data for each permutation
@@ -121,6 +125,10 @@ for (brainStruct in colnames(abDeserts)){
   }
   brainstr[brainStruct]<-c(suma/50)
 }
+  # AA: suma/50 should give you the bonferroni corrected p-value threshold, but not necessarily the corrected p-values, am I right?
+  # AA: not sure about the design of the test itself. The code gets genes in 4 random regions of deserts, then checks how many of these are in the AB data...
+  # AA: which in principle are almost all the protein-coding genes (including those in deserts of introgression). But if that was the point, why do the permutation in the first place?
+  # AA: it could have been a single t.test of  genes in deserts vs mean of all the other genes, minus those in deserts, I think
 
 ```
 #Extracting the data to a proper csv
