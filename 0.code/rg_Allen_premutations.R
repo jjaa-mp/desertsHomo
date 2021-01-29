@@ -78,6 +78,7 @@ rownames(meansSubstruct)
 meansSubstructTemp <- cbind(idBrainStruct = rownames(meansSubstruct), meansSubstruct)
 meansSubstructTemp <- cbind(idBrainStruct = rownames(meansSubstructTemp), meansSubstructTemp)
 rownames(meansSubstructTemp) <- 1:nrow(meansSubstructTemp)
+# AA: Doesn't reporting only the mean run into the same problem we had with the plots previously?
 
 
 #This variable will contain all the ABAData per all the alternative permutations
