@@ -15,10 +15,29 @@ From results:
 | Deserts + Pey  | 0.994599  | 46.218487  |
 
 
-- **Enrichment in Cerebrum and Cerebellum** We investigated the expression patterns across organs. We observe that genes present in deserts and expressed in the Cerebrum, Cerebellum, and Eye (neuroectoderm-derived structures) are significantly different from the rest of structures, while no structures passed the significance threshold for genes present in AkeyPey.
-  + Mean expression of genes in Akey higher in Cerebrum, Cerebellum and Eye; bigger difference when considering genes in Akey and Pey in Cerebrum and Cerebellum (stats pending).
+- **Enrichment in Cerebrum and Cerebellum** We investigated the expression patterns across organs (Cell Atlas Science). All structures are statistically different when compare to most of the rest of the other structures when subsetting by genes in deserts. No differences were identified when subsetting by genes in both deserts and positive selection.
+
+**Chen**
+| Organ  | Mean | 
+| ------------- | ------------- | 
+| Stomach  | 7.07  |  
+| Heart  | 6.97  |
+| Muscle  | 6.81 | 
+*Cerebrum 13th; CBL 14th (out of 15)
+
+**Chen+Pey**
+| Organ  | Mean | 
+| ------------- | ------------- | 
+| Cerebrum  | 8.47  |  
+| Eye  | 8.27  |
+| Stomach  | 8.23 | 
+
+*CBL 9th (out of 15)
+
   + *Cell type enrichment*. No significant results were found for any cell type in neither organ (Cerebrum, Cerebellum, Eye).
-- **414 structures** (in process).
+- **414 structures** PCA performed on the whole dataset revealed cerebellum as a clearly distinct cluster (inside it, right/left separation was noticed too), as well as broad brain cortical and nuclei clusters. 
+  + Permutations to compare expression levels between Chen, Chen+Pey in progress.
+
 - **ABA temporal progression**  Previously, Mafessoni2020 have shown that genes carrying Neanderthal-derived changes and expressed in the striatum during adolescence present a higher McDonald-Kreitman ratio. These same genes are over-represented in genomic regions were modern humans are significantly devoid of Neanderthal introgressed haplotypes (Maffesoni2020) [do they give the region coordinates?]. In addition, Vernot2016 [using a different range of introgressed regions] emphasized that genes within deserts are significantly enriched in the developing cerebral cortex and in the striatum at adolescence and adult stages. We investigated the temporal progression of expression patterns of genes within deserts of introgression and putative positively-selected regions in different brain structures accessing RNA-seq data from the Allen Brain Atlas (via the ABAData package; see Methods). We found that genes within deserts have a higher mean expression profile in the striatum during adolescence and, prominently, during infancy (stats pending; Figure). When considering genes present in both deserts and putative positively-selected regions, we found a clearly distinct profile for the cerebellum after prenatal stages, from infancy to adulthood (stats pending; Figure), while the rest of structures approximate a L-shaped trajectory. [also compare with raw data profile, clearly distinct]
 
 
