@@ -46,10 +46,11 @@ From results:
   + For genes within deserts and positively selected regions, a one-way repeated measures ANOVA was performed to examine the effect of the stages on the expression profile of each structure. The mean expression profile of the hippocampus is found to be significantly different across stages (pvalue < .05). For genes within deserts alone, most of the structures' trajectories significantly change across stages, except for the superior temporal cortex, V1C, and the ventrolateral prefrontal cortex (one-way repeated measures ANOVA; pvalue < .05).
 
 
-- **Other stats on ABA temporal progression**
+**Non-parametric stats on ABA temporal progression**
 
 These stats were run with the raw data, and don't require normal data (since they are non-parametric). However, using log values and adding an expression cutoff might change them if we decide to do so.
-	Anova: Results on a series of aligned rank transform anovas (non-parametric) on the ABA temporal progression data can be seen [here](https://github.com/jjaa-mp/raul_tesina/tree/master/0.code/R_scripts/output/anova). It includes pairwise comparison in:
+	
+  + Anova: Results on a series of aligned rank transform anovas (non-parametric) on the ABA temporal progression data can be seen [here](https://github.com/jjaa-mp/raul_tesina/tree/master/0.code/R_scripts/output/anova). It includes pairwise comparison in:
 		- Brain regions only
 		- Developmental stages only
 		- The interaction between brain region and developmental stages
