@@ -603,20 +603,80 @@ write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAk
 
 ```{r}
 df <- read.csv(file = "~/GSE156793_S8_DE_gene_cells.csv.gz")
-#Whole dataset - in AKEY
+
+#Whole dataset  in AKEY
+df <- df %>% mutate(max.expr = log2(max.expr))
 df$gene_short_name <- gsub("\\'", "", df$gene_short_name)
-dfakey <- df[df$gene_short_name %in% results$hgnc_symbol,]
-meanakey <- dfakey %>% group_by(organ) %>% summarize(Mean = mean(max.expr))
+dfakey <- df %>% filter(gene_short_name %in% results$hgnc_symbol)
+meanakey <- dfakey %>% group_by(organ) %>% dplyr::summarize(Mean = mean(max.expr))
 meanakey[order(meanakey$Mean, decreasing = TRUE),]
 
-#Whole dataset - in AKEY & PEY
-dfsubsetboth <- df[df$gene_short_name %in% both$hgnc_symbol,]
-meanakeypey <- dfsubsetboth %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
+#filtering for paired test
+meanakeytest <- dfakey[dfakey$gene_short_name %in% names(which(table(dfakey$gene_short_name) > 14)), ]
+meanakeytest <- meanakeytest %>% arrange(meanakeytest$gene_short_name)
+pp <- pairwise.t.test(meanakeytest$max.expr, meanakeytest$organ, p.adjust.method = "BH", paired = TRUE)
+
+get_lower_tri<-function(cormat){
+    cormat[upper.tri(cormat)] <- NA
+    return(cormat)
+}
+lower_tri <- get_lower_tri(as.matrix(pp$p.value))
+melted <- melt(lower_tri, na.rm = TRUE)
+
+pl_fr <- ggplot(data = melted, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "#F0E442", high = "#0072B2", mid = "#CC79A7", 
+   midpoint = 0.5, limit = c(0,1), space = "Lab", 
+   name="p-value") +
+  theme_classic()+xlab("")+ylab("")+ 
+ theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_x_discrete(position = "top")+
+ coord_fixed()
+pl_fr
+
+#ALT
+test1 <- meanakeytest %>% select(organ, gene_short_name, max.expr)
+test1 <- as_tibble(test1)
+test1$gene_short_name <- as.factor(test1$gene_short_name)
+test2 <- meanakeytest %>% select(organ, gene_short_name, max.expr)
+rr <- pivot_wider(test2, names_from = organ, values_from = max.expr)
+rownames(rr) <- rr$gene_short_name
+rr[,1] <- NULL
+
+pprr <- pairwise.t.test(rr$max.expr, rr$organ, p.adjust.method = "BH", paired = TRUE)
+
+rr1 <- melt(rr, id="gene_short_name")
+pprr1 <- pairwise.t.test(rr1$value, rr1$variable, p.adjust.method = "BH", paired = TRUE)
+
+
+#Whole dataset in AKEY & PEY
+dfsubsetboth <- df %>% filter(gene_short_name %in% both$hgnc_symbol)
+meanakeypey <- dfsubsetboth %>% group_by(organ) %>% dplyr::summarize(Mean = mean(max.expr))
 meanakeypey[order(meanakeypey$Mean, decreasing = TRUE),]
-#pairwise.t.test(dfsubsetboth$max.expr, dfsubsetboth$organ, p.adjust.method = "BH")
+
+#filtering for paired test
+meanakeypeytest <- dfsubsetboth[dfsubsetboth$gene_short_name %in% names(which(table(dfsubsetboth$gene_short_name) > 14)), ]
+meanakeypeytest <- meanakeypeytest %>% arrange(meanakeypeytest$gene_short_name)
+
+pp1<-pairwise.t.test(meanakeypeytest$max.expr, meanakeypeytest$organ, p.adjust.method = "BH", paired = TRUE)
+
+lower_tri <- get_lower_tri(as.matrix(pp1$p.value))
+melted1 <- melt(lower_tri, na.rm = TRUE)
+
+pl_fr1 <- ggplot(data = melted1, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "#F0E442", high = "#0072B2", mid = "#CC79A7", 
+   midpoint = 0.5, limit = c(0,1), space = "Lab", 
+   name="p-value") +
+  theme_classic()+xlab("")+ylab("")+ 
+ theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_x_discrete(position = "top")+
+ coord_fixed()
+pl_fr1
+
 
 #Raw:
-df  %>% group_by(organ) %>% summarize(Mean = mean(max.expr), .groups = 'drop')
+rawmean <- df  %>% group_by(organ) %>% dplyr::summarize(Mean = mean(max.expr))
+rawmean[order(rawmean$Mean, decreasing = TRUE),]
+
 df1 <- df[which(df$organ=='Cerebellum'), ]
 brain <- df[which(df$organ=='Cerebrum'), ]
 #write.csv(df1, file="CellAtlas_GSE156793_cerebellum.csv", row.names = FALSE)
@@ -675,12 +735,12 @@ pp <- pp[c(2:15,1)] #Reordering columns for triangular matrix
 ##Cell Atlas - Akey - Enrichment
 
   # Get upper triangle of the correlation matrix
-get_upper_tri <- function(cormat){
-    cormat[lower.tri(cormat)]<- NA
+get_lower_tri<-function(cormat){
+    cormat[upper.tri(cormat)] <- NA
     return(cormat)
-  }
-upper_tri <- get_upper_tri(as.matrix(pp))
-melted <- melt(upper_tri, na.rm = TRUE)
+}
+lower_tri <- get_lower_tri(as.matrix(pp$p.value))
+melted <- melt(lower_tri, na.rm = TRUE)
 
 pl_fr <- ggplot(data = melted, aes(Var2, Var1, fill = value))+
  geom_tile(color = "white")+
