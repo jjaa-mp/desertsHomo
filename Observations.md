@@ -23,6 +23,7 @@ From results:
 | Stomach  | 7.07  |  
 | Heart  | 6.97  |
 | Muscle  | 6.81 | 
+
 *Cerebrum 13th; CBL 14th (out of 15)
 
 **Chen+Pey**
