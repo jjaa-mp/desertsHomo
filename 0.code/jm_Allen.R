@@ -153,7 +153,6 @@ for (r in 1:length(ab)){
 }
 ```
 
-
 #ABA Data - All genes that are present in Akey - LOG NORMALIZE
 ```{r}
 q10 = vector(mode="list", length = length(ab))
@@ -204,7 +203,7 @@ adult <- do.call("rbind", as.data.frame(mean1[[5]]))
 colnames(adult) <- "adult"
 
 final_merge <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
-write.xlsx(final_merge,row.names = TRUE, file = "~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_log2.xlsx")
+#write.xlsx(final_merge,row.names = TRUE, file = "~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_log2.xlsx")
 
 #Plot
 final_merge <- tibble::rownames_to_column(final_merge, "Structure")
@@ -222,7 +221,7 @@ c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
 pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_log.pdf", pl1, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_log.pdf", pl1, width = 11.69, height = 8.27, units = "in")
 
 #STAT
 dfa <- lapply(akey10, melt)
@@ -247,9 +246,9 @@ dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
 # dfa_s5 <- dfa_s5[dfa_s5$gene_name %in% names(which(table(dfa_s5$gene_name) > 15)), ]
  
 finaldf <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
-ggqqplot(finaldf, "value", facet.by = "stage")
-qq1 <- ggqqplot(finaldf, "value", facet.by = "stage")
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_qqplot.pdf", qq1, width = 11.69, height = 8.27, units = "in")
+#ggqqplot(finaldf, "value", facet.by = "stage")
+#qq1 <- ggqqplot(finaldf, "value", facet.by = "stage")
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_qqplot.pdf", qq1, width = 11.69, height = 8.27, units = "in")
 
 
 oneway1 <- finaldf %>%
@@ -321,7 +320,7 @@ adult <- do.call("rbind", as.data.frame(mean2[[5]]))
 colnames(adult) <- "adult"
 
 final_mergelog <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
-write.xlsx(final_mergelog,row.names = TRUE, file = "~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2.xlsx")
+#write.xlsx(final_mergelog,row.names = TRUE, file = "~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2.xlsx")
 
 #For plot:
 final_mergelog <- tibble::rownames_to_column(final_mergelog, "Structure")
@@ -344,8 +343,8 @@ d<-ggparcoord(final_mergelog,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
 d1<-arrangeGrob(d, left=textGrob("D"))
 
-pl2 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log.pdf", pl2, width = 11.69, height = 8.27, units = "in")
+#pl2 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log.pdf", pl2, width = 11.69, height = 8.27, units = "in")
 
 # STAT
 dfa <- lapply(akeypey10, melt)
@@ -374,8 +373,8 @@ dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
 #TWO WAY REPEATED MEASURES ANOVA
 finaldf2 <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
 ggqqplot(finaldf2, "value", facet.by = "stage")
-qq2 <- ggqqplot(finaldf2, "value", facet.by = "stage")
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
+#qq2 <- ggqqplot(finaldf2, "value", facet.by = "stage")
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
 
 # STAT
 oneway1 <- finaldf2 %>%
@@ -392,7 +391,7 @@ pw1 <- finaldf2 %>%
     p.adjust.method = "BH"
     )
 struc_pw <- pw1 %>% filter(p.adj.signif != "ns")
-write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
+#write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
 
 
 oneway2 <- finaldf2 %>%
@@ -411,7 +410,7 @@ pw2 <- finaldf2 %>%
     )
 
 stages <- pw2 %>% filter(p.adj.signif != "ns")
-write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Stages_pairwise_significant.csv", row.names = FALSE)
+#write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Stages_pairwise_significant.csv", row.names = FALSE)
 ```
 
 #ABA Data - All genes (raw data) LOG NORMALIZE
@@ -465,11 +464,25 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
 
 pl3 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAll_log.pdf", pl3, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAll_log.pdf", pl3, width = 11.69, height = 8.27, units = "in")
+
+
+dfa <- lapply(aba_all, melt)
+for (i in 1:length(dfa)){ 
+   dfa[[i]][4] <- i #in Akey
+ }
+dfa1 <- ldply(dfa, data.frame)
+colnames(dfa1)[colnames(dfa1) == "L1"] <- c("stage")
+dfa1$stage <- as.factor(dfa1$stage)
+dfa1 <- as_tibble(dfa1)
+dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
+finaldf0 <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
+
+
 ```
 
 
-#ABA Data - All genes that are present in both Akey and Pey LOG NORMALIZE
+#ABA Data - All genes that are present in both Pey LOG NORMALIZE
 ```{r}
 #Global data
 pey10 = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
@@ -501,7 +514,7 @@ adult <- do.call("rbind", as.data.frame(mean3[[5]]))
 colnames(adult) <- "adult"
 
 final_mergepey <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
-write.xlsx(final_mergepey,row.names = TRUE, file = "~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesPey_log2.xlsx")
+#write.xlsx(final_mergepey,row.names = TRUE, file = "~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesPey_log2.xlsx")
 
 #For plot:
 final_mergepey <- tibble::rownames_to_column(final_mergepey, "Structure")
@@ -525,7 +538,7 @@ d<-ggparcoord(final_mergepey,
 d1<-arrangeGrob(d, left=textGrob("D"))
 
 pl4 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesPey_log.pdf", pl4, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesPey_log.pdf", pl4, width = 11.69, height = 8.27, units = "in")
 
 # STAT
 dfa <- lapply(akeypey10, melt)
@@ -555,7 +568,7 @@ dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
 finaldf2 <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
 ggqqplot(finaldf2, "value", facet.by = "stage")
 qq2 <- ggqqplot(finaldf2, "value", facet.by = "stage")
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
 
 # STAT
 oneway1 <- finaldf2 %>%
@@ -572,7 +585,7 @@ pw1 <- finaldf2 %>%
     p.adjust.method = "BH"
     )
 struc_pw <- pw1 %>% filter(p.adj.signif != "ns")
-write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
+#write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
 
 
 oneway2 <- finaldf2 %>%
@@ -591,7 +604,7 @@ pw2 <- finaldf2 %>%
     )
 
 stages <- pw2 %>% filter(p.adj.signif != "ns")
-write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Stages_pairwise_significant.csv", row.names = FALSE)
+#write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Stages_pairwise_significant.csv", row.names = FALSE)
 ```
 
 
@@ -614,7 +627,7 @@ meanakey[order(meanakey$Mean, decreasing = TRUE),]
 #filtering for paired test
 meanakeytest <- dfakey[dfakey$gene_short_name %in% names(which(table(dfakey$gene_short_name) > 14)), ]
 meanakeytest <- meanakeytest %>% arrange(meanakeytest$gene_short_name)
-pp <- pairwise.t.test(meanakeytest$max.expr, meanakeytest$organ, p.adjust.method = "BH", paired = TRUE)
+pp <- pairwise.t.test(meanakeytest$max.expr, meanakeytest$organ, data=meanakeytest,  p.adjust.method = "BH", paired = TRUE)
 
 get_lower_tri<-function(cormat){
     cormat[upper.tri(cormat)] <- NA
@@ -632,20 +645,7 @@ pl_fr <- ggplot(data = melted, aes(Var2, Var1, fill = value))+
  theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_x_discrete(position = "top")+
  coord_fixed()
 pl_fr
-
-#ALT
-test1 <- meanakeytest %>% select(organ, gene_short_name, max.expr)
-test1 <- as_tibble(test1)
-test1$gene_short_name <- as.factor(test1$gene_short_name)
-test2 <- meanakeytest %>% select(organ, gene_short_name, max.expr)
-rr <- pivot_wider(test2, names_from = organ, values_from = max.expr)
-rownames(rr) <- rr$gene_short_name
-rr[,1] <- NULL
-
-pprr <- pairwise.t.test(rr$max.expr, rr$organ, p.adjust.method = "BH", paired = TRUE)
-
-rr1 <- melt(rr, id="gene_short_name")
-pprr1 <- pairwise.t.test(rr1$value, rr1$variable, p.adjust.method = "BH", paired = TRUE)
+ggsave(file="~/raul_tesina/2.plots/cellatlas_meanexpr_log_heatmap/CellAtlas_MeanExprAkey_log_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
 
 
 #Whole dataset in AKEY & PEY
@@ -671,6 +671,7 @@ pl_fr1 <- ggplot(data = melted1, aes(Var2, Var1, fill = value))+
  theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_x_discrete(position = "top")+
  coord_fixed()
 pl_fr1
+ggsave(file="~/raul_tesina/2.plots/cellatlas_meanexpr_log_heatmap/CellAtlas_MeanExprAkeyPey_log_heatmap.pdf", pl_fr1,width = 11.69, height = 8.27, units = "in")
 
 
 #Raw:
@@ -815,32 +816,6 @@ pl_fr2 <- ggplot(data = melted2, aes(Var2, Var1, fill = value))+
 pl_fr2
 #ggsave(file="CellAtlas_MeanExprAkeyPey_heatmap.pdf", pl_fr2,width = 11.69, height = 8.27, units = "in")
 ```
-
-```{r}
-library(rstatix)
-s <- data.frame(dfsubsetboth$organ, dfsubsetboth$gene_short_name, dfsubsetboth$max.expr)
-names(s) <- c("x", "y", "z")
-ss <- pivot_wider(s, names_from = x, values_from = z)
-ss1 <- ss[complete.cases(ss),]
-ss2 <- ss1 %>%
-    gather(key = "block", value = "expression", colnames(ss1[-1])) %>% convert_as_factor(y, block)
-ss2$y <- factor(ss2$y)
-
-
-ss2 %>% friedman_test(expression ~ block | y)
-ss2 %>% friedman_effsize(expression ~ block | y)
-
-# pairwise comparisons
-pw <- ss2 %>%
-  wilcox_test(expression ~ block, paired = TRUE, p.adjust.method = "BH")
-
-library(DescTools)
-DunnettTest(x=ss2$expression, ss2$block)
-
-library(agricolae)
-friedman(ss2$y,ss2$block,ss2$expression,alpha=0.05,group=TRUE, console = TRUE, main = TRUE)
-```
-
 
 #CELL ATLAS - CELL TYPE ENRICHMENT - AKEY
 ```{r}
@@ -1329,8 +1304,36 @@ pl5 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1,
 ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "in")
 ```
 
+#Trajectory plots
+```{r}
+final_merge0 #all
+final_merge #akey
+final_mergelog #akeypey
+
+final_merge0$dataset <- c("raw")
+final_merge$dataset <- c("akey")
+final_mergelog$dataset <- c("akeypey")
+
+tot_pl <-rbind(final_merge, final_merge0, final_mergelog)
+tot_pl <- as_tibble(tot_pl)
+tot_pl <- tot_pl %>% mutate(dataset=as.character(dataset))
+
+levels(tot_pl$dataset) <-  c("raw", "akeypey", "akey")
+
+n <-ggparcoord(tot_pl,
+columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA")+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
 
 
+
+n <-ggparcoord(tot_pl,
+columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean expression")+labs(color="Dataset")
+
+
+n + facet_wrap(~Structure)
+
+an <- n + facet_wrap(~Structure) 
+ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
+```
 
 
 
