@@ -4,7 +4,7 @@ randomregion_biomart_query <- function(random) {
                      dataset = 'hsapiens_gene_ensembl',
                      host = 'https://grch37.ensembl.org')
   
-  resultsTemp=getBM(attributes = c("ensembl_gene_id"),
+  resultsTemp=getBM(attributes = c("hgnc_symbol"),
                     filters = c("chromosomal_region","biotype"),
                     values = list(random,biotype="protein_coding"), mart = ensembl)
 }
