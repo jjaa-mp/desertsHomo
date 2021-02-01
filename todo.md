@@ -7,4 +7,8 @@
 - [X] **Stats** for SNP count and frequency (not modified)
 - [X] Mean expression DEG from Cell Atlas data (modified with log2)
   + [X] Stats (pairwise paired t tests) + heatmaps plot
+  
+  
+- [X] Crossing data of **brain psych encode**.
+  + [ ] Perform similar brain data analysis with this new data
 
