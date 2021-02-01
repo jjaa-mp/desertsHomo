@@ -24,6 +24,8 @@ library(multcomp)
 library(ARTool)
 library(emmeans)
 library(PMCMRplus)
+library(regioneR)
+library(BSgenome.Hsapiens.UCSC.hg19)
 
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("reorder.factor", "gplots")

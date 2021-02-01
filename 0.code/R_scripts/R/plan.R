@@ -53,7 +53,6 @@ the_plan <- drake_plan(
    #anova_GSEpey = alt_anova(GSEpey) # checking with anova + Tukey if Friedman is alright
 
    #Permutations
-   
-   
+
 )
 #to do: include log values for plots
