@@ -61,14 +61,12 @@ randReg50set1<-createRandomRegions(nregions = 50,length.mean = 15000000,length.s
 randReg50set2<-createRandomRegions(nregions = 50,length.mean = 15000000,length.sd = 1000000,genome = "hg19", mask = mask)
 randReg50set3<-createRandomRegions(nregions = 50,length.mean = 15000000,length.sd = 1000000,genome = "hg19", mask = mask)
 randReg50set4<-createRandomRegions(nregions = 50,length.mean = 15000000,length.sd = 1000000,genome = "hg19", mask = mask)
-# AA: Lots of questions at this point. Why creat 4 regions if each of them includes coordinates from the 4 deserts? I thought here what you wanted to do is randomize a region from each desert, but I don't understand why doing 4 then here if they are combined
-
 
 
 #Here I generate a proper dataframe that will be usefull later on
 abtemp2 <- cbind(idGene = rownames(abtemp), abtemp)
 rownames(abtemp2) <- 1:nrow(abtemp2)
-abDeserts <- abtemp2[abtemp2$idGene %in% resultsEnsembl$ensembl_gene_id,] #AA: removed breaking code
+abDeserts <- abtemp2[abtemp2[,1] %in% resultsEnsembl$ensembl_gene_id,] #AA: removed breaking code
 abDeserts$idGene<-NULL
 drop(abDeserts$idGene)
 
@@ -83,12 +81,14 @@ rownames(meansSubstructTemp) <- 1:nrow(meansSubstructTemp)
 
 #This variable will contain all the ABAData per all the alternative permutations
 randomABAData<-list()
-for (i in 1:1000){
+for (i in 1:10){
   sprintf("%d randomset",i)
   desert1<-c(runValue(seqnames(randReg50set1)[i]),start(randReg50set1)[i],end(randReg50set1)[i])
   desert2<-c(runValue(seqnames(randReg50set2)[i]),start(randReg50set2)[i],end(randReg50set2)[i])
   desert3<-c(runValue(seqnames(randReg50set3)[i]),start(randReg50set3)[i],end(randReg50set3)[i])
   desert4<-c(runValue(seqnames(randReg50set4)[i]),start(randReg50set4)[i],end(randReg50set4)[i])
+  #AA: so desert1, for example, includes a random region from the genom except from the chr1 desert, right?
+  #... but it could include regions that overlap with desert2, for example, and we should control for that
   filterlistTemp<-c(paste(desert1,collapse=":"),paste(desert2,collapse=":"),paste(desert3,collapse=":"),paste(desert4,collapse=":"))
   print(filterlistTemp)
   abtemp2 <- cbind(idGene = rownames(abtemp), abtemp)
