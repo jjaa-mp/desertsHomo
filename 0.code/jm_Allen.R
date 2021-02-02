@@ -1335,7 +1335,68 @@ an <- n + facet_wrap(~Structure)
 ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
 ```
 
+#Raül's code
+```{r}
+mRNAseqData=read.table("~/tmp_psychENCODE/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
 
+sb1 <- mRNAseqData
+#Keeping just one gene identifier
+modsb1=sb1 %>% 
+  separate(Geneid,c("EnsemblID","Genename"),extra="merge")
+modsb1$EnsemblID<-NULL
+#drop(modmRNAseqData$NormalName)
+#Transpose the matrix to cross it with other data
+modmRNAseqData=t(modsb1)
+
+#Transformation of the original data
+modmRNAseqData=as.data.frame(modmRNAseqData)
+
+colnames(modmRNAseqData) <- as.matrix(unlist(modmRNAseqData[1,]))
+modmRNAseqData <- modmRNAseqData[-1, ]
+
+modmRNAseqData <- cbind(info = rownames(modmRNAseqData), modmRNAseqData)
+rownames(modmRNAseqData) <- 1:nrow(modmRNAseqData)
+
+
+#duplicated columns
+#colnames(modmRNAseqData)[duplicated(colnames(modmRNAseqData))]
+modmRNAseqData <- modmRNAseqData[, !duplicated(colnames(modmRNAseqData))]
+modmRNAseqData=modmRNAseqData %>% 
+  separate(info, c("Braincode","Regioncode"))
+#staticmodmRNAseqData=modmRNAseqData
+
+#Brining the metadata of the database
+library(readxl)
+metadatamRNAseq=read_xlsx("~/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
+
+
+modMetadatamRNAseq=na.omit(metadatamRNAseq)
+modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
+modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
+
+finalredmRNAseqData=merge(modMetadatamRNAseq,modmRNAseqData,by=c("Braincode", "Regioncode"))
+
+finalredmRNAseqData$Braincode <- NULL
+finalredmRNAseqData$Label<- paste(finalredmRNAseqData$Regioncode, finalredmRNAseqData$Window, sep="_")
+finalredmRNAseqData$Regioncode <- NULL
+finalredmRNAseqData$Window <- NULL
+
+finalredmRNAseqData <- as_tibble(finalredmRNAseqData)
+
+#finalredmRNAseqData$Label <- as.factor(finalredmRNAseqData$label)
+finalredmRNAseqData[,-ncol(finalredmRNAseqData)] <- sapply(finalredmRNAseqData[,-ncol(finalredmRNAseqData)],as.numeric)
+
+usbset2 <- finalredmRNAseqData[1:300,]
+tse <- usbset2 %>%
+    group_by(Label) %>%
+    dplyr::summarise_all(mean, na.rm=TRUE)
+
+
+#testredmRNAseqData=merge(modMetadatamRNAseq,prredmodmRNAseqData,by="Braincode")
+
+#write.csv(finalredmRNAseqData,"crossedDatamRNAseq.csv")
+
+```
 
 
 
