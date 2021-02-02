@@ -10,5 +10,8 @@
   
   
 - [X] Crossing data of **brain psych encode**.
-  + [ ] Perform similar brain data analysis with this new data
+  + [ ] Perform similar brain data analysis with this new data. Provisionally:
+    + [ ] Akey+Pey (Raül)
+    + [ ] Akey alone (Juan)
+    + [ ] Entire dataset (ubics cluster, Alejandro)
 
