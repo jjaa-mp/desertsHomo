@@ -18,7 +18,7 @@ permutation_test <- function(npermutations, abadult) {
   #get the expression data of random genes
 
   #Internal function
-  selected <- lapply(run, filter_genexpr_random, abadult = abadult)
+  selected <- lapply(cleanrun, filter_genexpr_random, abadult = abadult)
   # quantile 10 cutoff to avoid 0's happens here!
   
   selected <- lapply(selected, quantilecut)
