@@ -5,11 +5,11 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata){
   means <- unlist(means)
   #All the means of 414 organs
   
-  #tidy version of nested list (permutationrun)
   perm_statsdf <- NULL
   perm_statsdf$struct_id <- names
   perm_statsdf$mean_struct <- means
   perm_statsdf <- as.data.frame(perm_statsdf)
+  perm_statsdf$datasource <- "permutations"
   
   #needed for later join
   perm_statsdf$struct_id <- as.factor(perm_statsdf$struct_id) 
@@ -31,17 +31,46 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata){
     dplyr::select(variable, value)  %>% 
     dplyr::filter(value > quantile(value, 0.10)) %>% 
     dplyr::mutate(mean_struct = log(value)) %>% 
-    dplyr::select(variable, mean_struct) 
+    dplyr::select(variable, mean_struct) %>% 
+    dplyr::mutate(datasource = "abakey")
   
-  colnames(abakey_df) <- c("struct_id", "mean_struct")
+  colnames(abakey_df) <- c("struct_id", "mean_struct", "datasource")
 
   #Checking normality
   hist(abakey_df$mean_struct) 
   # Enough
   
-  test <- full_join(perm_statsdf, abakey_df)
+  full_data <- full_join(perm_statsdf, abakey_df)
+  
+  #quick visualization
+  ggplot(full_data) +
+    theme_minimal() +
+    aes(x = mean_struct, color = datasource, fill = datasource) +
+    geom_histogram() +
+    theme(legend.position = "none")
+  
+  #from car package: tests if variances are equal (they are)
+  #leveneTest(mean_struct ~ struct_id, data = full_data)
+  
+  printf("Wait a bit; at 1000 permutations, this should take some time")
+  res.aov <- anova_test(data = full_data, dv = mean_struct, wid = struct_id, between = datasource)
+  printf(get_anova_table(res.aov))
+  printf("Done!")
+  
+  printf("Posthoc by structure")
+  one.way2 <- full_data %>%
+    group_by(struct_id) %>%
+    anova_test(dv = mean_struct, between  = datasource) %>%
+    get_anova_table() %>%
+    adjust_pvalue(method = "bonferroni")
+  printf(one.way2)
+  write.csv(one.way2, "output/perm_posthoc.csv")
+  
+  
+  #residuals, with some artifacts from log transformation I guess
+  #plot(fitted(model),
+  #           residuals(model))
 }
-
 
 
 

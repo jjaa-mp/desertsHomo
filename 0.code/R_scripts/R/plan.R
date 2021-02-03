@@ -54,6 +54,7 @@ the_plan <- drake_plan(
 
    #Permutations
    npermutations=1000,
-   permutationrun = permutation_test(npermutations, abadult)
+   permutationrun = permutation_test(npermutations, abadult),
+   permutationstats = stats_permutations(permutationrun, akey, abadult)
 )
 #to do: include log values for plots

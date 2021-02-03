@@ -26,6 +26,8 @@ library(emmeans)
 library(PMCMRplus)
 library(regioneR)
 library(BSgenome.Hsapiens.UCSC.hg19)
+library(R.utils)
+library(rstatix)
 
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("reorder.factor", "gplots")
