@@ -1405,25 +1405,47 @@ modsb1= mRNAseqData %>%
   separate(Geneid,c("EnsemblID","Genename"),extra="merge")
 modsb1$EnsemblID<-NULL
 #Filtering for Akey alone
-akeySestan <- modsb1 %>% filter(modsb1$Genename %in% results$hgnc_symbol)
-akeySestan=t(akeySestan)
+akeySestan1 <- modsb1 %>% filter(modsb1$Genename %in% results$hgnc_symbol)
+akeySestan1=t(akeySestan1)
+
+
 
 #As dataframe
-akeySestan=as.data.frame(akeySestan)
+akeySestan1=as.data.frame(akeySestan1)
 
-colnames(akeySestan) <- as.matrix(unlist(akeySestan[1,]))
-akeySestan <- akeySestan[-1, ]
+colnames(akeySestan1) <- as.matrix(unlist(akeySestan1[1,]))
+akeySestan1 <- akeySestan1[-1, ]
 
-akeySestan <- cbind(info = rownames(akeySestan), akeySestan)
-rownames(akeySestan) <- 1:nrow(akeySestan)
+akeySestan1 <- cbind(info = rownames(akeySestan1), akeySestan1)
+rownames(akeySestan1) <- 1:nrow(akeySestan1)
 
 #duplicated columns - issue in raw data. Here: 
-colnames(akeySestan)[duplicated(colnames(akeySestan))] #KCNA3
+colnames(akeySestan1)[duplicated(colnames(akeySestan1))] #1
+akeySestan1 <- akeySestan1[, !duplicated(colnames(akeySestan1))]
 
-akeySestan <- akeySestan[, !duplicated(colnames(akeySestan))]
-
-akeySestan=akeySestan %>% 
+akeySestan1=akeySestan1 %>% 
   separate(info, c("Braincode","Regioncode"))
+
+#Normality
+#normcheck <- akeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+#normcheck$RPKM <- as.numeric(normcheck$RPKM)
+#ggqqplot(normcheck, "RPKM", facet.by = "Regioncode")
+
+#Transformation
+logakeySestan1 <- akeySestan1
+
+cols.num <- colnames(logakeySestan1[3:ncol(logakeySestan1)])
+
+logakeySestan1[,cols.num] <- lapply(logakeySestan1[cols.num],as.character)
+logakeySestan1[,cols.num] <- lapply(logakeySestan1[cols.num],as.numeric)
+
+logakeySestan1[3:ncol(logakeySestan1)] <- log2(logakeySestan1[3:ncol(logakeySestan1)])
+
+#Normality after transformation
+#lognormcheck <- logakeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+#lognormcheck$RPKM <- as.numeric(lognormcheck$RPKM)
+#ggqqplot(lognormcheck, "RPKM", facet.by = "Regioncode")
+
 
 #Brining the metadata of the database
 library(readxl)
@@ -1434,29 +1456,28 @@ modMetadatamRNAseq=na.omit(metadatamRNAseq)
 modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
 modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
 
-finalakeySestan=merge(modMetadatamRNAseq,akeySestan,by=c("Braincode", "Regioncode"))
+#With log
+finalakeySestan1=merge(modMetadatamRNAseq,logakeySestan1,by=c("Braincode", "Regioncode"))
+#Without log:
+#finalakeySestan1=merge(modMetadatamRNAseq,akeypeySestan,by=c("Braincode", "Regioncode"))
 
-finalakeySestan$Braincode <- NULL
-finalakeySestan$Label<- paste(finalakeySestan$Regioncode, finalakeySestan$Window, sep="_")
-finalakeySestan$Regioncode <- NULL
-finalakeySestan$Window <- NULL
+finalakeySestan1$Braincode <- NULL
+finalakeySestan1$Label<- paste(finalakeySestan1$Regioncode, finalakeySestan1$Window, sep="_")
+finalakeySestan1$Regioncode <- NULL
+finalakeySestan1$Window <- NULL
 
-finalakeySestan <- as_tibble(finalakeySestan)
+finalakeySestan1 <- as_tibble(finalakeySestan1)
 
-#finalredmRNAseqData$Label <- as.factor(finalredmRNAseqData$label)
-finalakeySestan[,-ncol(finalakeySestan)] <- sapply(finalakeySestan[,-ncol(finalakeySestan)],as.numeric)
-
-finalakeySestan_w_mean <- finalakeySestan %>%
+finalakeySestan1_w_mean <- finalakeySestan1 %>%
     group_by(Label) %>%
     dplyr::summarise_all(mean, na.rm=TRUE)
 
-
 #For plotting
-dfakeysestan <- data.frame(Structure=finalakeySestan_w_mean$Label, Means=rowMeans(finalakeySestan_w_mean[,-1]))
+dfakeySestan1 <- data.frame(Structure=finalakeySestan1_w_mean$Label, Means=rowMeans(finalakeySestan1_w_mean[,-1]))
 
-dfakeysestan <- dfakeysestan %>% 
+dfakeySestan1 <- dfakeySestan1 %>% 
   separate(Structure, c("Structure","Window"))
-preli1 <- pivot_wider(dfakeysestan, names_from = Window, values_from = Means)
+preli1 <- pivot_wider(dfakeySestan1, names_from = Window, values_from = Means)
 preli1[,10] <- NULL
 preli1 <- preli1[complete.cases(preli1), ]
 colnames(preli1) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
@@ -1464,10 +1485,123 @@ colnames(preli1) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "
 levels(colnames(preli1)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
 
 a<- ggparcoord(preli1,
-              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts - VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
 b <- ggparcoord(preli1,
                  columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
 c<-ggparcoord(preli1,
+               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+a1<-arrangeGrob(a, left=textGrob("A"))
+b1<-arrangeGrob(b, left =textGrob("B"))
+c1<-arrangeGrob(c, left=textGrob("C"))
+grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+# 
+pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+```
+
+#AkeyPey in Sestan data
+```{r}
+mRNAseqData=read.table("~/tmp_psychENCODE/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+modsb1= mRNAseqData %>% 
+  separate(Geneid,c("EnsemblID","Genename"),extra="merge")
+modsb1$EnsemblID<-NULL
+#Filtering for Akey alone
+akeypeySestan <- modsb1 %>% filter(modsb1$Genename %in% both$hgnc_symbol)
+akeypeySestan=t(akeypeySestan)
+
+
+
+#As dataframe
+akeypeySestan=as.data.frame(akeypeySestan)
+
+colnames(akeypeySestan) <- as.matrix(unlist(akeypeySestan[1,]))
+akeypeySestan <- akeypeySestan[-1, ]
+
+akeypeySestan <- cbind(info = rownames(akeypeySestan), akeypeySestan)
+rownames(akeypeySestan) <- 1:nrow(akeypeySestan)
+
+#duplicated columns - issue in raw data. Here: 
+#colnames(akeypeySestan)[duplicated(colnames(akeypeySestan))] #0
+#akeypeySestan <- akeypeySestan[, !duplicated(colnames(akeypeySestan))]
+
+akeypeySestan=akeypeySestan %>% 
+  separate(info, c("Braincode","Regioncode"))
+
+# #Normality
+# normcheck <- akeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+# normcheck$RPKM <- as.character(normcheck$RPKM)
+# normcheck$RPKM <- as.numeric(normcheck$RPKM)
+# normcheck$RPKM <- log2(normcheck$RPKM)
+# 
+# norm_1=merge(modMetadatamRNAseq,normcheck,by=c("Braincode", "Regioncode"))
+# 
+# norm_1 <- as_tibble(norm_1)
+# 
+# ggqqplot(norm_1, "RPKM", facet.by = "Window")
+# 
+# #Transformation
+# logakeypeysestan1 <- akeypeySestan
+# 
+# cols.num <- colnames(logakeypeysestan1[3:ncol(logakeypeysestan1)])
+# 
+# logakeypeysestan1[,cols.num] <- lapply(logakeypeysestan1[cols.num],as.character)
+# logakeypeysestan1[,cols.num] <- lapply(logakeypeysestan1[cols.num],as.numeric)
+# 
+# logakeypeysestan1[3:ncol(logakeypeysestan1)] <- log2(logakeypeysestan1[3:ncol(logakeypeysestan1)])
+# 
+# #Normality after transformation
+# lognormcheck <- logakeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+# lognormcheck$RPKM <- as.character(lognormcheck$RPKM)
+# lognormcheck$RPKM <- as.numeric(lognormcheck$RPKM)
+# lognorm_1=merge(modMetadatamRNAseq,lognormcheck,by=c("Braincode", "Regioncode"))
+# 
+# lognorm_1 <- as_tibble(lognorm_1)
+# 
+# ggqqplot(lognorm_1, "RPKM", facet.by = "Window")
+# 
+
+#Brining the metadata of the database
+library(readxl)
+metadatamRNAseq=read_xlsx("~/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
+
+
+modMetadatamRNAseq=na.omit(metadatamRNAseq)
+modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
+modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
+
+#With log
+finalakeypeySestan=merge(modMetadatamRNAseq,logakeypeysestan1,by=c("Braincode", "Regioncode"))
+#Without log:
+#finalakeypeySestan=merge(modMetadatamRNAseq,akeypeySestan,by=c("Braincode", "Regioncode"))
+
+finalakeypeySestan$Braincode <- NULL
+finalakeypeySestan$Label<- paste(finalakeypeySestan$Regioncode, finalakeypeySestan$Window, sep="_")
+finalakeypeySestan$Regioncode <- NULL
+finalakeypeySestan$Window <- NULL
+
+finalakeypeySestan <- as_tibble(finalakeypeySestan)
+
+finalakeypeySestan_w_mean <- finalakeypeySestan %>%
+    group_by(Label) %>%
+    dplyr::summarise_all(mean, na.rm=TRUE)
+
+
+#For plotting
+dfakeypeySestan <- data.frame(Structure=finalakeypeySestan_w_mean$Label, Means=rowMeans(finalakeypeySestan_w_mean[,-1]))
+
+dfakeypeySestan <- dfakeypeySestan %>% 
+  separate(Structure, c("Structure","Window"))
+preli2 <- pivot_wider(dfakeypeySestan, names_from = Window, values_from = Means)
+preli2[,10] <- NULL
+preli2 <- preli2[complete.cases(preli2), ]
+colnames(preli2) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
+#PLOT
+levels(colnames(preli2)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
+
+a<- ggparcoord(preli2,
+              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+b <- ggparcoord(preli2,
+                 columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+c<-ggparcoord(preli2,
                columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
@@ -1481,4 +1615,141 @@ pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 
 #write.csv(finalredmRNAseqData,"crossedDatamRNAseq.csv")
 ```
 
+#trial
+```{R}
+#mRNAseqData=read.table("mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+
+sb1 <- mRNAseqData
+#Keeping just one gene identifier
+modsb1=sb1 %>% 
+  separate(Geneid,c("EnsemblID","Genename"),extra="merge")
+modsb1$EnsemblID<-NULL
+#drop(modmRNAseqData$NormalName)
+#Transpose the matrix to cross it with other data
+modmRNAseqData=t(modsb1)
+
+#Transformation of the original data
+modmRNAseqData=as.data.frame(modmRNAseqData)
+
+colnames(modmRNAseqData) <- as.matrix(unlist(modmRNAseqData[1,]))
+modmRNAseqData <- modmRNAseqData[-1, ]
+
+modmRNAseqData <- cbind(info = rownames(modmRNAseqData), modmRNAseqData)
+rownames(modmRNAseqData) <- 1:nrow(modmRNAseqData)
+
+
+#duplicated columns
+#colnames(modmRNAseqData)[duplicated(colnames(modmRNAseqData))]
+modmRNAseqData <- modmRNAseqData[, !duplicated(colnames(modmRNAseqData))]
+modmRNAseqData=modmRNAseqData %>% 
+  separate(info, c("Braincode","Regioncode"))
+#staticmodmRNAseqData=modmRNAseqData
+
+#Brining the metadata of the database
+library(readxl)
+metadatamRNAseq=read_xlsx("mRNA-seq_QC.xlsx",skip = 3)
+
+
+modMetadatamRNAseq=na.omit(metadatamRNAseq)
+modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
+modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
+
+finalredmRNAseqData=merge(modMetadatamRNAseq,modmRNAseqData,by=c("Braincode", "Regioncode"))
+
+finalredmRNAseqData$Braincode <- NULL
+finalredmRNAseqData$Label<- paste(finalredmRNAseqData$Regioncode, finalredmRNAseqData$Window, sep="_")
+finalredmRNAseqData$Regioncode <- NULL
+finalredmRNAseqData$Window <- NULL
+
+finalredmRNAseqData1 <- as_tibble(finalredmRNAseqData)
+
+#finalredmRNAseqData$Label <- as.factor(finalredmRNAseqData$label)
+finalredmRNAseqData1[,-ncol(finalredmRNAseqData1)] <- sapply(finalredmRNAseqData1[,-ncol(finalredmRNAseqData1)],as.numeric)
+
+peymRNAseqFinal<-finalredmRNAseqData1[,c("Label",both$hgnc_symbol)]
+
+peymRNAseqFinal <- as_tibble(peymRNAseqFinal)
+cols.num <- c(both$hgnc_symbol)
+peymRNAseqFinal[cols.num] <- sapply(peymRNAseqFinal[cols.num],as.numeric)
+
+#finalredmRNAseqData[,-ncol(peymRNAseqFinal)] <- sapply(finalredmRNAseqData[,-ncol(finalredmRNAseqData)],as.numeric)
+
+str(peymRNAseqFinal)
+#usbset2 <- finalredmRNAseqData[1:300,]
+tse <- peymRNAseqFinal %>%
+  group_by(Label) %>%
+  dplyr::summarise_all(mean, na.rm=TRUE)
+
+#Normalization of the data
+
+hist(tse$GPR22)
+for (i in 2:ncol(tse)){
+  tse[i]=log2(tse[i])
+}
+hist(tse$GPR22)
+#testredmRNAseqData=merge(modMetadatamRNAseq,prredmodmRNAseqData,by="Braincode")
+
+#write.csv(tse,"peymRNAseqData.csv")
+#doing the same for akey
+akeymRNAseqFinal<-finalredmRNAseqData1[colnames(finalredmRNAseqData1) %in% c("Label",results$hgnc_symbol)]
+#Seven genes don't coincide
+akeymRNAseqFinal$Label
+akeymRNAseqFinal <- as_tibble(akeymRNAseqFinal)
+cols.num <-colnames(finalredmRNAseqData[colnames(finalredmRNAseqData) %in% c(results$hgnc_symbol)])
+akeymRNAseqFinal[cols.num] <- sapply(akeymRNAseqFinal[cols.num],as.numeric)
+
+str(peymRNAseqFinal)
+#usbset2 <- finalredmRNAseqData[1:300,]
+tseAkey <- akeymRNAseqFinal %>%
+  group_by(Label) %>%
+  dplyr::summarise_all(mean, na.rm=TRUE)
+
+#Normalization of the data
+
+hist(tseAkey$GPR22)
+for (i in 2:ncol(tseAkey)){
+  tseAkey[i]=log2(tseAkey[i])
+}
+hist(tseAkey$GPR22)
+#testredmRNAseqData=merge(modMetadatamRNAseq,prredmodmRNAseqData,by="Braincode")
+
+
+#write.csv(tse,"AkeymRNAseqData.csv")
+
+#Reporting mean
+#peyregne case
+tseTemp=tse %>% separate(Label, c("regioncode","Window"))
+
+peyMeanWindow=data.frame(matrix(, nrow = length(unique(tseTemp$regioncode)), ncol = length(unique(tseTemp$Window))),row.names = unique(tseTemp$regioncode)) 
+
+colnames(peyMeanWindow)=1:9
+
+tseTemp=tseAkey %>% separate(Label, c("regioncode","Window"))
+
+akeyMeanWindow=data.frame(matrix(, nrow = length(unique(tseTemp$regioncode)), ncol = length(unique(tseTemp$Window))),row.names = unique(tseTemp$regioncode))
+
+colnames(akeyMeanWindow)=1:9
+
+for (i in 1:length(tseTemp$regioncode)){
+  akeyMeanWindow[tseTemp[i,][[1]],tseTemp[i,][[2]]]<-mean(as.numeric(tseTemp[i,][3:length(tseTemp)]))
+}
+length(tseTemp)
+
+final_merge <-peyMeanWindow
+final_merge <-akeyMeanWindow
+#Plot
+final_merge <- tibble::rownames_to_column(final_merge, "Structure")
+final_merge[[1]] <- sapply(strsplit(final_merge[[1]], "_"), "[", 1)
+
+a<-ggparcoord(final_merge,
+              columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
+b <- ggparcoord(final_merge,
+                columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+c<-ggparcoord(final_merge,
+              columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+a1<-arrangeGrob(a, left=textGrob("A"))
+b1<-arrangeGrob(b, left =textGrob("B"))
+c1<-arrangeGrob(c, left=textGrob("C"))
+
+```
 
