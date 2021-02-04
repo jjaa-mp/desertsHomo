@@ -8,7 +8,7 @@
     
  - [ ] **Sestan data** *specific plots* (Juan)
     + [ ] Structure-by-structure plot
-    + [ ] Gene-by-gene plot
+    + [ ] Gene-by-gene (ChenPey) plot
   
 - [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm1+1)) (Juan)
 
