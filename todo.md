@@ -7,8 +7,8 @@
     + [ ] Entire dataset (ubics cluster, Alejandro)
     
  - [ ] **Sestan data** *specific plots* (Juan)
-  + [ ] Structure-by-structure plot
-  + [ ] Gene-by-gene plot
+    + [ ] Structure-by-structure plot
+    + [ ] Gene-by-gene plot
   
 - [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm1+1))
 
