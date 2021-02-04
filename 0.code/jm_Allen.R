@@ -155,28 +155,28 @@ for (r in 1:length(ab)){
 
 #ABA Data - All genes that are present in Akey - LOG NORMALIZE
 ```{r}
-q10 = vector(mode="list", length = length(ab))
+ab1 = vector(mode="list", length = length(ab))
+ for (i in 1:length(ab)){
+   for (h in 1:length(names(ab[[i]]))){
+     ab1[[i]][[h]] <- ab[[i]][h]
+   }
+ }
+ 
 for (i in 1:length(ab)){
-  for (h in 1:length(names(ab[[i]]))){
-    q10[[i]][[h]] <- ab[[i]][h] %>% filter(ab[[i]][h] > quantile(ab[[i]][[h]], 0.10))
-  }
-}
-
-for (i in 1:length(ab)){
-  for (h in 1:length(names(ab[[i]]))){
-    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(q10[[i]][[h]]),mart=ensembl)
-    q10[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(q10[[i]][[h]]), G_list$ensembl_gene_id)]
-    q10[[i]][[h]] <-q10[[i]][[h]][order(q10[[i]][[h]][[1]], decreasing = TRUE), ]
-  }
+   for (h in 1:length(names(ab[[i]]))){
+     G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab1[[i]][[h]]),mart=ensembl)
+     ab1[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab1[[i]][[h]]), G_list$ensembl_gene_id)]
+     ab1[[i]][[h]] <-ab1[[i]][[h]][order(ab1[[i]][[h]][[1]], decreasing = TRUE), ]
+   }
 }
 
 #Intersecting q10 (high expression) with Akey
 akey10 = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
 for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
   for (h in 1:length(names(ab[[i]]))){
-    akey10[[i]][[h]] <- q10[[i]][[h]][q10[[i]][[h]][[2]] %in% results$hgnc_symbol,] #in Akey
+    akey10[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% results$hgnc_symbol,] #in Akey
     akey10[[i]][[h]] <-  akey10[[i]][[h]][!(is.na(akey10[[i]][[h]][[2]]) | akey10[[i]][[h]][[2]]==""), ]
-    akey10[[i]][[h]][1] <- log2(akey10[[i]][[h]][1])
+    akey10[[i]][[h]][1] <- log2(akey10[[i]][[h]][1]+1)
     #Cleaning
   }
 }
@@ -185,7 +185,7 @@ for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same numbe
 mean1 = vector(mode="list", length = length(ab))
 for (i in 1:length(ab)){
   for (h in 1:length(names(ab[[i]]))){
-    mean1[[i]][[h]] <- mean(akey10[[i]][[h]][[1]])
+    mean1[[i]][[h]] <- median(akey10[[i]][[h]][[1]]) #mean
     mean1[[i]][[h]] <- as.data.frame(mean1[[i]][[h]])
     names(mean1[[i]][[h]]) <- paste(names(akey10[[i]][[h]][1]), sep='_')
   }
@@ -212,9 +212,9 @@ final_merge[[1]] <- sapply(strsplit(final_merge[[1]], "_"), "[", 1)
 a<-ggparcoord(final_merge,
               columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
 b <- ggparcoord(final_merge,
-                columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+                columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(final_merge,
-              columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+              columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
@@ -266,7 +266,7 @@ pw1 <- finaldf %>%
     p.adjust.method = "BH"
     )
 struc_pw <- pw1 %>% filter(p.adj.signif != "ns")
-write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
+#write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
 
 oneway2 <- finaldf %>%
   group_by(variable) %>%
@@ -283,19 +283,33 @@ pw2 <- finaldf %>%
     p.adjust.method = "BH"
     )
 stages <- pw2 %>% filter(p.adj.signif != "ns")
-write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_log2_anova__Stages_significant.csv", row.names = FALSE)
+#write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_log2_anova__Stages_significant.csv", row.names = FALSE)
 
 ```
 
 #ABA Data - All genes that are present in both Akey and Pey LOG NORMALIZE
 ```{r}
 #Global data
+ab2 = vector(mode="list", length = length(ab))
+ for (i in 1:length(ab)){
+   for (h in 1:length(names(ab[[i]]))){
+     ab2[[i]][[h]] <- ab[[i]][h]
+   }
+ }
+ 
+for (i in 1:length(ab)){
+   for (h in 1:length(names(ab[[i]]))){
+     G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab2[[i]][[h]]),mart=ensembl)
+     ab2[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab2[[i]][[h]]), G_list$ensembl_gene_id)]
+     ab2[[i]][[h]] <-ab2[[i]][[h]][order(ab2[[i]][[h]][[1]], decreasing = TRUE), ]
+   }
+}
 akeypey10 = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
 for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
   for (h in 1:length(names(ab[[i]]))){
-    akeypey10[[i]][[h]] <- q10[[i]][[h]][q10[[i]][[h]][[2]] %in% both$hgnc_symbol,] #in Akey
+    akeypey10[[i]][[h]] <- ab2[[i]][[h]][ab2[[i]][[h]][[2]] %in% both$hgnc_symbol,] #in Akey
     akeypey10[[i]][[h]] <-  akeypey10[[i]][[h]][!(is.na(akeypey10[[i]][[h]][[2]]) | akeypey10[[i]][[h]][[2]]==""), ]
-    akeypey10[[i]][[h]][1] <- log2(akeypey10[[i]][[h]][1])
+    akeypey10[[i]][[h]][1] <- log2(akeypey10[[i]][[h]][1]+1)
 #Cleaning
   }
 }
@@ -303,7 +317,7 @@ for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same numbe
 mean2 = vector(mode="list", length = length(ab))
 for (i in 1:length(ab)){
   for (h in 1:length(names(ab[[i]]))){
-    mean2[[i]][[h]] <- mean(akeypey10[[i]][[h]][[1]])
+    mean2[[i]][[h]] <- median(akeypey10[[i]][[h]][[1]]) #mean
     mean2[[i]][[h]] <- as.data.frame(mean2[[i]][[h]])
     names(mean2[[i]][[h]]) <- paste(names(akeypey10[[i]][[h]][1]), sep='_')
   }
@@ -329,9 +343,9 @@ final_mergelog[[1]] <- sapply(strsplit(final_mergelog[[1]], "_"), "[", 1)
 a<-ggparcoord(final_mergelog,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
 b <- ggparcoord(final_mergelog,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum (red) & MD (green)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#2ca25f", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum (red) & MD (green)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#2ca25f", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(final_mergelog,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum (blue) and HIP (orange)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#fdae6b", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum (blue) and HIP (orange)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#fdae6b", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
@@ -340,7 +354,7 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 
 d<-ggparcoord(final_mergelog,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 d1<-arrangeGrob(d, left=textGrob("D"))
 
 #pl2 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
@@ -454,9 +468,9 @@ final_merge0[[1]] <- sapply(strsplit(final_merge0[[1]], "_"), "[", 1)
 a<-ggparcoord(final_merge0,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes Raw Data")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
 b <- ggparcoord(final_merge0,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(final_merge0,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
@@ -523,9 +537,9 @@ final_mergepey[[1]] <- sapply(strsplit(final_mergepey[[1]], "_"), "[", 1)
 a<-ggparcoord(final_mergepey,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Pey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
 b <- ggparcoord(final_mergepey,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum (red) & MD (green)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#2ca25f", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum (red) & MD (green)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#2ca25f", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(final_mergepey,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum (blue) and HIP (orange)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#fdae6b", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum (blue) and HIP (orange)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#fdae6b", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
@@ -534,7 +548,7 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 
 d<-ggparcoord(final_mergepey,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 d1<-arrangeGrob(d, left=textGrob("D"))
 
 pl4 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
@@ -606,8 +620,6 @@ pw2 <- finaldf2 %>%
 stages <- pw2 %>% filter(p.adj.signif != "ns")
 #write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Stages_pairwise_significant.csv", row.names = FALSE)
 ```
-
-
 
 #Table Cell Atlas - Science
 ```{sh}
@@ -1222,9 +1234,9 @@ final_merge4[[1]] <- sapply(strsplit(final_merge4[[1]], "_"), "[", 1)
 a<-ggparcoord(final_merge4,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Rac")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
 b <- ggparcoord(final_merge4,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(final_merge4,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
@@ -1292,9 +1304,9 @@ final_merge5[[1]] <- sapply(strsplit(final_merge5[[1]], "_"), "[", 1)
 a<-ggparcoord(final_merge5,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Rac and Akey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
 b <- ggparcoord(final_merge5,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(final_merge5,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
@@ -1321,12 +1333,12 @@ tot_pl <- tot_pl %>% mutate(dataset=as.character(dataset))
 levels(tot_pl$dataset) <-  c("raw", "akeypey", "akey")
 
 n <-ggparcoord(tot_pl,
-columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA")+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA")+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 
 
 
 n <-ggparcoord(tot_pl,
-columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean expression")+labs(color="Dataset")
+columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")+labs(color="Dataset")
 
 
 n + facet_wrap(~Structure)
@@ -1408,8 +1420,6 @@ modsb1$EnsemblID<-NULL
 akeySestan1 <- modsb1 %>% filter(modsb1$Genename %in% results$hgnc_symbol)
 akeySestan1=t(akeySestan1)
 
-
-
 #As dataframe
 akeySestan1=as.data.frame(akeySestan1)
 
@@ -1439,7 +1449,7 @@ cols.num <- colnames(logakeySestan1[3:ncol(logakeySestan1)])
 logakeySestan1[,cols.num] <- lapply(logakeySestan1[cols.num],as.character)
 logakeySestan1[,cols.num] <- lapply(logakeySestan1[cols.num],as.numeric)
 
-logakeySestan1[3:ncol(logakeySestan1)] <- log2(logakeySestan1[3:ncol(logakeySestan1)])
+logakeySestan1[3:ncol(logakeySestan1)] <- log2(logakeySestan1[3:ncol(logakeySestan1)]+1)
 
 #Normality after transformation
 #lognormcheck <- logakeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
@@ -1470,7 +1480,7 @@ finalakeySestan1 <- as_tibble(finalakeySestan1)
 
 finalakeySestan1_w_mean <- finalakeySestan1 %>%
     group_by(Label) %>%
-    dplyr::summarise_all(mean, na.rm=TRUE)
+    dplyr::summarise_all(median, na.rm=TRUE)
 
 #For plotting
 dfakeySestan1 <- data.frame(Structure=finalakeySestan1_w_mean$Label, Means=rowMeans(finalakeySestan1_w_mean[,-1]))
@@ -1485,11 +1495,11 @@ colnames(preli1) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "
 levels(colnames(preli1)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
 
 a<- ggparcoord(preli1,
-              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 b <- ggparcoord(preli1,
-                 columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+                 columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(preli1,
-               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
@@ -1520,7 +1530,7 @@ akeypeySestan <- cbind(info = rownames(akeypeySestan), akeypeySestan)
 rownames(akeypeySestan) <- 1:nrow(akeypeySestan)
 
 #duplicated columns - issue in raw data. Here: 
-#colnames(akeypeySestan)[duplicated(colnames(akeypeySestan))] #0
+colnames(akeypeySestan)[duplicated(colnames(akeypeySestan))] #0
 #akeypeySestan <- akeypeySestan[, !duplicated(colnames(akeypeySestan))]
 
 akeypeySestan=akeypeySestan %>% 
@@ -1530,7 +1540,6 @@ akeypeySestan=akeypeySestan %>%
 # normcheck <- akeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
 # normcheck$RPKM <- as.character(normcheck$RPKM)
 # normcheck$RPKM <- as.numeric(normcheck$RPKM)
-# normcheck$RPKM <- log2(normcheck$RPKM)
 # 
 # norm_1=merge(modMetadatamRNAseq,normcheck,by=c("Braincode", "Regioncode"))
 # 
@@ -1539,24 +1548,26 @@ akeypeySestan=akeypeySestan %>%
 # ggqqplot(norm_1, "RPKM", facet.by = "Window")
 # 
 # #Transformation
-# logakeypeysestan1 <- akeypeySestan
+logakeypeysestan1 <- akeypeySestan
 # 
-# cols.num <- colnames(logakeypeysestan1[3:ncol(logakeypeysestan1)])
+cols.num <- colnames(logakeypeysestan1[3:ncol(logakeypeysestan1)])
 # 
-# logakeypeysestan1[,cols.num] <- lapply(logakeypeysestan1[cols.num],as.character)
-# logakeypeysestan1[,cols.num] <- lapply(logakeypeysestan1[cols.num],as.numeric)
+logakeypeysestan1[,cols.num] <- lapply(logakeypeysestan1[cols.num],as.character)
+logakeypeysestan1[,cols.num] <- lapply(logakeypeysestan1[cols.num],as.numeric)
 # 
-# logakeypeysestan1[3:ncol(logakeypeysestan1)] <- log2(logakeypeysestan1[3:ncol(logakeypeysestan1)])
+logakeypeysestan1[3:ncol(logakeypeysestan1)] <- log2(logakeypeysestan1[3:ncol(logakeypeysestan1)]+1)
+#ta <- logakeypeysestan1 %>% filter(logakeypeysestan1[3:ncol(logakeypeysestan1)]>1)
+
 # 
 # #Normality after transformation
-# lognormcheck <- logakeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
-# lognormcheck$RPKM <- as.character(lognormcheck$RPKM)
-# lognormcheck$RPKM <- as.numeric(lognormcheck$RPKM)
-# lognorm_1=merge(modMetadatamRNAseq,lognormcheck,by=c("Braincode", "Regioncode"))
+lognormcheck <- logakeypeysestan1 %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+lognormcheck$RPKM <- as.character(lognormcheck$RPKM)
+lognormcheck$RPKM <- as.numeric(lognormcheck$RPKM)
+lognorm_1=merge(modMetadatamRNAseq,lognormcheck,by=c("Braincode", "Regioncode"))
 # 
-# lognorm_1 <- as_tibble(lognorm_1)
+lognorm_1 <- as_tibble(lognorm_1)
 # 
-# ggqqplot(lognorm_1, "RPKM", facet.by = "Window")
+ggqqplot(lognorm_1, "RPKM", facet.by = "Window")
 # 
 
 #Brining the metadata of the database
@@ -1582,7 +1593,7 @@ finalakeypeySestan <- as_tibble(finalakeypeySestan)
 
 finalakeypeySestan_w_mean <- finalakeypeySestan %>%
     group_by(Label) %>%
-    dplyr::summarise_all(mean, na.rm=TRUE)
+    dplyr::summarise_all(median, na.rm=TRUE)
 
 
 #For plotting
@@ -1598,17 +1609,17 @@ colnames(preli2) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "
 levels(colnames(preli2)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
 
 a<- ggparcoord(preli2,
-              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 b <- ggparcoord(preli2,
-                 columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+                 columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(preli2,
-               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 # 
-pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+#pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 
 #testredmRNAseqData=merge(modMetadatamRNAseq,prredmodmRNAseqData,by="Braincode")
 
@@ -1744,9 +1755,9 @@ final_merge[[1]] <- sapply(strsplit(final_merge[[1]], "_"), "[", 1)
 a<-ggparcoord(final_merge,
               columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
 b <- ggparcoord(final_merge,
-                columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("mean expression")
+                columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(final_merge,
-              columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("mean expression")
+              columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
