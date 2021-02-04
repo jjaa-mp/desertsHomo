@@ -16,7 +16,7 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata){
   perm_statsdf$mean_struct <- as.numeric(perm_statsdf$mean_struct) 
   
   #checking normality
-  hist(perm_statsdf$mean_struct)
+  #hist(perm_statsdf$mean_struct)
   #very normal looking, as expected
   
 
@@ -37,7 +37,7 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata){
   colnames(abakey_df) <- c("struct_id", "mean_struct", "datasource")
 
   #Checking normality
-  hist(abakey_df$mean_struct) 
+  #hist(abakey_df$mean_struct) 
   # Enough
   
   full_data <- full_join(perm_statsdf, abakey_df)
@@ -54,7 +54,7 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata){
   
   printf("Wait a bit; at 1000 permutations, this should take some time")
   res.aov <- anova_test(data = full_data, dv = mean_struct, wid = struct_id, between = datasource)
-  printf(get_anova_table(res.aov))
+  #printf(get_anova_table(res.aov))
   printf("Done!")
   
   printf("Posthoc by structure")
@@ -63,10 +63,16 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata){
     anova_test(dv = mean_struct, between  = datasource) %>%
     get_anova_table() %>%
     adjust_pvalue(method = "bonferroni")
-  printf(one.way2)
+  
+  one.way2
+  #printf(one.way2)
   write.csv(one.way2, "output/perm_posthoc.csv")
   
+  plotting_topbottom(full_data, "top")
+  plotting_topbottom(full_data, "bottom")
   
+  return(full_data)
+
   #residuals, with some artifacts from log transformation I guess
   #plot(fitted(model),
   #           residuals(model))
