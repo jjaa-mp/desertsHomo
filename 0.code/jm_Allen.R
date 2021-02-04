@@ -47,7 +47,8 @@ results=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position",
 results <- results[!duplicated(results$hgnc_symbol),]
 #255
 length(results$hgnc_symbol[!(is.na(results$hgnc_symbol) | results$hgnc_symbol=="")])
-results <- results$hgnc_symbol[!(is.na(results$hgnc_symbol) | results$hgnc_symbol=="")]
+results <-  results[!(is.na(results$hgnc_symbol) | results$hgnc_symbol==""), ] #Cleaning
+
 
 #ALTERNATIVE: 800 genes (protein coding genes plus other genes)
 ##results_alternative =getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position"),
@@ -1505,7 +1506,9 @@ b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 # 
-pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+plak_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkey_log2_median.pdf", plak_sestan, width = 11.69, height = 8.27, units = "in")
+
 ```
 
 #AkeyPey in Sestan data
@@ -1618,12 +1621,10 @@ a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
-# 
-#pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+ 
+plakpey_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 
-#testredmRNAseqData=merge(modMetadatamRNAseq,prredmodmRNAseqData,by="Braincode")
-
-#write.csv(finalredmRNAseqData,"crossedDatamRNAseq.csv")
+ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
 ```
 
 #trial
