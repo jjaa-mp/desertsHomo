@@ -47,7 +47,7 @@ results=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position",
 results <- results[!duplicated(results$hgnc_symbol),]
 #255
 length(results$hgnc_symbol[!(is.na(results$hgnc_symbol) | results$hgnc_symbol=="")])
-
+results <- results$hgnc_symbol[!(is.na(results$hgnc_symbol) | results$hgnc_symbol=="")]
 
 #ALTERNATIVE: 800 genes (protein coding genes plus other genes)
 ##results_alternative =getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position"),
