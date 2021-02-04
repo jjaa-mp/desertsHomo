@@ -1,4 +1,4 @@
-stats_permutations <- function(permutationrun, regionofinterest, abdata){
+stats_permutations <- function(permutationrun, regionofinterest, abdata, which){
   means <- lapply(permutationrun, as.data.frame)
   names <- means[[1]]$idBrainStruct
   means <- lapply(means, '[[', 2)
@@ -68,9 +68,13 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata){
   #printf(one.way2)
   write.csv(one.way2, "output/perm_posthoc.csv")
   
-  plotting_topbottom(full_data, "top")
-  plotting_topbottom(full_data, "bottom")
-  
+  if (which == "akey"){
+    plotting_topbottom(full_data, "top", "chen")
+    plotting_topbottom(full_data, "bottom", "chen")
+  } else if (which == "peycoords"){
+    plotting_topbottom(full_data, "top", "chenpey")
+    plotting_topbottom(full_data, "bottom", "chenpey")
+  } 
   return(full_data)
 
   #residuals, with some artifacts from log transformation I guess
