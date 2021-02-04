@@ -15,7 +15,9 @@
 - [ ] **Stats** for Sestan temporal progression (data with log2(rpkm1+1))  (Juan)
   + [ ] PCA + Clustering (Raül)
   
+* The *new* stats may rely on calculating pairwise distances from PC clusters 
   
+----  
   
 - [ ] Update **observations.md** file
 
