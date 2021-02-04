@@ -10,9 +10,9 @@
     + [ ] Structure-by-structure plot
     + [ ] Gene-by-gene plot
   
-- [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm1+1))
+- [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm1+1)) (Juan)
 
-- [ ] **Stats** for Sestan temporal progression (data with log2(rpkm1+1))
+- [ ] **Stats** for Sestan temporal progression (data with log2(rpkm1+1))  (Juan)
   + [ ] PCA + Clustering (Raül)
   
   
