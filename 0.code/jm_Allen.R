@@ -105,25 +105,29 @@ nrow(abadult) # 15698
 abadult <- abadult[!(is.na(abadult$gene_name) | abadult$gene_name==""), ]
 nrow(abadult) # 15688
 row.names(abadult) <- G_list$hgnc_symbol[match(rownames(abadult), G_list$ensembl_gene_id)]
-#In Akey:
-abadultAkey  <- abadult[rownames(abadult) %in% results$hgnc_symbol,]
-abadultAkeyPey  <- abadult[rownames(abadult) %in% both$hgnc_symbol,]
+abadult$gene_name <- NULL
+abadult <- log2(abadult)
 
-new <- as.data.frame(colMeans(abadultAkey[sapply(abadultAkey, is.numeric)]))
-names(new) <- "mean_expression"
-
-newboth <- as.data.frame(colMeans(abadultAkeyPey[sapply(abadultAkeyPey, is.numeric)]))
-names(newboth) <- "mean_expression"
-newboth <- arrange(newboth, desc(newboth$mean_expression))
-newboth1 <- newboth %>% slice(head(row_number(), 20)) #Top 20 structures
-p<-ggplot(newboth1, aes(x=rownames(newboth1), y=newboth1$mean_expression)) + 
-  geom_dotplot(binaxis='y', stackdir='center', fill="#D55E00")+theme(legend.position = "none")+labs(title="",x="", y = "Mean expression (top 20)")+coord_flip()
-#ggsave(file="ABA_414_GenesAkeyPey_top20.pdf", p, width = 11.69, height = 8.27, units = "in")
-
-
-newboth2 <- newboth %>% slice(tail(row_number(), 20)) #Bottom 20 structures
-p2<-ggplot(newboth2, aes(x=rownames(newboth2), y=newboth2$mean_expression)) + 
-  geom_dotplot(binaxis='y', stackdir='center', fill="#0072B2")+theme(legend.position = "none")+labs(title="",x="", y = "Mean expression (bottom 20)") + coord_flip()+scale_x_discrete(position = "top")
+# #In Akey:
+# abadultAkey  <- abadult[rownames(abadult) %in% results$hgnc_symbol,]
+# abadultAkeyPey  <- abadult[rownames(abadult) %in% both$hgnc_symbol,]
+# 
+# new <- as.data.frame(colMeans(abadultAkey[sapply(abadultAkey, is.numeric)]))
+# names(new) <- "mean_expression"
+# 
+# newboth <- as.data.frame(colMeans(abadultAkeyPey[sapply(abadultAkeyPey, is.numeric)]))
+# names(newboth) <- "mean_expression"
+# 
+# newboth <- arrange(newboth, desc(newboth$mean_expression))
+# newboth1 <- newboth %>% slice(head(row_number(), 20)) #Top 20 structures
+# p<-ggplot(newboth1, aes(x=rownames(newboth1), y=newboth1$mean_expression)) + 
+#   geom_dotplot(binaxis='y', stackdir='center', fill="#D55E00")+theme(legend.position = "none")+labs(title="",x="", y = "Mean expression (top 20)")+coord_flip()
+# ##ggsave(file="ABA_414_GenesAkeyPey_top20.pdf", p, width = 11.69, height = 8.27, units = "in")
+# 
+# 
+# newboth2 <- newboth %>% slice(tail(row_number(), 20)) #Bottom 20 structures
+# p2<-ggplot(newboth2, aes(x=rownames(newboth2), y=newboth2$mean_expression)) + 
+#   geom_dotplot(binaxis='y', stackdir='center', fill="#0072B2")+theme(legend.position = "none")+labs(title="",x="", y = "Mean expression (bottom 20)") + coord_flip()+scale_x_discrete(position = "top")
 #ggsave(file="ABA_414_GenesAkeyPey_bottom20.pdf", p2, width = 11.69, height = 8.27, units = "in")
 ```
 
@@ -211,7 +215,7 @@ final_merge <- tibble::rownames_to_column(final_merge, "Structure")
 final_merge[[1]] <- sapply(strsplit(final_merge[[1]], "_"), "[", 1)
 
 a<-ggparcoord(final_merge,
-              columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
+              columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")
 b <- ggparcoord(final_merge,
                 columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(final_merge,
@@ -221,8 +225,8 @@ b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
-pl1 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_log.pdf", pl1, width = 11.69, height = 8.27, units = "in")
+pl1abak <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkey_log_median.pdf", pl1abak, width = 11.69, height = 8.27, units = "in")
 
 #STAT
 dfa <- lapply(akey10, melt)
@@ -249,7 +253,7 @@ dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
 finaldf <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
 #ggqqplot(finaldf, "value", facet.by = "stage")
 #qq1 <- ggqqplot(finaldf, "value", facet.by = "stage")
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_qqplot.pdf", qq1, width = 11.69, height = 8.27, units = "in")
+##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkey_qqplot.pdf", qq1, width = 11.69, height = 8.27, units = "in")
 
 
 oneway1 <- finaldf %>%
@@ -342,7 +346,7 @@ final_mergelog <- tibble::rownames_to_column(final_mergelog, "Structure")
 final_mergelog[[1]] <- sapply(strsplit(final_mergelog[[1]], "_"), "[", 1)
 
 a<-ggparcoord(final_mergelog,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
+    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")
 b <- ggparcoord(final_mergelog,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum (red) & MD (green)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#2ca25f", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 c<-ggparcoord(final_mergelog,
@@ -358,8 +362,8 @@ d<-ggparcoord(final_mergelog,
     columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 d1<-arrangeGrob(d, left=textGrob("D"))
 
-#pl2 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log.pdf", pl2, width = 11.69, height = 8.27, units = "in")
+plakap <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkeyPey_log_median.pdf", plakap, width = 11.69, height = 8.27, units = "in")
 
 # STAT
 dfa <- lapply(akeypey10, melt)
@@ -389,7 +393,7 @@ dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
 finaldf2 <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
 ggqqplot(finaldf2, "value", facet.by = "stage")
 #qq2 <- ggqqplot(finaldf2, "value", facet.by = "stage")
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
+##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
 
 # STAT
 oneway1 <- finaldf2 %>%
@@ -479,7 +483,7 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
 
 pl3 <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAll_log.pdf", pl3, width = 11.69, height = 8.27, units = "in")
+##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAll_log.pdf", pl3, width = 11.69, height = 8.27, units = "in")
 
 
 dfa <- lapply(aba_all, melt)
@@ -553,7 +557,7 @@ d<-ggparcoord(final_mergepey,
 d1<-arrangeGrob(d, left=textGrob("D"))
 
 pl4 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesPey_log.pdf", pl4, width = 11.69, height = 8.27, units = "in")
+##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesPey_log.pdf", pl4, width = 11.69, height = 8.27, units = "in")
 
 # STAT
 dfa <- lapply(akeypey10, melt)
@@ -583,7 +587,7 @@ dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
 finaldf2 <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
 ggqqplot(finaldf2, "value", facet.by = "stage")
 qq2 <- ggqqplot(finaldf2, "value", facet.by = "stage")
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
+##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
 
 # STAT
 oneway1 <- finaldf2 %>%
@@ -658,7 +662,7 @@ pl_fr <- ggplot(data = melted, aes(Var2, Var1, fill = value))+
  theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_x_discrete(position = "top")+
  coord_fixed()
 pl_fr
-ggsave(file="~/raul_tesina/2.plots/cellatlas_meanexpr_log_heatmap/CellAtlas_MeanExprAkey_log_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/cellatlas_meanexpr_log_heatmap/CellAtlas_MeanExprAkey_log_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
 
 
 #Whole dataset in AKEY & PEY
@@ -684,7 +688,7 @@ pl_fr1 <- ggplot(data = melted1, aes(Var2, Var1, fill = value))+
  theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_x_discrete(position = "top")+
  coord_fixed()
 pl_fr1
-ggsave(file="~/raul_tesina/2.plots/cellatlas_meanexpr_log_heatmap/CellAtlas_MeanExprAkeyPey_log_heatmap.pdf", pl_fr1,width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/cellatlas_meanexpr_log_heatmap/CellAtlas_MeanExprAkeyPey_log_heatmap.pdf", pl_fr1,width = 11.69, height = 8.27, units = "in")
 
 
 #Raw:
@@ -765,7 +769,7 @@ pl_fr <- ggplot(data = melted, aes(Var2, Var1, fill = value))+
  theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_y_discrete(position = "right")+
  coord_fixed()+ coord_flip()
 pl_fr
-#ggsave(file="CellAtlas_MeanExprAkey_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
+##ggsave(file="CellAtlas_MeanExprAkey_heatmap.pdf", pl_fr,width = 11.69, height = 8.27, units = "in")
 
 ```
 
@@ -827,7 +831,7 @@ pl_fr2 <- ggplot(data = melted2, aes(Var2, Var1, fill = value))+
  theme(axis.text.x = element_text(angle = 45,hjust = 0))+scale_y_discrete(position = "right")+
  coord_fixed()+ coord_flip()
 pl_fr2
-#ggsave(file="CellAtlas_MeanExprAkeyPey_heatmap.pdf", pl_fr2,width = 11.69, height = 8.27, units = "in")
+##ggsave(file="CellAtlas_MeanExprAkeyPey_heatmap.pdf", pl_fr2,width = 11.69, height = 8.27, units = "in")
 ```
 
 #CELL ATLAS - CELL TYPE ENRICHMENT - AKEY
@@ -1245,7 +1249,7 @@ c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
 pl4 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-ggsave(file="ABA_GenesRac.pdf", pl4, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="ABA_GenesRac.pdf", pl4, width = 11.69, height = 8.27, units = "in")
 ```
 
 #ABA Data - All genes that are present in both Akey and Rac no log
@@ -1314,40 +1318,8 @@ c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 
 pl5 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "in")
 ```
-
-#Trajectory plots
-```{r}
-final_merge0 #all
-final_merge #akey
-final_mergelog #akeypey
-
-final_merge0$dataset <- c("raw")
-final_merge$dataset <- c("akey")
-final_mergelog$dataset <- c("akeypey")
-
-tot_pl <-rbind(final_merge, final_merge0, final_mergelog)
-tot_pl <- as_tibble(tot_pl)
-tot_pl <- tot_pl %>% mutate(dataset=as.character(dataset))
-
-levels(tot_pl$dataset) <-  c("raw", "akeypey", "akey")
-
-n <-ggparcoord(tot_pl,
-columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA")+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
-
-
-
-n <-ggparcoord(tot_pl,
-columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")+labs(color="Dataset")
-
-
-n + facet_wrap(~Structure)
-
-an <- n + facet_wrap(~Structure) 
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
-```
-
 
 #Raül's code
 ```{r}
@@ -1507,7 +1479,7 @@ c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 # 
 plak_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkey_log2_median.pdf", plak_sestan, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkey_log2_median.pdf", plak_sestan, width = 11.69, height = 8.27, units = "in")
 
 ```
 
@@ -1563,14 +1535,14 @@ logakeypeysestan1[3:ncol(logakeypeysestan1)] <- log2(logakeypeysestan1[3:ncol(lo
 
 # 
 # #Normality after transformation
-lognormcheck <- logakeypeysestan1 %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
-lognormcheck$RPKM <- as.character(lognormcheck$RPKM)
-lognormcheck$RPKM <- as.numeric(lognormcheck$RPKM)
-lognorm_1=merge(modMetadatamRNAseq,lognormcheck,by=c("Braincode", "Regioncode"))
-# 
-lognorm_1 <- as_tibble(lognorm_1)
-# 
-ggqqplot(lognorm_1, "RPKM", facet.by = "Window")
+# lognormcheck <- logakeypeysestan1 %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+# lognormcheck$RPKM <- as.character(lognormcheck$RPKM)
+# lognormcheck$RPKM <- as.numeric(lognormcheck$RPKM)
+# lognorm_1=merge(modMetadatamRNAseq,lognormcheck,by=c("Braincode", "Regioncode"))
+# # 
+# lognorm_1 <- as_tibble(lognorm_1)
+# # 
+# ggqqplot(lognorm_1, "RPKM", facet.by = "Window")
 # 
 
 #Brining the metadata of the database
@@ -1624,144 +1596,108 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
  
 plakpey_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
 ```
 
-#trial
-```{R}
-#mRNAseqData=read.table("mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
 
-sb1 <- mRNAseqData
-#Keeping just one gene identifier
-modsb1=sb1 %>% 
-  separate(Geneid,c("EnsemblID","Genename"),extra="merge")
-modsb1$EnsemblID<-NULL
-#drop(modmRNAseqData$NormalName)
-#Transpose the matrix to cross it with other data
-modmRNAseqData=t(modsb1)
+#Trajectory plots1 - ABA
+```{r}
+final_merge0 #all
+final_merge #akey
+final_mergelog #akeypey
 
-#Transformation of the original data
-modmRNAseqData=as.data.frame(modmRNAseqData)
+final_merge0$dataset <- c("raw")
+final_merge$dataset <- c("akey")
+final_mergelog$dataset <- c("akeypey")
 
-colnames(modmRNAseqData) <- as.matrix(unlist(modmRNAseqData[1,]))
-modmRNAseqData <- modmRNAseqData[-1, ]
+tot_pl <-rbind(final_merge, final_merge0, final_mergelog)
+tot_pl <- as_tibble(tot_pl)
+tot_pl <- tot_pl %>% mutate(dataset=as.character(dataset))
 
-modmRNAseqData <- cbind(info = rownames(modmRNAseqData), modmRNAseqData)
-rownames(modmRNAseqData) <- 1:nrow(modmRNAseqData)
+levels(tot_pl$dataset) <-  c("raw", "akeypey", "akey")
+
+n <-ggparcoord(tot_pl,
+columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA")+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
 
 
-#duplicated columns
-#colnames(modmRNAseqData)[duplicated(colnames(modmRNAseqData))]
-modmRNAseqData <- modmRNAseqData[, !duplicated(colnames(modmRNAseqData))]
-modmRNAseqData=modmRNAseqData %>% 
-  separate(info, c("Braincode","Regioncode"))
-#staticmodmRNAseqData=modmRNAseqData
 
-#Brining the metadata of the database
-library(readxl)
-metadatamRNAseq=read_xlsx("mRNA-seq_QC.xlsx",skip = 3)
+n <-ggparcoord(tot_pl,
+columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")+labs(color="Dataset")
 
 
-modMetadatamRNAseq=na.omit(metadatamRNAseq)
-modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
-modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
+n + facet_wrap(~Structure)
 
-finalredmRNAseqData=merge(modMetadatamRNAseq,modmRNAseqData,by=c("Braincode", "Regioncode"))
-
-finalredmRNAseqData$Braincode <- NULL
-finalredmRNAseqData$Label<- paste(finalredmRNAseqData$Regioncode, finalredmRNAseqData$Window, sep="_")
-finalredmRNAseqData$Regioncode <- NULL
-finalredmRNAseqData$Window <- NULL
-
-finalredmRNAseqData1 <- as_tibble(finalredmRNAseqData)
-
-#finalredmRNAseqData$Label <- as.factor(finalredmRNAseqData$label)
-finalredmRNAseqData1[,-ncol(finalredmRNAseqData1)] <- sapply(finalredmRNAseqData1[,-ncol(finalredmRNAseqData1)],as.numeric)
-
-peymRNAseqFinal<-finalredmRNAseqData1[,c("Label",both$hgnc_symbol)]
-
-peymRNAseqFinal <- as_tibble(peymRNAseqFinal)
-cols.num <- c(both$hgnc_symbol)
-peymRNAseqFinal[cols.num] <- sapply(peymRNAseqFinal[cols.num],as.numeric)
-
-#finalredmRNAseqData[,-ncol(peymRNAseqFinal)] <- sapply(finalredmRNAseqData[,-ncol(finalredmRNAseqData)],as.numeric)
-
-str(peymRNAseqFinal)
-#usbset2 <- finalredmRNAseqData[1:300,]
-tse <- peymRNAseqFinal %>%
-  group_by(Label) %>%
-  dplyr::summarise_all(mean, na.rm=TRUE)
-
-#Normalization of the data
-
-hist(tse$GPR22)
-for (i in 2:ncol(tse)){
-  tse[i]=log2(tse[i])
-}
-hist(tse$GPR22)
-#testredmRNAseqData=merge(modMetadatamRNAseq,prredmodmRNAseqData,by="Braincode")
-
-#write.csv(tse,"peymRNAseqData.csv")
-#doing the same for akey
-akeymRNAseqFinal<-finalredmRNAseqData1[colnames(finalredmRNAseqData1) %in% c("Label",results$hgnc_symbol)]
-#Seven genes don't coincide
-akeymRNAseqFinal$Label
-akeymRNAseqFinal <- as_tibble(akeymRNAseqFinal)
-cols.num <-colnames(finalredmRNAseqData[colnames(finalredmRNAseqData) %in% c(results$hgnc_symbol)])
-akeymRNAseqFinal[cols.num] <- sapply(akeymRNAseqFinal[cols.num],as.numeric)
-
-str(peymRNAseqFinal)
-#usbset2 <- finalredmRNAseqData[1:300,]
-tseAkey <- akeymRNAseqFinal %>%
-  group_by(Label) %>%
-  dplyr::summarise_all(mean, na.rm=TRUE)
-
-#Normalization of the data
-
-hist(tseAkey$GPR22)
-for (i in 2:ncol(tseAkey)){
-  tseAkey[i]=log2(tseAkey[i])
-}
-hist(tseAkey$GPR22)
-#testredmRNAseqData=merge(modMetadatamRNAseq,prredmodmRNAseqData,by="Braincode")
-
-
-#write.csv(tse,"AkeymRNAseqData.csv")
-
-#Reporting mean
-#peyregne case
-tseTemp=tse %>% separate(Label, c("regioncode","Window"))
-
-peyMeanWindow=data.frame(matrix(, nrow = length(unique(tseTemp$regioncode)), ncol = length(unique(tseTemp$Window))),row.names = unique(tseTemp$regioncode)) 
-
-colnames(peyMeanWindow)=1:9
-
-tseTemp=tseAkey %>% separate(Label, c("regioncode","Window"))
-
-akeyMeanWindow=data.frame(matrix(, nrow = length(unique(tseTemp$regioncode)), ncol = length(unique(tseTemp$Window))),row.names = unique(tseTemp$regioncode))
-
-colnames(akeyMeanWindow)=1:9
-
-for (i in 1:length(tseTemp$regioncode)){
-  akeyMeanWindow[tseTemp[i,][[1]],tseTemp[i,][[2]]]<-mean(as.numeric(tseTemp[i,][3:length(tseTemp)]))
-}
-length(tseTemp)
-
-final_merge <-peyMeanWindow
-final_merge <-akeyMeanWindow
-#Plot
-final_merge <- tibble::rownames_to_column(final_merge, "Structure")
-final_merge[[1]] <- sapply(strsplit(final_merge[[1]], "_"), "[", 1)
-
-a<-ggparcoord(final_merge,
-              columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
-b <- ggparcoord(final_merge,
-                columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
-c<-ggparcoord(final_merge,
-              columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
-a1<-arrangeGrob(a, left=textGrob("A"))
-b1<-arrangeGrob(b, left =textGrob("B"))
-c1<-arrangeGrob(c, left=textGrob("C"))
-
+an <- n + facet_wrap(~Structure) 
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
 ```
 
+#Trajectory plots2- Sestan
+```{r}
+preli1 #akey
+preli2 #akeypey
+
+preli1$dataset <- c("akey")
+preli2$dataset <- c("akeypey")
+
+tot_pl <-rbind(preli1, preli2)
+tot_pl <- as_tibble(tot_pl)
+tot_pl <- tot_pl %>% mutate(dataset=as.character(dataset))
+
+levels(tot_pl$dataset) <-  c("akey", "akeypey")
+
+n <-ggparcoord(tot_pl,
+columns = 2:8, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA")+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
+
+
+
+n <-ggparcoord(tot_pl,
+columns = 2:8, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures Sestan", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")+labs(color="Dataset")
+
+n + facet_wrap(~Structure)
+
+an <- n + facet_wrap(~Structure) 
+#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
+```
+
+#Any set of genes
+```{r}
+ap <- finalakeySestan1 %>% select(both$hgnc_symbol|Label)
+tes2 <- melt(ap, id=c("Label"))
+tes2_mean <- tes2 %>%
+  group_by(Label,variable) %>%
+  dplyr::summarise_all(mean, na.rm=TRUE)
+
+tes2_mean <- tes2_mean %>% 
+  separate(Label, c("Structure","Window"))
+prelites2 <- pivot_wider(tes2_mean, names_from = Window, values_from = value)
+
+#
+prelites2[,11] <- NULL
+prelites2 <- prelites2[complete.cases(prelites2), ]
+
+#levels(prelites2$Genename) <- unique(prelites2$Genename)
+
+colnames(prelites2) <- c("Structure", "Genename", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
+#PLOT
+levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
+
+n <-ggparcoord(prelites2,
+columns = 3:9, groupColumn = 2, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")
+j1<-n + facet_wrap(~Genename)+scale_color_discrete(name="Structure",labels=unique(prelites2$Structure))
+ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_1.pdf", j1, width = 11.69, height = 8.27, units = "in")
+
+n1 <-ggparcoord(prelites2,
+columns = 3:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Genename)))+xlab("")+ylab("expression")
+j2 <- n1 + facet_wrap(~Structure)+scale_color_discrete(name="Genes",labels=unique(prelites2$Genename))
+ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_2.pdf", j2, width = 11.69, height = 8.27, units = "in")
+
+#Say CBC e.g.
+# t1 <- filter(prelites2, Structure %in% c("CBC")) %>% ggparcoord(prelites2,
+# columns = 3:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Genename)))+xlab("")+ylab("expression")
+# 
+# t1 + facet_wrap(~Structure)+scale_color_discrete(name="Genes",labels=unique(prelites2$Genename))
+# 
+# t2 <- filter(prelites2, Structure %in% c("CBC")) %>% ggparcoord(prelites2,
+# columns = 3:9, groupColumn = 2, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")
+# t2 + facet_wrap(~Genename)+scale_color_discrete(name="Structure",labels=c("CBC"))
+```
