@@ -10,9 +10,9 @@
     + [X] Structure-by-structure plot
     + [X] Gene-by-gene (ChenPey) plot
   
-- [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan) (in progress; target: between today and tomorrow)
+- [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan) (in progress; target: between today and tomorrow 9th Feb)
 
-- [ ] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan) (in progress; target: between today and tomorrow)
+- [ ] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan) (in progress; target: between today and tomorrow 9th Feb)
   + [ ] PCA + Clustering (Raül) [PCA needed for each stage] (pending)
   + [ ] Pairwise distances from PC clusters (Raul & JUan) (pending)
   
