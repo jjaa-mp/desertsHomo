@@ -1,5 +1,5 @@
 
-- [ ] Permutation tests for ABA 414 structures dataset (Alejandro)
+- [ ] Permutation tests for ABA 414 structures dataset (Alejandro) (in progress)
 
 - [ ] **Sestan data**.
     + [X] Akey+Pey (Raül)
@@ -10,12 +10,11 @@
     + [X] Structure-by-structure plot
     + [X] Gene-by-gene (ChenPey) plot
   
-- [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan)
+- [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan) (in progress; target: between today and tomorrow)
 
-- [ ] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan)
-  + [] PCA + Clustering (Raül) [PCA needed for each stage]
-  
-* The *new* stats may rely on calculating pairwise distances from PC clusters 
+- [ ] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan) (in progress; target: between today and tomorrow)
+  + [ ] PCA + Clustering (Raül) [PCA needed for each stage] (pending)
+  + [ ] Pairwise distances from PC clusters (Raul & JUan) (pending)
   
 ----  
   
