@@ -1,5 +1,6 @@
 
-- [ ] Permutation tests for ABA 414 structures dataset (Alejandro) (in progress)
+- [X] Permutation tests for ABA 414 structures dataset (Alejandro) (done)
+    + [ ] Similar approach for Sestan data?
 
 - [ ] **Sestan data**.
     + [X] Akey+Pey (Raül)

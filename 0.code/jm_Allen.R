@@ -715,10 +715,6 @@ df1subset <- df1subset[order(df1subset$max.cluster),]
 #Friedman test - Genes in Akey:
 ```{r}
 #Checking normality
-ggplot(r, aes(z)) + geom_histogram()
-
-ggplot(r[which(r$z > 0 & r$z < 500),], aes(z)) +geom_histogram()
-
 
 r <- data.frame(dfakey$organ, dfakey$gene_short_name, dfakey$max.expr)
 names(r) <- c("x", "y", "z")
@@ -1146,41 +1142,6 @@ fviz_pca_biplot(res2, geom = "point", habillage = testingAkeyPey$Groups,
 
 ```
 
-#SELECTION OF > q75 and generating file for genes within Akey
-```{r}
-#>q75 to select genes with high expression
-q75 = vector(mode="list", length = length(ab))
-for (i in 1:length(ab)){
-  for (h in 1:length(names(ab[[i]]))){
-    q75[[i]][[h]] <- ab[[i]][h] %>% filter(ab[[i]][h] > quantile(ab[[i]][[h]], 0.75))
-  }
-}
-#Changing row names ENSG to hgnc_symbol (via bioMart); ordering values based on expression
-##ab is a list of 5 elements (i); each element or 'sublist' has 16 dataframes (h)
-##q75[[1]][[3]][[1]] would denote  first sublist (1), third dataframe (3), column 1
-for (i in 1:length(ab)){
-  for (h in 1:length(names(ab[[i]]))){
-    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(q75[[i]][[h]]),mart=ensembl)
-    q75[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(q75[[i]][[h]]), G_list$ensembl_gene_id)]
-    q75[[i]][[h]] <-q75[[i]][[h]][order(q75[[i]][[h]][[1]], decreasing = TRUE), ]
-  }
-}
-#Intersecting q75 (high expression) with Akey
-akey075 = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
-for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
-  for (h in 1:length(names(ab[[i]]))){
-    akey075[[i]][[h]] <- q75[[i]][[h]][q75[[i]][[h]][[2]] %in% results$hgnc_symbol,] #in Akey
-    akey075[[i]][[h]] <-  akey075[[i]][[h]][!(is.na(akey075[[i]][[h]][[2]]) | akey075[[i]][[h]][[2]]==""), ] #Cleaning
-  }
-}
-#Save results - Genes in deserts and pos. selection with high expression
-for (i in 1:length(ab)){
-  for (h in 1:length(akey075[[i]])){
-    if (dim(akey075[[i]][[h]])[1] == 0) next #To skip empty dataframes
-    write.xlsx(akey075[[i]][[h]], file="ABA_Akey_highExprq75.xlsx", sheetName=paste(toString(i),toString(names(akey075[[i]][[h]][1])), sep="_"), append = TRUE) #Add age number at the beginning of the sheet name
-  }
-}
-```
 
 #ABA Data - All genes that are present in Rac no log
 ```{r}
@@ -1375,7 +1336,7 @@ finalredmRNAseqData[,-ncol(finalredmRNAseqData)] <- sapply(finalredmRNAseqData[,
 usbset2 <- finalredmRNAseqData[1:300,]
 final_w_mean <- finalredmRNAseqData %>%
     group_by(Label) %>%
-    dplyr::summarise_all(mean, na.rm=TRUE)
+    dplyr::summarise_all(median, na.rm=TRUE)
 
 
 #testredmRNAseqData=merge(modMetadatamRNAseq,prredmodmRNAseqData,by="Braincode")
@@ -1479,7 +1440,7 @@ c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 # 
 plak_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkey_log2_median.pdf", plak_sestan, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/ABA_GenesAkey_log2_median.pdf", plak_sestan, width = 11.69, height = 8.27, units = "in")
 
 ```
 
@@ -1599,6 +1560,70 @@ plakpey_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1
 #ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
 ```
 
+#Sestan AkeyPey - STATS
+```{R}
+df0 <- finalakeySestan1 %>% pivot_longer(!Label, names_to = "gene_names", values_to = "expression")
+df0 <- df0 %>% 
+    separate(Label, c("Structure","Window"))
+ar <- df0 %>% filter((df0$Window == "2") | (df0$Window == "3"))
+
+
+#r <- data.frame(df0$Label, df0$gene_names, df0$expression)
+ar <- ar[ar$Structure %in% names(which(table(ar$Structure) > "2479")), ]
+
+names(r) <- c("x", "y", "z")
+rr <- pivot_wider(r, names_from = x, values_from = z)
+rr <- rr[complete.cases(rr),]
+rr3 <- as.matrix(rr)
+rr3 <-rr3[,-1]
+friedman.test(rr3)
+
+dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
+
+
+#TWO WAY REPEATED MEASURES ANOVA
+dffinal0 <- df0[df0$gene_names %in% names(which(table(df0$gene_names) > 606)), ]
+#ggqqplot(dffinal0, "expression", facet.by = "Window")
+##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
+
+# STAT
+oneway1 <- ar %>%
+  group_by(Structure) %>%
+  anova_test(dv = expression, wid = gene_names, within = Window) %>%
+  get_anova_table() %>%
+  adjust_pvalue(method = "BH")
+oneway1
+#pairwise comparisons
+pw1 <- finaldf2 %>%
+  group_by(stage) %>%
+  pairwise_t_test(
+    value ~ variable, paired = TRUE,
+    p.adjust.method = "BH"
+    )
+struc_pw <- pw1 %>% filter(p.adj.signif != "ns")
+#write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
+
+
+oneway2 <- dffinal0 %>%
+  group_by(Structure) %>%
+  anova_test(dv = expression, wid = gene_names, within = Window) %>%
+  get_anova_table() %>%
+  adjust_pvalue(method = "BH")
+oneway2 
+
+#pairwise comparisons
+pw2 <- finaldf2 %>%
+  group_by(variable) %>%
+  pairwise_t_test(
+    value ~ stage, paired = TRUE,
+    p.adjust.method = "BH"
+    )
+
+stages <- pw2 %>% filter(p.adj.signif != "ns")
+#write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Stages_pairwise_significant.csv", row.names = FALSE)
+
+```
+
 
 #Trajectory plots1 - ABA
 ```{r}
@@ -1656,7 +1681,7 @@ columns = 2:8, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title=
 n + facet_wrap(~Structure)
 
 an <- n + facet_wrap(~Structure) 
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/Sestan_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
 ```
 
 #Any set of genes
@@ -1665,7 +1690,7 @@ ap <- finalakeySestan1 %>% select(both$hgnc_symbol|Label)
 tes2 <- melt(ap, id=c("Label"))
 tes2_mean <- tes2 %>%
   group_by(Label,variable) %>%
-  dplyr::summarise_all(mean, na.rm=TRUE)
+  dplyr::summarise_all(median, na.rm=TRUE)
 
 tes2_mean <- tes2_mean %>% 
   separate(Label, c("Structure","Window"))
@@ -1684,12 +1709,12 @@ levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal1", "Fetal2", "F
 n <-ggparcoord(prelites2,
 columns = 3:9, groupColumn = 2, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")
 j1<-n + facet_wrap(~Genename)+scale_color_discrete(name="Structure",labels=unique(prelites2$Structure))
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_1.pdf", j1, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median//GenesAkeyPey_log2_median_perGenes_1.pdf", j1, width = 11.69, height = 8.27, units = "in")
 
 n1 <-ggparcoord(prelites2,
 columns = 3:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Genename)))+xlab("")+ylab("expression")
 j2 <- n1 + facet_wrap(~Structure)+scale_color_discrete(name="Genes",labels=unique(prelites2$Genename))
-ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_2.pdf", j2, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_2.pdf", j2, width = 11.69, height = 8.27, units = "in")
 
 #Say CBC e.g.
 # t1 <- filter(prelites2, Structure %in% c("CBC")) %>% ggparcoord(prelites2,
