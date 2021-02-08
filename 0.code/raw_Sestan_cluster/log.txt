@@ -1,0 +1,8 @@
+Followed procedure:
+
+Edited file in local to adapt 
+Scp the files in here (bare this log)
+Ssh'ed to the GPU
+`Rscritp code_juan.R`
+Cleaned directory, and scp files back
+
