@@ -29,7 +29,7 @@ new <- rbind(plot,other)
 p <- ggplot(new, aes(x = mean_struct, y = struct_id, colour = datasource)) +
   theme_minimal() +
   geom_point() +
-  labs(x = "Log of mean expression", y = "Structure", colour = "Source of data" )
+  labs(x = "Log2 of mean expression", y = "Structure", colour = "Source of data" )
 
 if (out == "chen") {
   ggsave(paste0(whichone, "20chen.pdf"), p, width = 8, height = 4)

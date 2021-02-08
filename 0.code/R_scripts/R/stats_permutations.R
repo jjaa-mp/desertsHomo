@@ -32,7 +32,7 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata, which){
     dplyr::filter(value > quantile(value, 0.10)) %>% 
     dplyr::mutate(mean_struct = log(value)) %>% 
     dplyr::select(variable, mean_struct) %>% 
-    dplyr::mutate(datasource = "abakey")
+    dplyr::mutate(datasource = ifelse(which == "akey", "Chen", "Chen + Pey")) 
   
   colnames(abakey_df) <- c("struct_id", "mean_struct", "datasource")
 
@@ -54,7 +54,7 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata, which){
   
   printf("Wait a bit; at 1000 permutations, this should take some time")
   res.aov <- anova_test(data = full_data, dv = mean_struct, wid = struct_id, between = datasource)
-  #printf(get_anova_table(res.aov))
+  #printf(res.aov)
   printf("Done!")
   
   printf("Posthoc by structure")
