@@ -66,7 +66,12 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata, which){
   
   one.way2
   #printf(one.way2)
-  write.csv(one.way2, "output/perm_posthoc.csv")
+  if (which == "akey"){
+    write.csv(one.way2, paste0("output/perm_posthoc_", "chen.csv"))
+  } else if (which == "peycoords"){
+    write.csv(one.way2, paste0("output/perm_posthoc_", "chenpey.csv"))
+  } 
+
   
   if (which == "akey"){
     plotting_topbottom(full_data, "top", "chen")

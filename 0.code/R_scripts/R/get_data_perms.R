@@ -2,8 +2,8 @@
 get_data_perms <- function(mask) { 
 
   # Permutations
-  randReg50set<-createRandomRegions(nregions = 1,length.mean = 1500000,
-                                     length.sd = 100000,genome = "hg19", mask = mask)
+  randReg50set<-createRandomRegions(nregions = 1,length.mean = 15000000,
+                                     length.sd = 1000000,genome = "hg19", mask = mask)
   #Changed region length 
   
   randomdesert <- c(runValue(seqnames(randReg50set)),start(randReg50set),end(randReg50set))
