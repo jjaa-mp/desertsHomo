@@ -13,13 +13,13 @@
 - [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan)
 
 - [ ] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan)
-  + [X] PCA + Clustering (Raül)
+  + [] PCA + Clustering (Raül) [PCA needed for each stage]
   
 * The *new* stats may rely on calculating pairwise distances from PC clusters 
   
 ----  
   
-- [ ] Update **observations.md** file
+- [ ] Update **observations.md** file: Target date Friday 12
 
 
 --- 
