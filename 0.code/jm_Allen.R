@@ -1142,7 +1142,6 @@ fviz_pca_biplot(res2, geom = "point", habillage = testingAkeyPey$Groups,
 
 ```
 
-
 #ABA Data - All genes that are present in Rac no log
 ```{r}
 #Global data
@@ -1282,66 +1281,90 @@ pl5 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1,
 #ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "in")
 ```
 
-#Raül's code
+#Raw Sestan
 ```{r}
 mRNAseqData=read.table("~/tmp_psychENCODE/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
-
-#sb1 <- mRNAseqData[anysubset]
-#Keeping just one gene identifier
 modsb1= mRNAseqData %>% 
   separate(Geneid,c("EnsemblID","Genename"),extra="merge")
 modsb1$EnsemblID<-NULL
-#drop(modmRNAseqData$NormalName)
-#Transpose the matrix to cross it with other data
-modmRNAseqData=t(modsb1)
-
-#Transformation of the original data
-modmRNAseqData=as.data.frame(modmRNAseqData)
-
-colnames(modmRNAseqData) <- as.matrix(unlist(modmRNAseqData[1,]))
-modmRNAseqData <- modmRNAseqData[-1, ]
-
-modmRNAseqData <- cbind(info = rownames(modmRNAseqData), modmRNAseqData)
-rownames(modmRNAseqData) <- 1:nrow(modmRNAseqData)
+rawSestan <- modsb1
+rawSestan=t(rawSestan)
 
 
-#duplicated columns
-#colnames(modmRNAseqData)[duplicated(colnames(modmRNAseqData))]
-modmRNAseqData <- modmRNAseqData[, !duplicated(colnames(modmRNAseqData))]
-modmRNAseqData=modmRNAseqData %>% 
+
+#As dataframe
+rawSestan=as.data.frame(rawSestan)
+
+colnames(rawSestan) <- as.matrix(unlist(rawSestan[1,]))
+rawSestan <- rawSestan[-1, ]
+
+rawSestan <- cbind(info = rownames(rawSestan), rawSestan)
+rownames(rawSestan) <- 1:nrow(rawSestan)
+
+#duplicated columns - Remove duplicates if needed
+colnames(rawSestan)[duplicated(colnames(rawSestan))] #0
+#rawSestan <- rawSestan[, !duplicated(colnames(rawSestan))]
+
+rawSestan=rawSestan %>% 
   separate(info, c("Braincode","Regioncode"))
-#staticmodmRNAseqData=modmRNAseqData
+
+# #Normality
+# normcheck <- rawSestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+# normcheck$RPKM <- as.character(normcheck$RPKM)
+# normcheck$RPKM <- as.numeric(normcheck$RPKM)
+# 
+# norm_1=merge(modMetadatamRNAseq,normcheck,by=c("Braincode", "Regioncode"))
+# 
+# norm_1 <- as_tibble(norm_1)
+# 
+# ggqqplot(norm_1, "RPKM", facet.by = "Window")
+
+ 
+# #Transformation
+lograwsestan1 <- rawSestan
+cols.num <- colnames(lograwsestan1[3:ncol(lograwsestan1)])
+lograwsestan1[,cols.num] <- lapply(lograwsestan1[cols.num],as.character)
+lograwsestan1[,cols.num] <- lapply(lograwsestan1[cols.num],as.numeric)
+lograwsestan1[3:ncol(lograwsestan1)] <- log2(lograwsestan1[3:ncol(lograwsestan1)]+1)
 
 #Brining the metadata of the database
 library(readxl)
 metadatamRNAseq=read_xlsx("~/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
 
-
 modMetadatamRNAseq=na.omit(metadatamRNAseq)
 modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
 modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
 
-finalredmRNAseqData=merge(modMetadatamRNAseq,modmRNAseqData,by=c("Braincode", "Regioncode"))
+#With log
+finalrawSestan=merge(modMetadatamRNAseq,lograwsestan1,by=c("Braincode", "Regioncode"))
+#Without log:
+#finalrawSestan=merge(modMetadatamRNAseq,rawSestan,by=c("Braincode", "Regioncode"))
 
-finalredmRNAseqData$Braincode <- NULL
-finalredmRNAseqData$Label<- paste(finalredmRNAseqData$Regioncode, finalredmRNAseqData$Window, sep="_")
-finalredmRNAseqData$Regioncode <- NULL
-finalredmRNAseqData$Window <- NULL
+finalrawSestan$Braincode <- NULL
+finalrawSestan$Label<- paste(finalrawSestan$Regioncode, finalrawSestan$Window, sep="_")
+finalrawSestan$Regioncode <- NULL
+finalrawSestan$Window <- NULL
 
-finalredmRNAseqData <- as_tibble(finalredmRNAseqData)
+finalrawSestan <- as_tibble(finalrawSestan)
 
-#finalredmRNAseqData$Label <- as.factor(finalredmRNAseqData$label)
-finalredmRNAseqData[,-ncol(finalredmRNAseqData)] <- sapply(finalredmRNAseqData[,-ncol(finalredmRNAseqData)],as.numeric)
-
-usbset2 <- finalredmRNAseqData[1:300,]
-final_w_mean <- finalredmRNAseqData %>%
+finalrawSestan_w_mean <- finalrawSestan %>%
     group_by(Label) %>%
     dplyr::summarise_all(median, na.rm=TRUE)
 
 
-#testredmRNAseqData=merge(modMetadatamRNAseq,prredmodmRNAseqData,by="Braincode")
+#For plotting
+dfrawSestan <- data.frame(Structure=finalrawSestan_w_mean$Label, Means=rowMeans(finalrawSestan_w_mean[,-1]))
 
-#write.csv(finalredmRNAseqData,"crossedDatamRNAseq.csv")
+dfrawSestan <- dfrawSestan %>% 
+  separate(Structure, c("Structure","Window"))
+df_raw <- pivot_wider(dfrawSestan, names_from = Window, values_from = Means)
+df_raw[,10] <- NULL
+df_raw <- df_raw[complete.cases(df_raw), ]
+colnames(df_raw) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
+#PLOT
+levels(colnames(df_raw)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
+
+
 ```
 
 #Akey in Sestan data
@@ -1560,70 +1583,73 @@ plakpey_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1
 #ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
 ```
 
-#Sestan AkeyPey - STATS
+#Sestan - STATS
 ```{R}
-df0 <- finalakeySestan1 %>% pivot_longer(!Label, names_to = "gene_names", values_to = "expression")
-df0 <- df0 %>% 
+#AKEY - FRIEDMAN STAT
+df1 <- finalakeySestan1_w_mean %>% pivot_longer(!Label, names_to = "gene_names", values_to = "expression")
+df1 <- df1 %>% 
     separate(Label, c("Structure","Window"))
-ar <- df0 %>% filter((df0$Window == "2") | (df0$Window == "3"))
+df1 <- df1 %>% filter(Window != 1)
+df1 <- df1 %>% filter(Structure != "MSC")
 
-
-#r <- data.frame(df0$Label, df0$gene_names, df0$expression)
-ar <- ar[ar$Structure %in% names(which(table(ar$Structure) > "2479")), ]
+df1 <- df1 %>% unite("Label", Structure:Window, remove = TRUE)
+r <- data.frame(df1$Label, df1$gene_names, df1$expression)
+#ar <- ar[ar$Structure %in% names(which(table(ar$Structure) > "2479")), ] If needed
 
 names(r) <- c("x", "y", "z")
+
 rr <- pivot_wider(r, names_from = x, values_from = z)
 rr <- rr[complete.cases(rr),]
 rr3 <- as.matrix(rr)
 rr3 <-rr3[,-1]
-friedman.test(rr3)
+friedman.test(rr3) #Non-parametric: Friedman chi-squared = 551.94, df = 127, p-value < 2.2e-16
 
-dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
+#m1 <- matrix(as.numeric(rr3), nrow = nrow(rr3), ncol= ncol(rr3))
+#colnames(m1) <- colnames(rr3)
+#m1_res <- posthoc.friedman.nemenyi.test(m1)
 
+#df1 %>% group_by(Label) %>% pairwise.wilcox.test(expression, gene_names, p.adj = "bonf")
 
-#TWO WAY REPEATED MEASURES ANOVA
-dffinal0 <- df0[df0$gene_names %in% names(which(table(df0$gene_names) > 606)), ]
-#ggqqplot(dffinal0, "expression", facet.by = "Window")
-##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
-
-# STAT
-oneway1 <- ar %>%
-  group_by(Structure) %>%
-  anova_test(dv = expression, wid = gene_names, within = Window) %>%
-  get_anova_table() %>%
-  adjust_pvalue(method = "BH")
-oneway1
-#pairwise comparisons
-pw1 <- finaldf2 %>%
-  group_by(stage) %>%
-  pairwise_t_test(
-    value ~ variable, paired = TRUE,
-    p.adjust.method = "BH"
-    )
-struc_pw <- pw1 %>% filter(p.adj.signif != "ns")
-#write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
+#library(PMCMR)
+#posthoc.friedman.nemenyi.test(matrix(as.numeric(rr3), nrow = nrow(rr3), ncol= ncol(rr3)))
+# 
+# m <- matrix(as.numeric(rr3), nrow = nrow(rr3), ncol= ncol(rr3))
+# colnames(m) <- colnames(rr3)
+# res <- cor(m)
+# library(corrplot)
+# corrplot(res, type = "upper", order = "hclust", 
+#          tl.col = "black", tl.srt = 45)
+# library("Hmisc")
+#rcorr
 
 
-oneway2 <- dffinal0 %>%
-  group_by(Structure) %>%
-  anova_test(dv = expression, wid = gene_names, within = Window) %>%
-  get_anova_table() %>%
-  adjust_pvalue(method = "BH")
-oneway2 
 
-#pairwise comparisons
-pw2 <- finaldf2 %>%
-  group_by(variable) %>%
-  pairwise_t_test(
-    value ~ stage, paired = TRUE,
-    p.adjust.method = "BH"
-    )
 
-stages <- pw2 %>% filter(p.adj.signif != "ns")
-#write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Stages_pairwise_significant.csv", row.names = FALSE)
+#AKEY + PEY - FRIEDMAN STAT
+df0 <- finalakeypeySestan_w_mean %>% pivot_longer(!Label, names_to = "gene_names", values_to = "expression")
+df0 <- df0 %>% 
+    separate(Label, c("Structure","Window"))
+df0 <- df0 %>% filter(Window != 1)
+df0 <- df0 %>% filter(Structure != "MSC")
+df0 <- df0 %>% unite("Label", Structure:Window, remove = TRUE)
+r <- data.frame(df0$Label, df0$gene_names, df0$expression)
+#ar <- ar[ar$Structure %in% names(which(table(ar$Structure) > "2479")), ] If needed
 
+names(r) <- c("x", "y", "z")
+
+rr <- pivot_wider(r, names_from = x, values_from = z)
+rr <- rr[complete.cases(rr),]
+rr3 <- as.matrix(rr)
+rr3 <-rr3[,-1]
+friedman.test(rr3) #Non-parametric: No significant results.
+
+m <- matrix(as.numeric(rr3), nrow = nrow(rr3), ncol= ncol(rr3))
+colnames(m) <- colnames(rr3)
+res <- cor(m)
+library(corrplot)
+corrplot(res, type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45)
 ```
-
 
 #Trajectory plots1 - ABA
 ```{r}
@@ -1678,9 +1704,9 @@ columns = 2:8, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title=
 n <-ggparcoord(tot_pl,
 columns = 2:8, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures Sestan", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")+labs(color="Dataset")
 
-n + facet_wrap(~Structure)
+n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
 
-an <- n + facet_wrap(~Structure) 
+an <- n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
 ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/Sestan_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
 ```
 
