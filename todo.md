@@ -10,7 +10,7 @@
     + [X] Structure-by-structure plot
     + [X] Gene-by-gene (ChenPey) plot
   
-- [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan) (in progress; target: between today and tomorrow Feb 9th)
+- [X] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan) (in progress; target: between today and tomorrow Feb 9th)
     + AkeyPey: All stages significant except 1; Akey: all stages
 
 - [X] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan) (in progress; target: between today and tomorrow Feb 9th)
