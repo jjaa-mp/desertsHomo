@@ -13,9 +13,11 @@
   
 - [ ] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan) (in progress; target: between today and tomorrow Feb 9th)
 
-- [ ] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan) (in progress; target: between today and tomorrow Feb 9th)
-  + [ ] PCA + Clustering (Raül) [PCA needed for each stage] (pending)
-  + [ ] Pairwise distances from PC clusters (Raul & JUan) (pending)
+- [X] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan) (in progress; target: between today and tomorrow Feb 9th)
+    +Friedman + Conover (AkeyPey: significant differences at three stages; Akey: all stages; mult comp cannot spot particular structures)
+    
+- [ ] PCA + Clustering (Raül) [PCA needed for each stage] (pending)
+- [ ] Pairwise distances from PC clusters (Raul & JUan) (pending)
   
 ----  
   
