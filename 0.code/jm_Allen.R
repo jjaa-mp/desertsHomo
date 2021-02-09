@@ -1290,8 +1290,6 @@ modsb1$EnsemblID<-NULL
 rawSestan <- modsb1
 rawSestan=t(rawSestan)
 
-
-
 #As dataframe
 rawSestan=as.data.frame(rawSestan)
 
