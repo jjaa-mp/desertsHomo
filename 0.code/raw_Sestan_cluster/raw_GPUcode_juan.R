@@ -62,7 +62,7 @@ modMetadatamRNAseq <- as.data.frame(modMetadatamRNAseq)
 finalrawSestan <- merge(modMetadatamRNAseq,lograwsestan1,by=c("Braincode", "Regioncode"))
 #Without log:
 #finalrawSestan=merge(modMetadatamRNAseq,rawSestan,by=c("Braincode", "Regioncode"))
-rm(modMetadatamRNAseq, lograwsestan1)
+#rm(modMetadatamRNAseq, lograwsestan1)
 
 finalrawSestan$Braincode <- NULL
 finalrawSestan$Label<- paste(finalrawSestan$Regioncode, finalrawSestan$Window, sep="_")
@@ -77,8 +77,8 @@ finalrawSestan_w_mean <- finalrawSestan %>%
 
 
 #For plotting
-dfrawSestan <- data.frame(Structure=finalrawSestan_w_mean$Label, Means=rowMeans(finalrawSestan_w_mean[,-1]))
-rm(finalrawSestan_w_mean, finalrawSestan)
+dfrawSestan <- data.frame(Structure=finalrawSestan_w_mean$Label, Means=rowMeans(finalrawSestan_w_mean[,-1],  na.rm = TRUE))
+#rm(finalrawSestan_w_mean, finalrawSestan)
 
 dfrawSestan <- dfrawSestan %>% 
   separate(Structure, c("Structure","Window"))
@@ -89,7 +89,7 @@ df_raw[,10] <- NULL
 df_raw <- df_raw[complete.cases(df_raw), ]
 colnames(df_raw) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
 #PLOT
-levels(colnames(df_raw)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
+levels(colnames(df_raw)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 
 write.csv(df_raw, "df_raw.csv")
