@@ -389,47 +389,7 @@ dfa2 <- dfa2 %>% mutate(variable=as.character(variable))
 # dfa_s5 <- dfa_s5[dfa_s5$gene_name %in% names(which(table(dfa_s5$gene_name) > 15)), ]
 
 
-#TWO WAY REPEATED MEASURES ANOVA
 finaldf2 <- dfa2[dfa2$gene_name %in% names(which(table(dfa2$gene_name) > 79)), ]
-ggqqplot(finaldf2, "value", facet.by = "stage")
-#qq2 <- ggqqplot(finaldf2, "value", facet.by = "stage")
-##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
-
-# STAT
-oneway1 <- finaldf2 %>%
-  group_by(stage) %>%
-  anova_test(dv = value, wid = gene_name, within = variable) %>%
-  get_anova_table() %>%
-  adjust_pvalue(method = "BH")
-oneway1
-#pairwise comparisons
-pw1 <- finaldf2 %>%
-  group_by(stage) %>%
-  pairwise_t_test(
-    value ~ variable, paired = TRUE,
-    p.adjust.method = "BH"
-    )
-struc_pw <- pw1 %>% filter(p.adj.signif != "ns")
-#write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
-
-
-oneway2 <- finaldf2 %>%
-  group_by(variable) %>%
-  anova_test(dv = value, wid = gene_name, within = stage) %>%
-  get_anova_table() %>%
-  adjust_pvalue(method = "BH")
-oneway2 
-
-#pairwise comparisons
-pw2 <- finaldf2 %>%
-  group_by(variable) %>%
-  pairwise_t_test(
-    value ~ stage, paired = TRUE,
-    p.adjust.method = "BH"
-    )
-
-stages <- pw2 %>% filter(p.adj.signif != "ns")
-#write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Stages_pairwise_significant.csv", row.names = FALSE)
 ```
 
 #ABA Data - All genes (raw data) LOG NORMALIZE
@@ -500,136 +460,25 @@ finaldf0 <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
 
 ```
 
+#ABA - STATS
+```{R}
+#Friedman test per each stage independently.
+##Post hoc via Conover
+###AKEY & PEY
+finaldf2
+aba_akeypey_st <- lapply(split(finaldf2, finaldf2$stage), function(x) {friedman_test(value ~ variable | gene_name, data=x)}) #All except stage 1
 
-#ABA Data - All genes that are present in both Pey LOG NORMALIZE
-```{r}
-#Global data
-pey10 = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
-for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
-  for (h in 1:length(names(ab[[i]]))){
-    pey10[[i]][[h]] <- q10[[i]][[h]][q10[[i]][[h]][[2]] %in% results_pey$hgnc_symbol,] #in Akey
-    pey10[[i]][[h]] <-  pey10[[i]][[h]][!(is.na(pey10[[i]][[h]][[2]]) | pey10[[i]][[h]][[2]]==""), ]
-    pey10[[i]][[h]][1] <- log2(pey10[[i]][[h]][1])
-  }
-}
-
-mean3 = vector(mode="list", length = length(ab))
-for (i in 1:length(ab)){
-  for (h in 1:length(names(ab[[i]]))){
-    mean3[[i]][[h]] <- mean(pey10[[i]][[h]][[1]])
-    mean3[[i]][[h]] <- as.data.frame(mean3[[i]][[h]])
-    names(mean3[[i]][[h]]) <- paste(names(pey10[[i]][[h]][1]), sep='_')
-  }
-}
-prenatal <- do.call("rbind", as.data.frame(mean3[[1]]))
-colnames(prenatal) <- "prenatal"
-infant <- do.call("rbind", as.data.frame(mean3[[2]]))
-colnames(infant) <- "infant"
-child <- do.call("rbind", as.data.frame(mean3[[3]]))
-colnames(child) <- "child"
-adolescent <- do.call("rbind", as.data.frame(mean3[[4]]))
-colnames(adolescent) <- "adolescent"
-adult <- do.call("rbind", as.data.frame(mean3[[5]]))
-colnames(adult) <- "adult"
-
-final_mergepey <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
-#write.xlsx(final_mergepey,row.names = TRUE, file = "~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesPey_log2.xlsx")
-
-#For plot:
-final_mergepey <- tibble::rownames_to_column(final_mergepey, "Structure")
-final_mergepey[[1]] <- sapply(strsplit(final_mergepey[[1]], "_"), "[", 1)
-
-a<-ggparcoord(final_mergepey,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Pey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
-b <- ggparcoord(final_mergepey,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum (red) & MD (green)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#2ca25f", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
-c<-ggparcoord(final_mergepey,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum (blue) and HIP (orange)")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#fdae6b", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
-
-a1<-arrangeGrob(a, left=textGrob("A"))
-b1<-arrangeGrob(b, left =textGrob("B"))
-c1<-arrangeGrob(c, left=textGrob("C"))
-grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-
-d<-ggparcoord(final_mergepey,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Somato - Motor - Parietal - Aud Ctx")+scale_color_manual(values = c( "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB",  "#00FF00", "#ABABAB", "#ABABAB","#ABABAB", "#00FF00", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
-d1<-arrangeGrob(d, left=textGrob("D"))
-
-pl4 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesPey_log.pdf", pl4, width = 11.69, height = 8.27, units = "in")
-
-# STAT
-dfa <- lapply(akeypey10, melt)
-for (i in 1:length(dfa)){ 
-   dfa[[i]][4] <- i #in Akey
- }
-dfa1 <- ldply(dfa, data.frame)
-colnames(dfa1)[colnames(dfa1) == "L1"] <- c("stage")
-dfa1$stage <- as.factor(dfa1$stage)
-dfa1 <- as_tibble(dfa1)
-dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
-
-# dfa_s1 <- subset(dfa1, dfa1$stage==1) %>% droplevels()
-# dfa_s2 <- subset(dfa1, dfa1$stage==2) %>% droplevels()
-# dfa_s3 <- subset(dfa1, dfa1$stage==3) %>% droplevels()
-# dfa_s4 <- subset(dfa1, dfa1$stage==4) %>% droplevels()
-# dfa_s5 <- subset(dfa1, dfa1$stage==5) %>% droplevels()
-# 
-# dfa_s1 <- dfa_s1[dfa_s1$gene_name %in% names(which(table(dfa_s1$gene_name) > 15)), ]
-# dfa_s2 <- dfa_s2[dfa_s2$gene_name %in% names(which(table(dfa_s2$gene_name) > 15)), ]
-# dfa_s3 <- dfa_s3[dfa_s3$gene_name %in% names(which(table(dfa_s3$gene_name) > 15)), ]
-# dfa_s4 <- dfa_s4[dfa_s4$gene_name %in% names(which(table(dfa_s4$gene_name) > 15)), ]
-# dfa_s5 <- dfa_s5[dfa_s5$gene_name %in% names(which(table(dfa_s5$gene_name) > 15)), ]
-
-
-#TWO WAY REPEATED MEASURES ANOVA
-finaldf2 <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
-ggqqplot(finaldf2, "value", facet.by = "stage")
-qq2 <- ggqqplot(finaldf2, "value", facet.by = "stage")
-##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
-
-# STAT
-oneway1 <- finaldf2 %>%
-  group_by(stage) %>%
-  anova_test(dv = value, wid = gene_name, within = variable) %>%
-  get_anova_table() %>%
-  adjust_pvalue(method = "BH")
-oneway1
-#pairwise comparisons
-pw1 <- finaldf2 %>%
-  group_by(stage) %>%
-  pairwise_t_test(
-    value ~ variable, paired = TRUE,
-    p.adjust.method = "BH"
-    )
-struc_pw <- pw1 %>% filter(p.adj.signif != "ns")
-#write.csv(struc_pw, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Structures_pairwise_significant.csv", row.names = FALSE)
-
-
-oneway2 <- finaldf2 %>%
-  group_by(variable) %>%
-  anova_test(dv = value, wid = gene_name, within = stage) %>%
-  get_anova_table() %>%
-  adjust_pvalue(method = "BH")
-oneway2 
-
-#pairwise comparisons
-pw2 <- finaldf2 %>%
-  group_by(variable) %>%
-  pairwise_t_test(
-    value ~ stage, paired = TRUE,
-    p.adjust.method = "BH"
-    )
-
-stages <- pw2 %>% filter(p.adj.signif != "ns")
-#write.csv(stages, file="~/raul_tesina/1.data/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_log2_anova_Stages_pairwise_significant.csv", row.names = FALSE)
+#Friedman test per each stage independently.
+###ABA - AKEY alone
+finaldf
+aba_akey_st <- lapply(split(finaldf, finaldf$stage), function(x) {friedman_test(value ~ variable | gene_name, data=x)}) #All significant
 ```
 
 #Table Cell Atlas - Science
 ```{sh}
 #wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE156nnn/GSE156793/suppl/GSE156793%5FS8%5FDE%5Fgene%5Fcells%2Ecsv%2Egz 
 ```
+
 
 ```{r}
 df <- read.csv(file = "~/GSE156793_S8_DE_gene_cells.csv.gz")
@@ -1461,7 +1310,7 @@ c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 # 
 plak_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/ABA_GenesAkey_log2_median.pdf", plak_sestan, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/Sestan_GenesAkey_log2_median.pdf", plak_sestan, width = 11.69, height = 8.27, units = "in")
 
 ```
 
@@ -1578,7 +1427,7 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
  
 plakpey_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 
-#ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPey_log2_median/ABA_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/Sestan_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
 ```
 
 #Sestan - STATS
