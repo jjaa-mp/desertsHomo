@@ -25,7 +25,8 @@
 --- 
   
 - [ ] Intregrate **code** into drake workflow
-
+  + [ ] Check log2 consistency
+  + [ ] Erase non-parametric tests if not used (superseeded)
 
 --- 
 --- 
