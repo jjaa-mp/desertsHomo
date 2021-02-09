@@ -1,13 +1,12 @@
 
 - [X] Permutation tests for ABA 414 structures dataset (Alejandro) (done)
-    + [ ] Similar approach for Sestan data?
 
 - [X] **Sestan data**.
     + [X] Akey+Pey (Raül)
     + [X] Akey alone (Juan)
     + [X] Entire dataset (ubics cluster, Alejandro)
     
- - [ ] **Sestan data** *specific plots* (Juan)
+ - [X] **Sestan data** *specific plots* (Juan)
     + [X] Structure-by-structure plot
     + [X] Gene-by-gene (ChenPey) plot
   
@@ -18,7 +17,7 @@
     + [ ] Sestan permutation runs (AA: Wednesday afternoon/ thursday morning)
     
 - [ ] PCA + Clustering (Raül) [PCA needed for each stage] (pending)
-- [ ] Pairwise distances from PC clusters (Raul & JUan) (pending)
+- [ ] Pairwise distances from PC clusters (Raul & Juan) (pending)
   
 ----  
   
