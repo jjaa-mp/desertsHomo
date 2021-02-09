@@ -2,10 +2,10 @@
 - [X] Permutation tests for ABA 414 structures dataset (Alejandro) (done)
     + [ ] Similar approach for Sestan data?
 
-- [ ] **Sestan data**.
+- [X] **Sestan data**.
     + [X] Akey+Pey (Raül)
     + [X] Akey alone (Juan)
-    + [ ] Entire dataset (ubics cluster, Alejandro)
+    + [X] Entire dataset (ubics cluster, Alejandro)
     
  - [ ] **Sestan data** *specific plots* (Juan)
     + [X] Structure-by-structure plot
@@ -15,6 +15,7 @@
 
 - [X] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan) (in progress; target: between today and tomorrow Feb 9th)
     +Friedman + Conover (AkeyPey: significant differences at three stages; Akey: all stages; mult comp cannot spot particular structures)
+    + [ ] Sestan permutation runs (AA: Wednesday afternoon/ thursday morning)
     
 - [ ] PCA + Clustering (Raül) [PCA needed for each stage] (pending)
 - [ ] Pairwise distances from PC clusters (Raul & JUan) (pending)
