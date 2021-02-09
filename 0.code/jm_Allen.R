@@ -370,17 +370,17 @@ dfa <- lapply(akeypey10, melt)
 for (i in 1:length(dfa)){ 
    dfa[[i]][4] <- i #in Akey
  }
-dfa1 <- ldply(dfa, data.frame)
-colnames(dfa1)[colnames(dfa1) == "L1"] <- c("stage")
-dfa1$stage <- as.factor(dfa1$stage)
-dfa1 <- as_tibble(dfa1)
-dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
+dfa2 <- ldply(dfa, data.frame)
+colnames(dfa2)[colnames(dfa2) == "L1"] <- c("stage")
+dfa2$stage <- as.factor(dfa2$stage)
+dfa2 <- as_tibble(dfa2)
+dfa2 <- dfa2 %>% mutate(variable=as.character(variable))
 
-# dfa_s1 <- subset(dfa1, dfa1$stage==1) %>% droplevels()
-# dfa_s2 <- subset(dfa1, dfa1$stage==2) %>% droplevels()
-# dfa_s3 <- subset(dfa1, dfa1$stage==3) %>% droplevels()
-# dfa_s4 <- subset(dfa1, dfa1$stage==4) %>% droplevels()
-# dfa_s5 <- subset(dfa1, dfa1$stage==5) %>% droplevels()
+# dfa_s1 <- subset(dfa2, dfa2$stage==1) %>% droplevels()
+# dfa_s2 <- subset(dfa2, dfa2$stage==2) %>% droplevels()
+# dfa_s3 <- subset(dfa2, dfa2$stage==3) %>% droplevels()
+# dfa_s4 <- subset(dfa2, dfa2$stage==4) %>% droplevels()
+# dfa_s5 <- subset(dfa2, dfa2$stage==5) %>% droplevels()
 # 
 # dfa_s1 <- dfa_s1[dfa_s1$gene_name %in% names(which(table(dfa_s1$gene_name) > 15)), ]
 # dfa_s2 <- dfa_s2[dfa_s2$gene_name %in% names(which(table(dfa_s2$gene_name) > 15)), ]
@@ -390,7 +390,7 @@ dfa1 <- dfa1 %>% mutate(variable=as.character(variable))
 
 
 #TWO WAY REPEATED MEASURES ANOVA
-finaldf2 <- dfa1[dfa1$gene_name %in% names(which(table(dfa1$gene_name) > 79)), ]
+finaldf2 <- dfa2[dfa2$gene_name %in% names(which(table(dfa2$gene_name) > 79)), ]
 ggqqplot(finaldf2, "value", facet.by = "stage")
 #qq2 <- ggqqplot(finaldf2, "value", facet.by = "stage")
 ##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_GenesAkeyPey_qqplot.pdf", qq2, width = 11.69, height = 8.27, units = "in")
@@ -1585,70 +1585,57 @@ plakpey_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1
 
 #Sestan - STATS
 ```{R}
-#AKEY - FRIEDMAN STAT
-df1 <- finalakeySestan1_w_mean %>% pivot_longer(!Label, names_to = "gene_names", values_to = "expression")
-df1 <- df1 %>% 
-    separate(Label, c("Structure","Window"))
-df1 <- df1 %>% filter(Window != 1)
-df1 <- df1 %>% filter(Structure != "MSC")
+#Friedman test per each stage independently.
+##Post hoc via Conover
+###AKEY & PEY
+finalakeypeySestan_w_mean
+fr <- finalakeypeySestan_w_mean %>% pivot_longer(!("Label"), names_to = "Genes", values_to = "expression")
+fr <- fr %>% 
+  separate(Label, c("Structure","Window"))
+fr <- fr %>% filter(Window != 1)
+fr <- fr %>% filter(Structure != "MSC")
 
-df1 <- df1 %>% unite("Label", Structure:Window, remove = TRUE)
-r <- data.frame(df1$Label, df1$gene_names, df1$expression)
-#ar <- ar[ar$Structure %in% names(which(table(ar$Structure) > "2479")), ] If needed
+ps <- lapply(split(fr, fr$Window), function(x) {friedman_test(expression ~ Structure | Genes, data=x)})
 
-names(r) <- c("x", "y", "z")
+#pvalues <- numeric(0)
+#for (i in (1:length(ps))) {pvalues[i] <- ps[[i]]$p}
+#p.adjust(pvalues, method = "BH")
 
-rr <- pivot_wider(r, names_from = x, values_from = z)
-rr <- rr[complete.cases(rr),]
-rr3 <- as.matrix(rr)
-rr3 <-rr3[,-1]
-friedman.test(rr3) #Non-parametric: Friedman chi-squared = 551.94, df = 127, p-value < 2.2e-16
+#Stages 3 & 4 & 7 
+library(PMCMR)
+fr3 <- fr %>% filter(fr$Window == 3)
+a <-pivot_wider(fr3[,-2], names_from = Structure, values_from = expression)
+a <- column_to_rownames(a, var = "Genes")
+a <- as.matrix(a)
+posthoc.friedman.conover.test(y=a, p.adjust="BH")
 
-#m1 <- matrix(as.numeric(rr3), nrow = nrow(rr3), ncol= ncol(rr3))
-#colnames(m1) <- colnames(rr3)
-#m1_res <- posthoc.friedman.nemenyi.test(m1)
+fr4 <- fr %>% filter(fr$Window == 4)
+a <-pivot_wider(fr4[,-2], names_from = Structure, values_from = expression)
+a <- column_to_rownames(a, var = "Genes")
+a <- as.matrix(a)
+posthoc.friedman.conover.test(y=a, p.adjust="BH")
 
-#df1 %>% group_by(Label) %>% pairwise.wilcox.test(expression, gene_names, p.adj = "bonf")
+fr7 <- fr %>% filter(fr$Window == 7)
+a <-pivot_wider(fr7[,-2], names_from = Structure, values_from = expression)
+a <- column_to_rownames(a, var = "Genes")
+a <- as.matrix(a)
+posthoc.friedman.conover.test(y=a, p.adjust="BH")
 
-#library(PMCMR)
-#posthoc.friedman.nemenyi.test(matrix(as.numeric(rr3), nrow = nrow(rr3), ncol= ncol(rr3)))
-# 
-# m <- matrix(as.numeric(rr3), nrow = nrow(rr3), ncol= ncol(rr3))
-# colnames(m) <- colnames(rr3)
-# res <- cor(m)
-# library(corrplot)
-# corrplot(res, type = "upper", order = "hclust", 
-#          tl.col = "black", tl.srt = 45)
-# library("Hmisc")
-#rcorr
+#Friedman test per each stage independently.
+##Post hoc via Conover
+###AKEY alone
+finalakeySestan1_w_mean
+fr0 <- finalakeySestan1_w_mean %>% pivot_longer(!("Label"), names_to = "Genes", values_to = "expression")
+fr0 <- fr0 %>% 
+  separate(Label, c("Structure","Window"))
+fr0 <- fr0 %>% filter(Window != 1)
+fr0 <- fr0 %>% filter(Structure != "MSC")
 
+ps0 <- lapply(split(fr0, fr0$Window), function(x) {friedman_test(expression ~ Structure | Genes, data=x)})
 
-
-
-#AKEY + PEY - FRIEDMAN STAT
-df0 <- finalakeypeySestan_w_mean %>% pivot_longer(!Label, names_to = "gene_names", values_to = "expression")
-df0 <- df0 %>% 
-    separate(Label, c("Structure","Window"))
-df0 <- df0 %>% filter(Window != 1)
-df0 <- df0 %>% filter(Structure != "MSC")
-df0 <- df0 %>% unite("Label", Structure:Window, remove = TRUE)
-r <- data.frame(df0$Label, df0$gene_names, df0$expression)
-#ar <- ar[ar$Structure %in% names(which(table(ar$Structure) > "2479")), ] If needed
-
-names(r) <- c("x", "y", "z")
-
-rr <- pivot_wider(r, names_from = x, values_from = z)
-rr <- rr[complete.cases(rr),]
-rr3 <- as.matrix(rr)
-rr3 <-rr3[,-1]
-friedman.test(rr3) #Non-parametric: No significant results.
-
-m <- matrix(as.numeric(rr3), nrow = nrow(rr3), ncol= ncol(rr3))
-colnames(m) <- colnames(rr3)
-res <- cor(m)
-library(corrplot)
-corrplot(res, type = "upper", order = "hclust", 
-         tl.col = "black", tl.srt = 45)
+#pvals0 <- numeric(0)
+#for (i in (1:length(ps0))) {pvals0[i] <- ps0[[i]]$p}
+#p.adjust(pvals0, method = "BH") #All stages report significant results
 ```
 
 #Trajectory plots1 - ABA
