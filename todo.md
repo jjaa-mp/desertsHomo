@@ -17,8 +17,9 @@
     +Friedman + Conover (AkeyPey: significant differences at three stages; Akey: all stages; mult comp cannot spot particular structures)
     + [ ] Sestan permutation runs (AA: Wednesday afternoon/ thursday morning)
     
-- [ ] PCA + Clustering (Raül) [PCA needed for each stage] (pending)
-- [ ] Pairwise distances from PC clusters (Raul & Juan) (pending)
+- [X] PCA for each stage (Raül)
+    - [ ] Pairwise distances from PC clusters (Raül)
+    - [ ] PCA for Sestan raw (Juan)
   
 ----  
   
