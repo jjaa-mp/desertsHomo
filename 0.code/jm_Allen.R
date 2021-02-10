@@ -1272,6 +1272,9 @@ modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
 
 #With log
 finalakeySestan1=merge(modMetadatamRNAseq,logakeySestan1,by=c("Braincode", "Regioncode"))
+
+# write.csv(finalakeySestan1,"logakey.csv")
+
 #Without log:
 #finalakeySestan1=merge(modMetadatamRNAseq,akeypeySestan,by=c("Braincode", "Regioncode"))
 
@@ -1387,6 +1390,7 @@ modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
 
 #With log
 finalakeypeySestan=merge(modMetadatamRNAseq,logakeypeysestan1,by=c("Braincode", "Regioncode"))
+# write.csv(finalakeypeySestan,"logakeypey.csv")
 #Without log:
 #finalakeypeySestan=merge(modMetadatamRNAseq,akeypeySestan,by=c("Braincode", "Regioncode"))
 
