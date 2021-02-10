@@ -56,6 +56,7 @@ the_plan <- drake_plan(
   # 	pey_fried = friedman(GSEpey, "pey"), # friedman test for pey
   #  #anova_GSEpey = alt_anova(GSEpey) # checking with anova + Tukey if Friedman is alright
   # 
+  # 
   #  #Permutations
   #  npermutations=1000,
   #  permutationrun = permutation_test(npermutations, abadult),
@@ -65,5 +66,11 @@ the_plan <- drake_plan(
    sestan_a = mRNA_sestan(akey),
    sestan_apey = mRNA_sestan(pey_coords),
    #sestan_raw = mRNA_sestan() #Done in cluster
-   combinedplot_sestan = plot_sestan_compared(sestan_a, sestan_apey)
+   combinedplot_sestan = plot_sestan_compared(sestan_a, sestan_apey),
+  
+  #Permutations
+  npermutations=1000,
+  permutationrun = permutation_test_sestan(npermutations, abadult),
+  permutationstats = stats_permutations(permutationrun, akey, abadult, "akey"),
+ 
 )
