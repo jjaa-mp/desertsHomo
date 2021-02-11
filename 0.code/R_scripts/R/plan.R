@@ -69,8 +69,10 @@ the_plan <- drake_plan(
    combinedplot_sestan = plot_sestan_compared(sestan_a, sestan_apey),
   
   #Permutations
-  npermutations=1000,
-  permutationrun = permutation_test_sestan(npermutations, abadult),
-  permutationstats = stats_permutations(permutationrun, akey, abadult, "akey"),
+  npermutations=10,
+  sestan = clean_sestan(),
+  permutationrun = permutation_test(npermutations, sestan),
+  permutationrun_s = clean_perm_results(permutationrun),
+  permutationstats = stats_permutations(permutationrun_s, akey, sestan, "akey"),
  
 )

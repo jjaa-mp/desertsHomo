@@ -1,4 +1,4 @@
-permutation_test <- function(npermutations, abadult) {
+permutation_test <- function(npermutations, dataset) {
   #This function takes abadult & the deserts coordinates from biominput() as input
   # Outputs random regions means by structure to compare against expression in special subsets
   
@@ -16,9 +16,9 @@ permutation_test <- function(npermutations, abadult) {
     purrr::discard(empty)
   
   #get the expression data of random genes
-
+  
   #Internal function
-  selected <- lapply(cleanrun, filter_genexpr_random, abadult = abadult)
+  selected <- lapply(cleanrun, filter_genexpr_random, abadult = dataset)
   # quantile 10 cutoff to avoid 0's happens here!
   
   selected <- lapply(selected, quantilecut)
