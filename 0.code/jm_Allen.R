@@ -1150,7 +1150,7 @@ rownames(rawSestan) <- 1:nrow(rawSestan)
 
 #duplicated columns - Remove duplicates if needed
 colnames(rawSestan)[duplicated(colnames(rawSestan))] #0
-#rawSestan <- rawSestan[, !duplicated(colnames(rawSestan))]
+rawSestan <- rawSestan[, !duplicated(colnames(rawSestan))]
 
 rawSestan=rawSestan %>% 
   separate(info, c("Braincode","Regioncode"))
@@ -1183,8 +1183,8 @@ modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
 modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
 
 #With log
-finalrawSestan=merge(modMetadatamRNAseq,lograwsestan1,by=c("Braincode", "Regioncode"))
-#Without log:
+finalrawSestan=merge(modMetadatamRNAseq,lograwsestan1,by=c("Braincode", "Regioncode")) #Input to PCA
+#Without log: 
 #finalrawSestan=merge(modMetadatamRNAseq,rawSestan,by=c("Braincode", "Regioncode"))
 
 finalrawSestan$Braincode <- NULL
