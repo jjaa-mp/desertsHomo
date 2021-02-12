@@ -27,7 +27,7 @@ From results:
   + **Striatum**. We found that genes within deserts present highest median expression during childhood, largely decreasing afterwards. We notice, however, that genes within deserts present higher expression profile for the cerebellum prenatally, and for the MD thalamus during and after childhood. When subsetting for genes within both deserts and positive selection, the striatum mostly recapitulates the cup-shaped trajectory found in the global profile of this structure.
   + **Cerebellum**. We found that genes within deserts alone, and opposed to the global expression profile, present a median expression higher at prenatal stages (fetal stages 1,2,3). When considering genes present in both deserts and putative positively-selected regions, the expression profile increases as early as fetal stage 3 until it reaches the highest median expression of all structures from childhood to adulthood. 
   + **Akey & AkeyPey - General comment**. When comparing the expression profiles of genes in these two different subsets we observe that, in general, the trajectories of genes in both AkeyPey are more variable peaking at prenatal stages and decreasing later on, with the exception of the cerebellum. 
-
+  + **PC & Pairwise Euclidean distances**.
 
 
 ---
