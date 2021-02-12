@@ -1149,7 +1149,7 @@ rawSestan <- cbind(info = rownames(rawSestan), rawSestan)
 rownames(rawSestan) <- 1:nrow(rawSestan)
 
 #duplicated columns - Remove duplicates if needed
-colnames(rawSestan)[duplicated(colnames(rawSestan))] #0
+#colnames(rawSestan)[duplicated(colnames(rawSestan))] #0
 rawSestan <- rawSestan[, !duplicated(colnames(rawSestan))]
 
 rawSestan=rawSestan %>% 
@@ -1301,6 +1301,8 @@ colnames(preli1) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "
 #PLOT
 levels(colnames(preli1)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
 
+#write.csv(preli1, file="~/raul_tesina/1.data/median_tables/median_Akey_Sestan.csv", row.names = FALSE)
+
 a<- ggparcoord(preli1,
               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 b <- ggparcoord(preli1,
@@ -1418,6 +1420,8 @@ colnames(preli2) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "
 #PLOT
 levels(colnames(preli2)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
 
+#write.csv(preli2, file="~/raul_tesina/1.data/median_tables/median_AkeyPey_Sestan.csv", row.names = FALSE)
+
 a<- ggparcoord(preli2,
               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 b <- ggparcoord(preli2,
@@ -1522,17 +1526,24 @@ an <- n + facet_wrap(~Structure)
 
 #Trajectory plots2- Sestan
 ```{r}
-preli1 #akey
-preli2 #akeypey
+preli1 <- read.csv(file="~/raul_tesina/1.data/median_tables/median_Akey_Sestan.csv")
+preli1 <- as_tibble(preli1) #AKEY
+
+preli2 <- read.csv(file="~/raul_tesina/1.data/median_tables/median_AkeyPey_Sestan.csv")
+preli2 <- as_tibble(preli2) #AKEYpey
+
+preli3 <- read.csv(file="~/raul_tesina/1.data/median_tables/median_filtered_rawSestan.csv")
+preli3 <- as_tibble(preli3) #rawfiltered
 
 preli1$dataset <- c("akey")
 preli2$dataset <- c("akeypey")
+preli3$dataset <- c("filtered_Raw")
 
-tot_pl <-rbind(preli1, preli2)
+tot_pl <-rbind(preli1, preli2, preli3)
 tot_pl <- as_tibble(tot_pl)
 tot_pl <- tot_pl %>% mutate(dataset=as.character(dataset))
 
-levels(tot_pl$dataset) <-  c("akey", "akeypey")
+levels(tot_pl$dataset) <-  c("akey", "akeypey", "filtered_Raw")
 
 n <-ggparcoord(tot_pl,
 columns = 2:8, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA")+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
@@ -1545,7 +1556,7 @@ columns = 2:8, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title=
 n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
 
 an <- n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
-ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/Sestan_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/raul_tesina/2.plots/Sestan_raw_filtered_median2_trajectories/Sestan_temporal_Structures_filteredRawmedian2.pdf", an, width = 11.69, height = 8.27, units = "in")
 ```
 
 #Any set of genes
