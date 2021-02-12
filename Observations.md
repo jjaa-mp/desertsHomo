@@ -1,8 +1,8 @@
 # Observations
 ## Highlights from the data analysis
-Key for me: make clear why we focus on Akey, why we further focus on Pey (I suggest we just focus on the 'extended', not 'core' set), and point to differences from the early, tentative Vernot conclusion
 
-For intro: go back to work by Martin (his FOXP2 paper, and his Bioessays piece) to introduce the relevance of introgression deserts fo human uniqueness (in this content, see also Evo Letters 2020 piece on "genomic islands of divergence/speciation" in introgression contexts). Also briefly recap Vernot results, then say why we focus on Akey, and further examine the overlap with Pey. Striatum/CBL, like Gunz/Tilot?
+
+For intro: go back to work by Martin (his FOXP2 paper, and his Bioessays piece) to introduce the relevance of introgression deserts fo human uniqueness (in this content, see also Evo Letters 2020 piece on "genomic islands of divergence/speciation" in introgression contexts). Also briefly recap Vernot results, then say why we focus on Akey, and further examine the overlap with Pey. Striatum/CBL, like Gunz/Tilot and maybe also early Akey work on introgressed regulatory variants?
 
 From results:
 
@@ -16,7 +16,7 @@ From results:
 
 
 - *Cell Atlas* 
-	+ *Cell type enrichment*. No significant results were found for any cell type in neither organ (Cerebrum, Cerebellum, Eye).
+	+ *Cell type enrichment*. No significant results were found for any cell type in neither organ (Cerebrum, Cerebellum, Eye). [cb: i guess the mention of these 3 structures is a remant from very early version]
 
 - **414 structures** [Need to be udpated] PCA performed on the whole dataset revealed cerebellum as a clearly distinct cluster (inside it, right/left separation was noticed too), as well as broad brain cortical and nuclei clusters. Permutations to compare expression levels between Chen, Chen+Pey in progress.
 
@@ -24,8 +24,8 @@ From results:
 - **Sestan permutations**
 
 - **Sestan temporal progression**  [Previously, Mafessoni2020 have shown that genes carrying Neanderthal-derived changes and expressed in the striatum during adolescence present a higher McDonald-Kreitman ratio. These same genes are over-represented in genomic regions were modern humans are significantly devoid of Neanderthal introgressed haplotypes (Maffesoni2020) [do they give the region coordinates?]. In addition, Vernot2016 [using a different range of introgressed regions] emphasized that genes within deserts are significantly enriched in the developing cerebral cortex and in the striatum at adolescence and adult stages. We investigated the temporal progression of expression patterns of genes within deserts of introgression and putative positively-selected regions in different brain structures accessing RNA-seq data from Sestan.] 
-  + **Striatum**. We found that genes within deserts present highest median expression during childhood, largely decreasing afterwards. We notice, however, that genes within deserts present higher expression profile for the cerebellum prenatally, and for the MD thalamus during and after childhood. When subsetting for genes within both deserts and positive selection, the striatum mostly recapitulates the cup-shaped trajectory found in the global profile of this structure.
-  + **Cerebellum**. We found that genes within deserts alone, and opposed to the global expression profile, present a median expression higher at prenatal stages (fetal stages 1,2,3). When considering genes present in both deserts and putative positively-selected regions, the expression profile increases as early as fetal stage 3 until it reaches the highest median expression of all structures from childhood to adulthood. 
+  + **Striatum**. We found that genes within deserts present highest median expression during childhood, largely decreasing afterwards. We notice, however, that genes within deserts present higher expression profile for the cerebellum prenatally, and for the MD thalamus during and after childhood. When subsetting for genes within both deserts and positive selection, the striatum mostly recapitulates the cup-shaped trajectory found in the global profile of this structure. [cb: this last comment is a bit cryptic, not sure what it adds]
+  + **Cerebellum**. We found that genes within deserts alone, and opposed to the global expression profile, present a median expression higher at prenatal stages (fetal stages 1,2,3). When considering genes present in both deserts and putative positively-selected regions, the expression profile increases as early as fetal stage 3 until it reaches the highest median expression of all structures from childhood to adulthood. [cb: maybe also relevant to mention that the stat.significant stages correspond to globularization phase?]
   + **Akey & AkeyPey - General comment**. When comparing the expression profiles of genes in these two different subsets we observe that, in general, the trajectories of genes in both AkeyPey are more variable peaking at prenatal stages and decreasing later on, with the exception of the cerebellum. 
   + **PC & Pairwise Euclidean distances**.
 
