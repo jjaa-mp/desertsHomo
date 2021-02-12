@@ -1,21 +1,3 @@
-library(ABAData)
-library(ABAEnrichment)
-library(data.table)
-library(ggplot2)
-library(dplyr)
-library(GGally)
-library(viridis)
-library(grid)
-library(gridExtra)
-library(lattice)
-library(tidyr)
-library(dplyr)
-library(Matrix)
-library(plyr)
-library(matrixStats)
-library(tidyr)
-library(readxl)
-library(tibble)
 mRNAseqData=read.table("mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
 modsb1= mRNAseqData %>% 
   separate(Geneid,c("EnsemblID","Genename"),extra="merge")
@@ -67,7 +49,7 @@ df_raw2 <- df_raw2[complete.cases(df_raw2), ]
 colnames(df_raw2) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
 #PLOT
 levels(colnames(df_raw2)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
-write.csv(df_raw2, file="median_filtered_rawSestan.csv", row.names = FALSE)
+#write.csv(df_raw2, file="median_filtered_rawSestan.csv", row.names = FALSE)
 a<- ggparcoord(df_raw2,
                columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 b <- ggparcoord(df_raw2,
@@ -78,5 +60,5 @@ a1<-arrangeGrob(a, left=textGrob("A"))
 b1<-arrangeGrob(b, left =textGrob("B"))
 c1<-arrangeGrob(c, left=textGrob("C"))
 dfraw2_pl <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-ggsave(file="filtered_rawSestan_log2_median.pdf", dfraw2_pl, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="filtered_rawSestan_log2_median.pdf", dfraw2_pl, width = 11.69, height = 8.27, units = "in")
 
