@@ -29,6 +29,15 @@ From results:
   + **Akey & AkeyPey - General comment**. When comparing the expression profiles of genes in these two different subsets we observe that, in general, the trajectories of genes in both AkeyPey are more variable peaking at prenatal stages and decreasing later on, with the exception of the cerebellum. 
 
 
+
+---
+Summary of Methods
+---
+
+
+---
+---
+**Stats run on ABA data** 
 **Non-parametric stats on ABA temporal progression**
 
 These stats were run with the raw data, and don't require normal data (since they are non-parametric). However, using log values and adding an expression cutoff might change them if we decide to do so.
