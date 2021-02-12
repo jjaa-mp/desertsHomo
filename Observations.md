@@ -18,7 +18,7 @@ From results:
 - *Cell Atlas* 
 	+ *Cell type enrichment*. No significant results were found for any cell type in neither organ (Cerebrum, Cerebellum, Eye).
 
-- **414 structures** [Need to be udpated]
+- **414 structures** [Need to be udpated] PCA performed on the whole dataset revealed cerebellum as a clearly distinct cluster (inside it, right/left separation was noticed too), as well as broad brain cortical and nuclei clusters. Permutations to compare expression levels between Chen, Chen+Pey in progress.
 
 
 - **Sestan temporal progression**  [Previously, Mafessoni2020 have shown that genes carrying Neanderthal-derived changes and expressed in the striatum during adolescence present a higher McDonald-Kreitman ratio. These same genes are over-represented in genomic regions were modern humans are significantly devoid of Neanderthal introgressed haplotypes (Maffesoni2020) [do they give the region coordinates?]. In addition, Vernot2016 [using a different range of introgressed regions] emphasized that genes within deserts are significantly enriched in the developing cerebral cortex and in the striatum at adolescence and adult stages. We investigated the temporal progression of expression patterns of genes within deserts of introgression and putative positively-selected regions in different brain structures accessing RNA-seq data from the Allen Brain Atlas (via the ABAData package; see Methods).] 
