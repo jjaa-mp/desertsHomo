@@ -110,7 +110,7 @@ fig<-dfDistancesTemp %>% filter(window=="2fetal1") %>%plot_ly(
   legendgroup = "A", showlegend=F
 ) %>% add_trace(
   x = ~brainRegion,y = ~sd,color=c("orange"), showlegend=F) %>%
-  layout(xaxis=list(title="fetal2"),yaxis = list(title = 'Dist/sd'), barmode = 'overlay')
+  layout(xaxis=list(title="fetal1"),yaxis = list(title = 'Dist/sd'), barmode = 'overlay')
 fig2<-dfDistancesTemp %>% filter(window=="3fetal2") %>%plot_ly(
   x = ~brainRegion, 
   y = ~dist, 
