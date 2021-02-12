@@ -31,7 +31,13 @@ From results:
 
 
 ---
-Summary of Methods
+## Summary of Methods
+
+*Degree of fixation*. To evaluate the degree of fixation of Homo sapiens-specific variants in regions of interest, we processed a dataset containing SNCs derived in the modern human lineage at fixed or nearly fixed frequency (above 90% in present-day human populations) where high-quality Neanderthal/Denisovan genomes present the ancestral allele (from MartinBoeckx), and integrated it with genomic data of regions depleted of archaic haplotypes (from Chen2020) and putative positively-selected regions (from Pey2017). Statistical evaluation of differences in mean frequency and percentage of fixed alleles  was performed with a Wilcoxon rank sum test with and Chi-squared test, respectively, with Benjamini-Hochberg correction for multiple comparisons.
+
+
+*Sestan. Temporal progression.* Genes within deserts of introgression or putative positively-selected regions were obtained via BioMart R package, inputing the respective genomic region coordinates (extracted from Chen2020 and Pey2017) and filtering by protein-coding genes. Publicly available transcriptomic data of the human brain at different developmental stages was retrieved from (Sestan, psychencode). RPKM normalized counts were log-transformed and then subsetted to select genes either in deserts of introgression or in both deserts and putative positively-selected regions. The complete log-transformed, RPKM normalized count matrix was subsetted to select genes with median expression value higher than 2, following (Sestan).
+
 ---
 
 
