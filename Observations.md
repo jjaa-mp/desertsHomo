@@ -38,6 +38,7 @@ Summary of Methods
 ---
 ---
 **Stats run on ABA data** 
+
 **Non-parametric stats on ABA temporal progression**
 
 These stats were run with the raw data, and don't require normal data (since they are non-parametric). However, using log values and adding an expression cutoff might change them if we decide to do so.
