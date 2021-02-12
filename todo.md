@@ -18,8 +18,10 @@
     + [ ] Sestan permutation runs (AA: Wednesday afternoon/ thursday morning)
     
 - [X] PCA for each stage (Raül)
-    - [ ] Pairwise distances from PC clusters (Raül)
-    - [ ] PCA for Sestan raw (Juan)
+    - [X] Pairwise distances from PC clusters (Raül)
+    - [X] PCA for Sestan raw (Juan)
+    - [ ] Pairwise distances from PC clusters - raw data
+
   
 ----  
   
