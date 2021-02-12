@@ -102,6 +102,15 @@ dfDistancesTemp$window[dfDistancesTemp$window=="6"]<-"6Infan/Child"
 dfDistancesTemp$window[dfDistancesTemp$window=="7"]<-"7Child"
 dfDistancesTemp$window[dfDistancesTemp$window=="8"]<-"8Adolescent"
 dfDistancesTemp$window[dfDistancesTemp$window=="9"]<-"9Adult"
+fig<-dfDistancesTemp %>% filter(window=="2fetal1") %>%plot_ly(
+  x = ~brainRegion, 
+  y = ~dist, 
+  color=c( 'blue', 'green','grey', 'pink', 'purple', 'red'),
+  type = 'bar',
+  legendgroup = "A", showlegend=F
+) %>% add_trace(
+  x = ~brainRegion,y = ~sd,color=c("orange"), showlegend=F) %>%
+  layout(xaxis=list(title="fetal2"),yaxis = list(title = 'Dist/sd'), barmode = 'overlay')
 fig2<-dfDistancesTemp %>% filter(window=="3fetal2") %>%plot_ly(
   x = ~brainRegion, 
   y = ~dist, 
