@@ -20,7 +20,8 @@
 - [X] PCA for each stage (Raül)
     - [X] Pairwise distances from PC clusters (Raül)
     - [X] PCA for Sestan raw (Juan)
-    - [ ] Pairwise distances from PC clusters - raw data
+    - [X] Pairwise distances from PC clusters - raw data
+    - [ ] Stats on pairwise distances
 
   
 ----  
