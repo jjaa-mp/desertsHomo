@@ -182,4 +182,122 @@ fig8<-dfDistancesTemp %>% filter(window=="9Adult") %>%plot_ly(
 
 
 subplot(fig,fig2,fig3,fig4,fig5,fig6,fig7,fig8,shareX = T) %>% layout(yaxis=list(title = 'Dist/sd'))
+              
+#Tests distances + Boxplots
+#Akey or AkeyPey distances tests
+
+structDistWind<-list()
+for (i in 2:9){
+  
+#CHANGE:logakeypeyPCA / logakeyPCA
+  windowPCA<-logakeyPCA %>% filter(Window==i)
+  
+  windowPCA$Window<-NULL
+  
+  brainTopStruct<-read.csv("brainRegionCorresp.csv",sep=":")
+  windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
+  
+  pca_res <- prcomp(windowPCASt[,-1][,-1][,-1][,-1], scale. = TRUE)
+  
+  # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure) 
+  PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) #with neocortex
+structDist<-hash()
+for (structure in unique(PCi$topStructure)){
+  
+  dfStructure<-PCi %>% filter(topStructure==structure)
+  dfOtherStructures<-PCi %>% filter(topStructure!=structure)
+  distancesStruct<-c()
+  sdStruct<-c()
+  for (row in 1:nrow(dfStructure)) {
+    xstruct<-dfStructure[row,]$PC1
+    ystruct<-dfOtherStructures[row,]$PC2
+    nrowsOthers<-nrow(dfOtherStructures)
+    listDist<-c()
+    for (rowOth in 1:nrowsOthers){
+      xOtherstruct<-dfOtherStructures[rowOth,]$PC1
+      yOtherstruct<-dfOtherStructures[rowOth,]$PC2
+      distance<-dist(matrix(c(xstruct,ystruct,xOtherstruct,yOtherstruct),nrow=2,ncol=2),diag=TRUE)
+      #print(c("Distance:",distance))
+      listDist<-append(listDist,distance[1])
+      nrowsOthers
+    }
+    distancesStruct<-append(distancesStruct,listDist)
+    sdStruct<-append(sdStruct,sd(listDist))
+    print(paste("Distance ",structure,": list->",head(listDist),"; sd->",sd(listDist)))
+  }
+  structDist[[structure]]<-c(distancesStruct,mean(sdStruct))
+}
+
+
+structDistWind[[i]]<-structDist
+}
+
+# Final var structDistWind
+
+#Boxplots
+correspStage<-list()
+correspStage[[2]]<-"fetal1"
+correspStage[[3]]<-"fetal2"
+correspStage[[4]]<-"fetal3"
+correspStage[[5]]<-"Birth/Infan"
+correspStage[[6]]<-"Infan/Child"
+correspStage[[7]]<-"Child"
+correspStage[[8]]<-"Adolescent"
+correspStage[[9]]<-"Adult"
+boxplotsDist<-list()
+for (i in 2:9){
+  structDist<-structDistWind[[i]]
+for (structure in keys(structDist)){
+  valoresStruct[[structure]]<-values(structDist[structure])
+}
+#In a melting pot
+valoresStructdf <- melt(valoresStruct)
+valoresStructdf$Var1<-NULL
+valoresStructdf$L1<-NULL
+
+# prepare a special xlab with the number of obs for each group
+my_xlab <- paste(levels(valoresStructdf$Var1),"\n(N=",table(valoresStructdf$Var1),")",sep="")
+colnames(valoresStructdf) <- c("names", "value")
+# plot
+boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=names, y=value, fill=names)) +
+  geom_boxplot(varwidth = TRUE, alpha=0.2) +
+  theme(legend.position="none",axis.text.x = element_blank()) + xlab(correspStage[[i]])
+
+}
+boxplotsDist[[2]]
+ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
+          boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
+          boxplotsDist[[8]],boxplotsDist[[9]],
+          common.legend = TRUE, legend = "right")
+ggsave(file="Sestan_Boxplots_DistancesAkey.pdf", width = 11.69, height = 8.27)
+               
+#Tests we used Wilcox, other tests can be performed
+#Initialize dataframe
+wilcoxTests<-data.frame(matrix(ncol=48,nrow = 6))
+wilcoxTestsCol<-c()
+for (wind in 2:9){
+  for (str in keys(structDist)){
+    wilcoxTestsCol<-append(wilcoxTestsCol,paste(str,"_",wind))
+  }
+}
+colnames(wilcoxTests)<-wilcoxTestsCol
+rownames(wilcoxTests)<-keys(structDist)
+for (i in 2:9){
+  structDist<-structDistWind[[i]]
+for(str in keys(structDist)){
+  
+  for(str2 in keys(structDist)){
+    if(str==str2){
+      wilcoxTests[str2,paste(str,"_",i)]<-NaN
+    }else{
+    wilcoxTests[str2,paste(str,"_",i)]<-wilcox.test(values(structDist[str]),values(structDist[str2]))$p.value
+    }
+}
+}
+}
+
+colMeans(wilcoxTests, na.rm = TRUE)
+# wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
+write.csv(wilcoxTests,"wilcoxAkeyPeyDist.csv")
+               
 
