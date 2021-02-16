@@ -10,18 +10,18 @@
     + [X] Structure-by-structure plot
     + [X] Gene-by-gene (ChenPey) plot
   
-- [X] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan) (in progress; target: between today and tomorrow Feb 9th)
+- [X] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan) 
     + AkeyPey: All stages significant except 1; Akey: all stages
 
-- [X] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan) (in progress; target: between today and tomorrow Feb 9th)
+- [X] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan)
     +Friedman + Conover (AkeyPey: significant differences at three stages; Akey: all stages; mult comp cannot spot particular structures)
-    + [ ] Sestan permutation runs (AA: Wednesday afternoon/ thursday morning)
+    + [ ] Sestan permutation runs (AA)
     
 - [X] PCA for each stage (Raül)
     - [X] Pairwise distances from PC clusters (Raül)
     - [X] PCA for Sestan raw (Juan)
     - [X] Pairwise distances from PC clusters - raw data
-    - [ ] Stats on pairwise distances
+    - [X] Stats on pairwise distances
 
   
 ----  
