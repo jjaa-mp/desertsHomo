@@ -239,8 +239,8 @@ correspStage<-list()
 correspStage[[2]]<-"fetal1"
 correspStage[[3]]<-"fetal2"
 correspStage[[4]]<-"fetal3"
-correspStage[[5]]<-"Birth/Infan"
-correspStage[[6]]<-"Infan/Child"
+correspStage[[5]]<-"Birth_Infan"
+correspStage[[6]]<-"Infan_Child"
 correspStage[[7]]<-"Child"
 correspStage[[8]]<-"Adolescent"
 correspStage[[9]]<-"Adult"
@@ -300,7 +300,7 @@ for (i in 2:9){
     # }
     
   }
-  pairwiseWilcox[[paste("window",i)]]<-as.data.frame(pairwise.wilcox.test(valuesDist,structs, p.adj = "bonf")$p.value)
+  pairwiseWilcox[[correspStage[[i]]]]<-as.data.frame(pairwise.wilcox.test(valuesDist,structs, p.adj = "bonf")$p.value)
 }
 
 #wilcoxAkeyDist / wilcoxAkeyPeyDist
