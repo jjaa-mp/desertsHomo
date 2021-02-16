@@ -1,8 +1,8 @@
 #Supplementary Table 1
 ##Frequency data retrieved with permissions from Kuhlwilm M, Boeckx C. Sci Rep. 2019. http://www.nature.com/articles/s41598-019-44877-x
 
-SummarySection1 <-read.csv("Supplementary_Table_1.csv",sep = "\t")
-dfreq <- read.csv("Supplementary_Table_2.csv")
+SummarySection1 <-read.csv("~/raul_tesina/1.data/stat_freq/Supplementary_Table_1.csv",sep = "\t")
+dfreq <- read.csv("~/raul_tesina/1.data/stat_freq/Supplementary_Table_2.csv")
 
 pairwise.wilcox.test(dfreq$freq, dfreq$group, p.adjust.method = "BH")
 

@@ -87,6 +87,49 @@ racAkey <- results_rac[results_rac$hgnc_symbol %in% results$hgnc_symbol,]
 racAkey <- racAkey[!(is.na(racAkey$hgnc_symbol) | racAkey$hgnc_symbol==""), ]
 ```
 
+```{r}
+library(ABAEnrichment)
+
+#AKEY
+input_hyper0 = data.frame(results$hgnc_symbol, is_candidate=1)
+resABA0<-aba_enrich(input_hyper0, dataset="5_stages")
+resABA00<-aba_enrich(input_hyper0, dataset="dev_effect")
+
+#PEY
+input_hyper1 = data.frame(both$hgnc_symbol, is_candidate=1)
+resABA1<-aba_enrich(input_hyper1, dataset="5_stages")
+resABA11<-aba_enrich(input_hyper1, dataset="dev_effect")
+
+
+#Replicating Vernot
+##desert from both nean and deni
+listvernot <- c("1:104000000:114900000", "3:76500000:90500000", "7:113600000:124700000","8:54500000:65400000")
+##Select only protein-coding from Akey
+vernot=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+              filters = c("chromosomal_region","biotype"),
+              values = list(chromosomal_region=listvernot,biotype="protein_coding"), mart = ensembl)
+vernot <- vernot[!duplicated(vernot$hgnc_symbol),]
+vernot <-  vernot[!(is.na(vernot$hgnc_symbol) | vernot$hgnc_symbol==""), ]
+
+input_vernot = data.frame(vernot$hgnc_symbol, is_candidate=1)
+resvernot<-aba_enrich(input_vernot, dataset="5_stages")
+resvernot2<-aba_enrich(input_vernot, dataset="dev_effect")
+
+
+listvernot2 <- c("1:102200000:114900000","2:201100000:211500000", "3:76500000:90500000", "7:106300000:124700000","8:53900000:66000000", "18:25000000:41800000")
+##Select only protein-coding from Akey
+vernotgenes2=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+              filters = c("chromosomal_region","biotype"),
+              values = list(chromosomal_region=listvernot2,biotype="protein_coding"), mart = ensembl)
+vernotres2 <- vernotgenes2[!duplicated(vernotgenes2$hgnc_symbol),]
+
+input_vernot2 = data.frame(vernotres2$hgnc_symbol, is_candidate=1)
+vernotNean<-aba_enrich(input_vernot2, dataset="5_stages")
+vernotNean2<-aba_enrich(input_vernot2, dataset="dev_effect")
+
+```
+
+
 #Extracting gene expression data from Allen Brain Atlas - ADULT
 ```{R}
 data("dataset_adult")
@@ -491,6 +534,10 @@ dfakey <- df %>% filter(gene_short_name %in% results$hgnc_symbol)
 meanakey <- dfakey %>% group_by(organ) %>% dplyr::summarize(Mean = mean(max.expr))
 meanakey[order(meanakey$Mean, decreasing = TRUE),]
 
+
+
+
+
 #filtering for paired test
 meanakeytest <- dfakey[dfakey$gene_short_name %in% names(which(table(dfakey$gene_short_name) > 14)), ]
 meanakeytest <- meanakeytest %>% arrange(meanakeytest$gene_short_name)
@@ -731,28 +778,6 @@ finaltable2 <- merge(fi1, z1, by="Var1")
 finaltable2
 finaltable2$pvalue <- phyper(finaltable2$`Akey genes`-1, 255, 19238-255, finaltable2$`Total CBL DEG`, lower.tail = FALSE, log.p = FALSE)
 
-
-#EYE - Hyper geom
-eye <- df[which(df$organ=='Eye'), ]
-eye$gene_short_name <- gsub("\\'",  "", eye$gene_short_name)
-eye_akey <- eye[eye$gene_short_name %in% results$hgnc_symbol,]
-eyelt <- data.frame(eye_akey$max.cluster, eye_akey$gene_short_name, eye_akey$max.expr)
-names(eyelt) <- c("x", "y", "z")
-eyelt <- pivot_wider(eyelt, names_from = x, values_from = z)
-colSums(!is.na(eyelt)) #Sample size 215
-z2 <- as.data.frame(colSums(!is.na(eyelt[,-1]))) #removing y
-names(z2) <- "Akey genes"
-setDT(z2, keep.rownames = "Var1")
-z2 <- as.data.frame(z2)
-#testing
-fi2 <- data.frame(eye$max.cluster, eye$gene_short_name, eye$max.expr)
-names(fi2) <- c("x", "y", "z")
-fi2 <- as.data.frame(table(fi2$x))
-fi2<-fi2[which(fi2$Freq != 0),]
-names(fi2) <- c("Var1", "Total EYE DEG")
-finaltable3 <- merge(fi2, z2, by="Var1")
-#hyper geom test
-finaltable3$pvalue <- phyper(finaltable3$`Akey genes`-1, 255, 19238-255, finaltable3$`Total EYE DEG`, lower.tail = FALSE, log.p = FALSE)
 
 #CEREBRUM - AKEY & PEY
 #brain$gene_short_name <- gsub("\\'", "", brain$gene_short_name)
@@ -1181,9 +1206,9 @@ dfrawSestan2 <- dfrawSestan2 %>%
 df_raw2 <- pivot_wider(dfrawSestan2, names_from = Window, values_from = Means)
 df_raw2[,10] <- NULL
 df_raw2 <- df_raw2[complete.cases(df_raw2), ]
-colnames(df_raw2) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
+colnames(df_raw2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(df_raw2)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
+levels(colnames(df_raw2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
 #write.csv(df_raw2, file="median_filtered_rawSestan.csv", row.names = FALSE)
 a<- ggparcoord(df_raw2,
                columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
@@ -1281,11 +1306,11 @@ dfakeySestan1 <- dfakeySestan1 %>%
 preli1 <- pivot_wider(dfakeySestan1, names_from = Window, values_from = Means)
 preli1[,10] <- NULL
 preli1 <- preli1[complete.cases(preli1), ]
-colnames(preli1) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
+colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli1)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
+levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
 
-#write.csv(preli1, file="~/raul_tesina/1.data/median_tables/median_Akey_Sestan.csv", row.names = FALSE)
+write.csv(preli1, file="~/raul_tesina/1.data/median_tables/median_Akey_Sestan.csv", row.names = FALSE)
 
 a<- ggparcoord(preli1,
               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
@@ -1299,7 +1324,7 @@ c1<-arrangeGrob(c, left=textGrob("C"))
 grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 # 
 plak_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/Sestan_GenesAkey_log2_median.pdf", plak_sestan, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/Sestan_GenesAkey_log2_median.pdf", plak_sestan, width = 11.69, height = 8.27, units = "in")
 
 ```
 
@@ -1400,11 +1425,11 @@ dfakeypeySestan <- dfakeypeySestan %>%
 preli2 <- pivot_wider(dfakeypeySestan, names_from = Window, values_from = Means)
 preli2[,10] <- NULL
 preli2 <- preli2[complete.cases(preli2), ]
-colnames(preli2) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
+colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli2)) <- c("Structure", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
 
-#write.csv(preli2, file="~/raul_tesina/1.data/median_tables/median_AkeyPey_Sestan.csv", row.names = FALSE)
+write.csv(preli2, file="~/raul_tesina/1.data/median_tables/median_AkeyPey_Sestan.csv", row.names = FALSE)
 
 a<- ggparcoord(preli2,
               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
@@ -1419,7 +1444,7 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
  
 plakpey_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 
-#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/Sestan_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/Sestan_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
 ```
 
 #Sestan - STATS
@@ -1519,23 +1544,31 @@ preli2 <- as_tibble(preli2) #AKEYpey
 preli3 <- read.csv(file="~/raul_tesina/1.data/median_tables/median_filtered_rawSestan.csv")
 preli3 <- as_tibble(preli3) #rawfiltered
 
-preli1$dataset <- c("akey")
-preli2$dataset <- c("akeypey")
-preli3$dataset <- c("filtered_Raw")
+colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+#PLOT
+levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+
+colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+#PLOT
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+
+colnames(preli3) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+#PLOT
+levels(colnames(preli3)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+
+preli1$dataset <- c("Deserts")
+preli2$dataset <- c("Deserts and Pos. Sel.")
+preli3$dataset <- c("Global profile")
 
 tot_pl <-rbind(preli1, preli2, preli3)
 tot_pl <- as_tibble(tot_pl)
 tot_pl <- tot_pl %>% mutate(dataset=as.character(dataset))
 
-levels(tot_pl$dataset) <-  c("akey", "akeypey", "filtered_Raw")
-
-n <-ggparcoord(tot_pl,
-columns = 2:8, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures ABA")+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
-
+levels(tot_pl$dataset) <-  c("Deserts", "Deserts and Pos. Sel.", "Global profile")
 
 
 n <-ggparcoord(tot_pl,
-columns = 2:8, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Structures Sestan", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")+labs(color="Dataset")
+columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+labs(color="Dataset")
 
 n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
 
@@ -1561,9 +1594,9 @@ prelites2 <- prelites2[complete.cases(prelites2), ]
 
 #levels(prelites2$Genename) <- unique(prelites2$Genename)
 
-colnames(prelites2) <- c("Structure", "Genename", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifan", "Infan/Childh", "Childh", "Adolescence", "Adulth")
+colnames(prelites2) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Inf/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal1", "Fetal2", "Fetal3", "Birth/Ifancy", "Infancy/Childh", "Childh", "Adolescence", "Adulth")
+levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
 
 n <-ggparcoord(prelites2,
 columns = 3:9, groupColumn = 2, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")
