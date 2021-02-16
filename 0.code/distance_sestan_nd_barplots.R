@@ -309,4 +309,79 @@ colMeans(wilcoxTests, na.rm = TRUE)
 # wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
 write.csv(wilcoxTests,"wilcoxAkeyPeyDist.csv")
                
+#Visualizing p-values wilcox
+
+#First handling the data
+wilcoxTests<-data.frame(matrix(ncol=48,nrow = 6))
+wilcoxTestsCol<-c()
+for (wind in 2:9){
+  for (str in keys(structDist)){
+    wilcoxTestsCol<-append(wilcoxTestsCol,paste(str,"_",wind))
+  }
+}
+colnames(wilcoxTests)<-wilcoxTestsCol
+rownames(wilcoxTests)<-keys(structDist)
+for (i in 2:9){
+  #Restructuring the data
+  #Introducing to the dataframe
+  
+  isSaved<-list()
+  pairwiseData<-pairwiseWilcox[[correspStage[[i]]]]
+  for(str in keys(structDist)){
+    for(str2 in keys(structDist)){
+      print(paste(str,"-->",str2,": ",pairwiseData[str,str2],is.null(pairwiseData[str,str2]),is.na(pairwiseData[str,str2])))
+      #isSaved[[paste(str,str2)]-->isSaved[[paste(str2,str)] for just half of the tables
+      if((is.null(isSaved[[paste(str,str2)]]))&&(str!=str2)){
+        if(!is.null(pairwiseData[str,str2])){
+          if(!is.na(pairwiseData[str,str2])){
+            wilcoxTests[str2,paste(str,"_",i)]<-pairwiseData[str,str2]
+          }else{
+            if(!is.null(pairwiseData[str2,str])){
+              if(!is.na(pairwiseData[str2,str])){
+                wilcoxTests[str2,paste(str,"_",i)]<-pairwiseData[str2,str]
+              }else{
+                wilcoxTests[str2,paste(str,"_",i)]<-NA
+              }
+            }else{
+              wilcoxTests[str2,paste(str,"_",i)]<-NA
+            }
+          }
+        } else if(!is.null(pairwiseData[str2,str])){
+          if(!is.na(pairwiseData[str2,str])){
+              wilcoxTests[str2,paste(str,"_",i)]<-pairwiseData[str2,str]
+            }else{
+              wilcoxTests[str2,paste(str,"_",i)]<-NA
+            }
+          }else{
+            wilcoxTests[str2,paste(str,"_",i)]<-NA
+          }
+          
+        }else{
+          wilcoxTests[str2,paste(str,"_",i)]<-NA
+        }
+        isSaved[[paste(str,str2)]]<-TRUE
+      
+    }
+  }
+}
+willcoxPvaluesAVG<-as.data.frame(t(colMeans(wilcoxTests,na.rm=TRUE)))
+
+# wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
+write.csv(wilcoxTests,"wilcoxAkeyDist.csv")
+
+willCoxPvals<-as.data.frame(list("brainRegion","window","pvalAVG"))
+colnames(willCoxPvals)<-c("brainRegion","window","pvalAVG")
+willCoxPvals$pvalAVG<-as.numeric(willCoxPvals$pvalAVG)
+willCoxPvals<-willCoxPvals[-1,]
+for (col in colnames(willcoxPvaluesAVG)){
+  #change the window number
+  willCoxPvals<-willCoxPvals %>% add_row(brainRegion=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],pvalAVG=willcoxPvaluesAVG[col][[1]])
+}
+willCoxPvals$pvalAVG<-log2(willCoxPvals$pvalAVG)
+ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=brainRegion)) +
+  geom_line(aes(color=brainRegion))+
+  geom_point(aes(color=brainRegion))
+ggsave(file="Sestan_WillcoxPvalPlotDistances_Akey.pdf", width = 11.69, height = 8.27)
+
+               
 
