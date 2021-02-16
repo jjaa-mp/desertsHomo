@@ -282,20 +282,29 @@ for (wind in 2:9){
 }
 colnames(wilcoxTests)<-wilcoxTestsCol
 rownames(wilcoxTests)<-keys(structDist)
+pairwiseWilcox<-list()
 for (i in 2:9){
   structDist<-structDistWind[[i]]
-for(str in keys(structDist)){
-  
-  for(str2 in keys(structDist)){
-    if(str==str2){
-      wilcoxTests[str2,paste(str,"_",i)]<-NaN
-    }else{
-    wilcoxTests[str2,paste(str,"_",i)]<-wilcox.test(values(structDist[str]),values(structDist[str2]))$p.value
-    }
-}
-}
+  structs<-c()
+  valuesDist<-c()
+  for(str in keys(structDist)){
+    structs<-append(structs,rep(str,length(values(structDist[str]))))
+    valuesDist<-append(valuesDist,values(structDist[str]))
+    #Other way to calculate manually multiple sequentially
+    # for(str2 in keys(structDist)){
+    #   if(str==str2){
+    #     wilcoxTests[str2,paste(str,"_",i)]<-NaN
+    #   }else{
+    #     wilcoxTests[str2,paste(str,"_",i)]<-wilcox.test(values(structDist[str]),values(structDist[str2]))$p.value
+    #   }
+    # }
+    
+  }
+  pairwiseWilcox[[paste("window",i)]]<-as.data.frame(pairwise.wilcox.test(valuesDist,structs, p.adj = "bonf")$p.value)
 }
 
+#wilcoxAkeyDist / wilcoxAkeyPeyDist
+write.xlsx(pairwiseWilcox,"wilcoxAkeyPeyDist.xlsx",col.names=TRUE,row.names=TRUE)
 colMeans(wilcoxTests, na.rm = TRUE)
 # wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
 write.csv(wilcoxTests,"wilcoxAkeyPeyDist.csv")
