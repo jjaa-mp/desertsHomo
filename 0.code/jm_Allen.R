@@ -1594,18 +1594,18 @@ prelites2 <- prelites2[complete.cases(prelites2), ]
 
 #levels(prelites2$Genename) <- unique(prelites2$Genename)
 
-colnames(prelites2) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Inf/Child", "Child", "Adolescence", "Adult")
+colnames(prelites2) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
 #PLOT
 levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
 
 n <-ggparcoord(prelites2,
-columns = 3:9, groupColumn = 2, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")
+columns = 3:9, groupColumn = 2, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")+theme(axis.text.x = element_text(angle = 45,hjust = 1))
 j1<-n + facet_wrap(~Genename)+scale_color_discrete(name="Structure",labels=unique(prelites2$Structure))
 ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median//GenesAkeyPey_log2_median_perGenes_1.pdf", j1, width = 11.69, height = 8.27, units = "in")
 
 n1 <-ggparcoord(prelites2,
 columns = 3:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Genename)))+xlab("")+ylab("expression")
-j2 <- n1 + facet_wrap(~Structure)+scale_color_discrete(name="Genes",labels=unique(prelites2$Genename))
+j2 <- n1 + facet_wrap(~Structure)+scale_color_discrete(name="Genes",labels=unique(prelites2$Genename))+theme(axis.text.x = element_text(angle = 45,hjust = 1))
 ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_2.pdf", j2, width = 11.69, height = 8.27, units = "in")
 
 #Say CBC e.g.
