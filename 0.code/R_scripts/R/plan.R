@@ -57,7 +57,7 @@ the_plan <- drake_plan(
   #  #anova_GSEpey = alt_anova(GSEpey) # checking with anova + Tukey if Friedman is alright
   # 
   # 
-  #  #Permutations
+  #  #Permutations  (using ABA data)
   #  npermutations=1000,
   #  permutationrun = permutation_test(npermutations, abadult),
   #  permutationstats = stats_permutations(permutationrun, akey, abadult, "akey"),
@@ -68,11 +68,40 @@ the_plan <- drake_plan(
    #sestan_raw = mRNA_sestan() #Done in cluster
    combinedplot_sestan = plot_sestan_compared(sestan_a, sestan_apey),
   
-  #Permutations
-  npermutations=10,
+  #Permutations (using Sestan data)
   sestan = clean_sestan(),
-  permutationrun = permutation_test(npermutations, sestan),
-  permutationrun_s = clean_perm_results(permutationrun),
-  permutationstats = stats_permutations(permutationrun_s, akey, sestan, "akey"),
- 
+  permutationrun1 = permutation_test_s(100, sestan, 100), # 100 = the seed has to change from perm run to perm run
+  cleanperm1 = clean_perm_results_s(permutationrun1),
+  permutationrun2 = permutation_test_s(100, sestan, 101),
+  cleanperm2 = clean_perm_results_s(permutationrun2),
+  permutationrun3 = permutation_test_s(100, sestan, 102),
+  cleanperm3 = clean_perm_results_s(permutationrun3),
+  permutationrun4 = permutation_test_s(100, sestan, 103),
+  cleanperm4 = clean_perm_results_s(permutationrun4),
+  permutationrun5 = permutation_test_s(100, sestan, 104),
+  cleanperm5 = clean_perm_results_s(permutationrun5),
+  permutationrun6 = permutation_test_s(100, sestan, 105),
+  cleanperm6 = clean_perm_results_s(permutationrun6),
+  permutationrun7 = permutation_test_s(100, sestan, 106),
+  cleanperm7 = clean_perm_results_s(permutationrun7),
+  permutationrun8 = permutation_test_s(100, sestan, 107),
+  cleanperm8 = clean_perm_results_s(permutationrun8),
+  permutationrun9 = permutation_test_s(100, sestan, 108),
+  cleanperm9 = clean_perm_results_s(permutationrun9),
+  permutationrun10 = permutation_test_s(100, sestan, 109),
+  cleanperm10 = clean_perm_results_s(permutationrun10),
+  permrun_s = rbind(cleanperm1, 
+                    cleanperm2, 
+                    cleanperm3, 
+                    cleanperm4, 
+                    cleanperm5, 
+                    cleanperm6, 
+                    cleanperm7, 
+                    cleanperm8, 
+                    cleanperm9, 
+                    cleanperm10),
+  
+  stats_sestperm_chen = stats_permutations_s(permrun_s, akey, sestan, "akey"),
+  stats_sestperm_chenpey = stats_permutations_s(permrun_s, pey_coords, sestan, "peycoords")
 )
+
