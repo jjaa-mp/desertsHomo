@@ -87,7 +87,7 @@ for (i in 2:9){
   my_xlab <- paste(levels(valoresStructdf$Var1),"\n(N=",table(valoresStructdf$Var1),")",sep="")
   colnames(valoresStructdf) <- c("Structures", "Distance")
 # plot
-  boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=Distance, fill=Structures)) + geom_boxplot(varwidth = TRUE, alpha=0.2) +
+  boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=Distance, fill=Structures)) + geom_boxplot(varwidth = TRUE, alpha=0.5) +
   theme(legend.position="none",axis.text.x = element_blank()) + xlab(correspStage[[i]])
 }
 
@@ -240,154 +240,9 @@ ggsave(supplfig_x, file="~/raul_tesina/2.plots/Sestan_raw_filtered_median2_traje
 ```
 
 
-#akey
-
-
+#AKEY
 
 #AKEYPEY
-```{r}
-structDistWind<-list()
-
-for (i in 2:9){
-  
-#CHANGE:logakeypeyPCA / logakeyPCA
-  windowPCA<-finalakeypeySestan %>% filter(Window==i)
-  
-  windowPCA$Window<-NULL
-  
-  brainTopStruct<-read.csv("~/raul_tesina/0.code/brainRegionCorresp.csv",sep=":")
-  colnames(brainTopStruct) <- c("Regioncode","FullReg")
-
-  windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
-  
-  pca_res <- prcomp(windowPCASt[,-1][,-1][,-1][,-1], scale. = TRUE)
-  
-  # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure) 
-  PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$FullReg) #with neocortex
- 
-  structDist<-hash()
-  for (structure in unique(PCi$topStructure)){
-  
-    dfStructure<-PCi %>% filter(topStructure==structure)
-    dfOtherStructures<-PCi %>% filter(topStructure!=structure)
-    distancesStruct<-c()
-    sdStruct<-c()
-    for (row in 1:nrow(dfStructure)) {
-      xstruct<-dfStructure[row,]$PC1
-      ystruct<-dfOtherStructures[row,]$PC2
-      nrowsOthers<-nrow(dfOtherStructures)
-      listDist<-c()
-      for (rowOth in 1:nrowsOthers){
-        xOtherstruct<-dfOtherStructures[rowOth,]$PC1
-        yOtherstruct<-dfOtherStructures[rowOth,]$PC2
-        distance<-dist(matrix(c(xstruct,ystruct,xOtherstruct,yOtherstruct),nrow=2,ncol=2),diag=TRUE)
-        #print(c("Distance:",distance))
-        listDist<-append(listDist,distance[1])
-        nrowsOthers
-      }
-      distancesStruct<-append(distancesStruct,listDist)
-      sdStruct<-append(sdStruct,sd(listDist))
-      print(paste("Distance ",structure,": list->",head(listDist),"; sd->",sd(listDist)))
-    }
-  structDist[[structure]]<-c(distancesStruct,mean(sdStruct))
-  }
-structDistWind[[i]]<-structDist
-}
-
-# Final var structDistWind
-
-#Boxplots
-correspStage<-list()
-correspStage[[2]]<-"fetal1"
-correspStage[[3]]<-"fetal2"
-correspStage[[4]]<-"fetal3"
-correspStage[[5]]<-"Birth_Infan"
-correspStage[[6]]<-"Infan_Child"
-correspStage[[7]]<-"Child"
-correspStage[[8]]<-"Adolescent"
-correspStage[[9]]<-"Adult"
-
-
-boxplotsDist<-list()
-valoresStruct <- list() 
-for (i in 2:9){
-  structDist<-structDistWind[[i]]
-  for (structure in keys(structDist)){
-    valoresStruct[[structure]]<-values(structDist[structure])
-  }
-#In a melting pot
-  valoresStructdf <- melt(valoresStruct)
-  valoresStructdf$Var1<-NULL
-  valoresStructdf$L1<-NULL
-
-# prepare a special xlab with the number of obs for each group
-  my_xlab <- paste(levels(valoresStructdf$Var1),"\n(N=",table(valoresStructdf$Var1),")",sep="")
-  colnames(valoresStructdf) <- c("names", "value")
-# plot
-  boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=names, y=value, fill=names)) + geom_boxplot(varwidth = TRUE, alpha=0.2) +
-  theme(legend.position="none",axis.text.x = element_blank()) + xlab(correspStage[[i]])
-}
-
-boxplotsDist[[2]]
-ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
-          boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
-          boxplotsDist[[8]],boxplotsDist[[9]],
-          common.legend = TRUE, legend = "right")
-ggsave(file="Sestan_Boxplots_DistancesAkey.pdf", width = 11.69, height = 8.27)
-                
-#Tests we used Wilcox, other tests can be performed
-#Initialize dataframe
-wilcoxTests<-data.frame(matrix(ncol=48,nrow = 6))
-wilcoxTestsCol<-c()
-for (wind in 2:9){
-  for (str in keys(structDist)){
-    wilcoxTestsCol<-append(wilcoxTestsCol,paste(str,"_",wind))
-  }
-}
-colnames(wilcoxTests)<-wilcoxTestsCol
-rownames(wilcoxTests)<-keys(structDist)
-pairwiseWilcox<-list()
-for (i in 2:9){
-  structDist<-structDistWind[[i]]
-  structs<-c()
-  valuesDist<-c()
-  for(str in keys(structDist)){
-    structs<-append(structs,rep(str,length(values(structDist[str]))))
-    valuesDist<-append(valuesDist,values(structDist[str]))
-    #Other way to calculate manually multiple sequentially
-    # for(str2 in keys(structDist)){
-    #   if(str==str2){
-    #     wilcoxTests[str2,paste(str,"_",i)]<-NaN
-    #   }else{
-    #     wilcoxTests[str2,paste(str,"_",i)]<-wilcox.test(values(structDist[str]),values(structDist[str2]))$p.value
-    #   }
-    # }
-    
-  }
-  pairwiseWilcox[[correspStage[[i]]]]<-as.data.frame(pairwise.wilcox.test(valuesDist,structs, p.adj = "bonf")$p.value)
-}
-#write.csv(willcoxPvaluesAVG,,"pairwiseWilcoxFilteredRawSestan_final.csv")
-
-willCoxPvals<-as.data.frame(list("Structure","window","pvalAVG"))
-colnames(willCoxPvals)<-c("Structure","window","pvalAVG")
-willCoxPvals$pvalAVG<-as.numeric(willCoxPvals$pvalAVG)
-willCoxPvals<-willCoxPvals[-1,]
-for (col in colnames(willcoxPvaluesAVG)){
-  #change the window number
-  willCoxPvals<-willCoxPvals %>% add_row(Structure=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],pvalAVG=willcoxPvaluesAVG[col][[1]])
-}
-willCoxPvals$pvalAVG<-log2(willCoxPvals$pvalAVG)
-
-
-
-
-ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
-  geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))
-
-
-```
-
 
 #ALTERNATIVE HTML PLOT
 ```{r}
