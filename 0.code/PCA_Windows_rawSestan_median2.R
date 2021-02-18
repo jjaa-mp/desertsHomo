@@ -4,7 +4,7 @@ library(matrixStats)
 ## AUTOMATIZED with WILCOX TEST
 #
 
-rawmedian2 <- finalraw2 #Input from jm_Allen or load(finalraw2_inputPC.RData")
+rawmedian2 <- finalraw2 #Input from jm_Allen or load("finalraw2_inputPC.RData")
 
 rawmedian2[1] <- NULL
 
@@ -85,9 +85,9 @@ for (i in 2:9){
 
 # prepare a special xlab with the number of obs for each group
   my_xlab <- paste(levels(valoresStructdf$Var1),"\n(N=",table(valoresStructdf$Var1),")",sep="")
-  colnames(valoresStructdf) <- c("Structures", "pvalAVG")
+  colnames(valoresStructdf) <- c("Structures", "Distance")
 # plot
-  boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=pvalAVG, fill=Structures)) + geom_boxplot(varwidth = TRUE, alpha=0.2) +
+  boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=Distance, fill=Structures)) + geom_boxplot(varwidth = TRUE, alpha=0.2) +
   theme(legend.position="none",axis.text.x = element_blank()) + xlab(correspStage[[i]])
 }
 
@@ -222,7 +222,7 @@ ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
 load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
 subfigx <- ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+ggtitle("Pairwise Wilcox test")
+  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")
 
 #load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
 ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
@@ -234,6 +234,8 @@ supplfig_x <- ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
           boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
           boxplotsDist[[8]],boxplotsDist[[9]], subfigx,
           common.legend = TRUE, legend = "right")
+
+ggsave(supplfig_x, file="~/raul_tesina/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 
 ```
 
