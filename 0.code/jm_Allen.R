@@ -129,52 +129,6 @@ vernotNean2<-aba_enrich(input_vernot2, dataset="dev_effect")
 
 ```
 
-
-#Extracting gene expression data from Allen Brain Atlas - ADULT
-```{R}
-data("dataset_adult")
-id.adult <- unique(dataset_adult$ensembl_gene_id)
-st.adult <- unique(dataset_adult$structure)
-st.adult <- paste("Allen",st.adult, sep=":") 
-abadult <- get_expression(structure_ids=st.adult, gene_ids = id.adult, dataset='adult') 
-abadult <- t(abadult)
-listadult = vector(mode="list")
-listadult <- get_name(colnames(abadult))
-colnames(abadult) <- listadult
-abadult <- as.data.frame(abadult)
-
-G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(abadult),mart=ensembl)
-abadult['gene_name'] <-  G_list$hgnc_symbol[match(rownames(abadult), G_list$ensembl_gene_id)]
-nrow(abadult) # 15698
-abadult <- abadult[!(is.na(abadult$gene_name) | abadult$gene_name==""), ]
-nrow(abadult) # 15688
-row.names(abadult) <- G_list$hgnc_symbol[match(rownames(abadult), G_list$ensembl_gene_id)]
-abadult$gene_name <- NULL
-abadult <- log2(abadult)
-
-# #In Akey:
-# abadultAkey  <- abadult[rownames(abadult) %in% results$hgnc_symbol,]
-# abadultAkeyPey  <- abadult[rownames(abadult) %in% both$hgnc_symbol,]
-# 
-# new <- as.data.frame(colMeans(abadultAkey[sapply(abadultAkey, is.numeric)]))
-# names(new) <- "mean_expression"
-# 
-# newboth <- as.data.frame(colMeans(abadultAkeyPey[sapply(abadultAkeyPey, is.numeric)]))
-# names(newboth) <- "mean_expression"
-# 
-# newboth <- arrange(newboth, desc(newboth$mean_expression))
-# newboth1 <- newboth %>% slice(head(row_number(), 20)) #Top 20 structures
-# p<-ggplot(newboth1, aes(x=rownames(newboth1), y=newboth1$mean_expression)) + 
-#   geom_dotplot(binaxis='y', stackdir='center', fill="#D55E00")+theme(legend.position = "none")+labs(title="",x="", y = "Mean expression (top 20)")+coord_flip()
-# ###ggsave(file="ABA_414_GenesAkeyPey_top20.pdf", p, width = 11.69, height = 8.27, units = "in")
-# 
-# 
-# newboth2 <- newboth %>% slice(tail(row_number(), 20)) #Bottom 20 structures
-# p2<-ggplot(newboth2, aes(x=rownames(newboth2), y=newboth2$mean_expression)) + 
-#   geom_dotplot(binaxis='y', stackdir='center', fill="#0072B2")+theme(legend.position = "none")+labs(title="",x="", y = "Mean expression (bottom 20)") + coord_flip()+scale_x_discrete(position = "top")
-##ggsave(file="ABA_414_GenesAkeyPey_bottom20.pdf", p2, width = 11.69, height = 8.27, units = "in")
-```
-
 #Extracting gene expression data from Allen Brain Atlas - 5 stages
 ```{r}
 ##Loading dataset
@@ -870,295 +824,9 @@ colSums(!is.na(cbl_akeypey2))
 finaltable3$pvalue <- phyper(finaltable3$`akeypey genes`-1, 255, 19238-255, finaltable3$`Total EYE DEG`, lower.tail = FALSE, log.p = FALSE)
 ```
 
-#PC - ABA adult 414 - Akey & Pey
-##Raül
-```{r}
-#Adult dataset
-testing0 <- t(abadult)
-rowremove <- "gene_name"
-testing0 <- testing0[!(row.names(testing0) %in% rowremove), ]
-testing0 <- as.data.frame(testing0)
-setDT(testing0, keep.rownames = "structures")
-#write.csv(testing0, "testingABAadult.csv", row.names = FALSE)
-#Loading data
-testingABAadult <- read.csv("testingABAadult.csv")
-
-#Formatting
-testingABAadult$Groups <- testingABAadult$structures
-testingABAadult$Groups <- str_replace(testingABAadult$Groups, ".*Left.*", "LEFT")
-testingABAadult$Groups <- str_replace(testingABAadult$Groups, ".*Right.*", "RIGHT")
-testingABAadult$Groups <- str_replace(testingABAadult$Groups, ".*Ve-.*", "VERMIS")
-testingABAadult$Groups <- str_replace(testingABAadult$Groups, ".*[^LEFT|^RIGHT|^VERMIS].*", "Other")
-categories <- names(testingABAadult) %in% c("structures", "Groups") #to skip columns with nominal values
-
-#Consider scaling as well.
-#
-res <- princomp(testingABAadult[!(categories)])
-fviz_eig(res, geom = "bar", bar_width = 0.4) + ggtitle("")
-
-a0 <- fviz_pca_var(res,
-             col.var = "contrib", # Color by contributions to the PC
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE     # Avoid text overlapping
-)+coord_fixed()
-
-groups <- as.factor(testingABAadult$Groups)
-a00 <- fviz_pca_ind(res,
-             col.ind = groups, # color by groups
-             palette = c("#000000", "#E69F00", "#0072B2",  "#009E73"),
-             repel = TRUE
-)+coord_fixed()
-
-grid.arrange(a0, a00, nrow = 1)
-
-#Pheatmap:
-pheatmap(cor(testingAkeyPey[!(categories)]))
-
-fviz_pca_biplot(res, geom = "point", habillage = testingAkeyPey$Groups,
-                col.var = "violet", addEllipses = TRUE, ellipse.level = 0.69) +
-  ggtitle("") + coord_fixed()
-
-testing <- t(abadultAkeyPey)
-rowremove <- "gene_name"
-testing <- testing[!(row.names(testing) %in% rowremove), ]
-testing <- as.data.frame(testing)
-setDT(testing, keep.rownames = "structures")
-#write.csv(testing, "testingAkeyPey.csv", row.names = FALSE)
-#Loading data
-testingAkeyPey <- read.csv("testingAkeyPey.csv")
-
-#Formatting1
-testingAkeyPey$Groups <- testingAkeyPey$structures
-testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Left.*", "LEFT")
-testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Right.*", "RIGHT")
-testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Ve-.*", "VERMIS")
-testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*[^LEFT|^RIGHT|^VERMIS].*", "Other")
-categories <- names(testingAkeyPey) %in% c("structures", "Groups") #to skip columns with nominal values
-#Formatting2
-testingAkeyPey$Groups <- testingAkeyPey$structures
-testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Left Lateral Hemisphere*", "LEFT CB")
-testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Right Lateral Hemisphere*", "RIGHT CB")
-testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*Ve-.*", "VERMIS")
-testingAkeyPey$Groups <- str_replace(testingAkeyPey$Groups, ".*[^LEFT CB|^RIGHT CB|^VERMIS].*", "Other")
-categories <- names(testingAkeyPey) %in% c("structures", "Groups") #to skip columns with nominal values
-
-
-##Correlation:
-ggpairs(testingAkeyPey[!(categories)])
-##Pheatmap:
-pheatmap(cor(testingAkeyPey[!(categories)]))
-
-#Consider scaling as well.
-
-#PC
-res <- princomp(testingAkeyPey[!(categories)])
-fviz_eig(res, geom = "bar", bar_width = 0.4) + ggtitle("")
-
-a1 <- fviz_pca_var(res,
-             col.var = "contrib", # Color by contributions to the PC
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE     # Avoid text overlapping
-)+coord_fixed()
-
-groups <- as.factor(testingAkeyPey$Groups)
-a2 <- fviz_pca_ind(res,
-             col.ind = groups, # color by groups
-             palette = c("#000000", "#E69F00", "#0072B2",  "#009E73"),
-             repel = TRUE
-)+coord_fixed()
-
-grid.arrange(a1, a2, nrow = 1)
-
-fviz_pca_biplot(res, geom = "point", habillage = testingAkeyPey$Groups,
-                col.var = "violet", addEllipses = TRUE, ellipse.level = 0.69) +
-  ggtitle("") + coord_fixed()
-
-
-#PC - ABA adult 414 - Akey
-testing2 <- t(abadultAkey)
-rowremove <- "gene_name"
-testing2 <- testing2[!(row.names(testing2) %in% rowremove), ]
-testing2 <- as.data.frame(testing2)
-setDT(testing2, keep.rownames = "structures")
-#write.csv(testing2, "testingAkey.csv", row.names = FALSE)
-#Loading data
-testingAkey <- read.csv("testingAkey.csv")
-#Formatting
-testingAkey$Groups <- testingAkeyPey$structures
-testingAkey$Groups <- str_replace(testingAkey$Groups, ".*Left.*", "LEFT")
-testingAkey$Groups <- str_replace(testingAkey$Groups, ".*Right.*", "RIGHT")
-testingAkey$Groups <- str_replace(testingAkey$Groups, ".*Ve-.*", "VERMIS")
-testingAkey$Groups <- str_replace(testingAkey$Groups, ".*[^LEFT|^RIGHT|^VERMIS].*", "Other")
-categories2 <- names(testingAkey) %in% c("structures", "Groups") #to skip columns with nominal values
-
-res2 <- princomp(testingAkey[!(categories2)])
-fviz_eig(res2, geom = "bar", bar_width = 0.4) + ggtitle("")
-
-b1 <- fviz_pca_var(res2,
-             col.var = "contrib", # Color by contributions to the PC
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE     # Avoid text overlapping
-)+coord_fixed()
-
-groups <- as.factor(testingAkey$Groups)
-b2 <- fviz_pca_ind(res2,
-             col.ind = groups, # color by groups
-             palette = c("#000000", "#E69F00", "#0072B2",  "#009E73"),
-             repel = TRUE
-)+coord_fixed()
-
-grid.arrange(b1, b2, nrow = 1)
-
-#Pheatmap:
-pheatmap(cor(testingAkey[!(categories2)]), treeheight_row=0, fontsize = 2, angle_col = 45)
-fviz_pca_biplot(res2, geom = "point", habillage = testingAkeyPey$Groups,
-                col.var = "violet", addEllipses = TRUE, ellipse.level = 0.69) +
-  ggtitle("") + coord_fixed()
-
-```
-
-#ABA Data - All genes that are present in Rac no log
-```{r}
-#Global data
-ab4 <- ab
-for (i in 1:length(ab)){
-  for (h in 1:length(names(ab[[i]]))){
-    ab4[[i]][[h]] <- as.data.frame(ab[[i]][h])
-    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab4[[i]][[h]]),mart=ensembl)
-    ab4[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab4[[i]][[h]]), G_list$ensembl_gene_id)]
-    ab4[[i]][[h]] <-ab4[[i]][[h]][order(ab4[[i]][[h]][[1]], decreasing = TRUE), ]
-    
-  }
-}
-aba_rac = vector(mode="list", length = length(ab4))
-for (i in 1:length(ab4)){
-  for (h in 1:length(names(ab4[[i]]))){
-    aba_rac[[i]][[h]] <- ab4[[i]][[h]][ab4[[i]][[h]][[2]] %in% results_rac$hgnc_symbol,] #in Rac
-    aba_rac[[i]][[h]] <-  aba_rac[[i]][[h]][!(is.na(aba_rac[[i]][[h]][[2]]) | aba_rac[[i]][[h]][[2]]==""), ] #Cleaning
-  }
-}
-#Reporting mean
-mean4 = vector(mode="list", length = length(ab4))
-for (i in 1:length(ab4)){
-  for (h in 1:length(names(ab4[[i]]))){
-    mean4[[i]][[h]] <- mean(aba_rac[[i]][[h]][[1]])
-    mean4[[i]][[h]] <- as.data.frame(mean4[[i]][[h]])
-    names(mean4[[i]][[h]]) <- paste(names(aba_rac[[i]][[h]][1]), sep='_')
-  }
-}
-
-prenatal <- do.call("rbind", as.data.frame(mean4[[1]]))
-colnames(prenatal) <- "prenatal"
-infant <- do.call("rbind", as.data.frame(mean4[[2]]))
-colnames(infant) <- "infant"
-child <- do.call("rbind", as.data.frame(mean4[[3]]))
-colnames(child) <- "child"
-adolescent <- do.call("rbind", as.data.frame(mean4[[4]]))
-colnames(adolescent) <- "adolescent"
-adult <- do.call("rbind", as.data.frame(mean4[[5]]))
-colnames(adult) <- "adult"
-
-final_merge4 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
-#Save results_rac - need to be updated
-for (i in 1:length(colnames(final_merge4))){
-  if (dim(final_merge4[i])[1] == 0) next
-  write.xlsx(arrange(final_merge4[i], desc(final_merge4[i])), file="ABA_GenesRac.xlsx", sheetName=names(final_merge4[i]), append = TRUE)
-}
-
-#Plot
-
-##For plot
-final_merge4 <- tibble::rownames_to_column(final_merge4, "Structure")
-final_merge4[[1]] <- sapply(strsplit(final_merge4[[1]], "_"), "[", 1)
-
-a<-ggparcoord(final_merge4,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Rac")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
-b <- ggparcoord(final_merge4,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
-c<-ggparcoord(final_merge4,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
-a1<-arrangeGrob(a, left=textGrob("A"))
-b1<-arrangeGrob(b, left =textGrob("B"))
-c1<-arrangeGrob(c, left=textGrob("C"))
-
-grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
-
-pl4 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-##ggsave(file="ABA_GenesRac.pdf", pl4, width = 11.69, height = 8.27, units = "in")
-```
-
-#ABA Data - All genes that are present in both Akey and Rac no log
-```{r}
-#Global data
-ab5 <- ab
-for (i in 1:length(ab)){
-  for (h in 1:length(names(ab[[i]]))){
-    ab5[[i]][[h]] <- as.data.frame(ab[[i]][h])
-    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab5[[i]][[h]]),mart=ensembl)
-    ab5[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab5[[i]][[h]]), G_list$ensembl_gene_id)]
-    ab5[[i]][[h]] <-ab5[[i]][[h]][order(ab5[[i]][[h]][[1]], decreasing = TRUE), ]
-    
-  }
-}
-aba_racAkey = vector(mode="list", length = length(ab5))
-for (i in 1:length(ab5)){
-  for (h in 1:length(names(ab5[[i]]))){
-    aba_racAkey[[i]][[h]] <- ab5[[i]][[h]][ab5[[i]][[h]][[2]] %in% racAkey$hgnc_symbol,] #in RacAkey
-    aba_racAkey[[i]][[h]] <-  aba_racAkey[[i]][[h]][!(is.na(aba_racAkey[[i]][[h]][[2]]) | aba_racAkey[[i]][[h]][[2]]==""), ] #Cleaning
-  }
-}
-#Reporting mean
-mean5 = vector(mode="list", length = length(ab5))
-for (i in 1:length(ab5)){
-  for (h in 1:length(names(ab5[[i]]))){
-    mean5[[i]][[h]] <- mean(aba_racAkey[[i]][[h]][[1]])
-    mean5[[i]][[h]] <- as.data.frame(mean5[[i]][[h]])
-    names(mean5[[i]][[h]]) <- paste(names(aba_racAkey[[i]][[h]][1]), sep='_')
-  }
-}
-
-prenatal <- do.call("rbind", as.data.frame(mean5[[1]]))
-colnames(prenatal) <- "prenatal"
-infant <- do.call("rbind", as.data.frame(mean5[[2]]))
-colnames(infant) <- "infant"
-child <- do.call("rbind", as.data.frame(mean5[[3]]))
-colnames(child) <- "child"
-adolescent <- do.call("rbind", as.data.frame(mean5[[4]]))
-colnames(adolescent) <- "adolescent"
-adult <- do.call("rbind", as.data.frame(mean5[[5]]))
-colnames(adult) <- "adult"
-
-final_merge5 <- as.data.frame(cbind(prenatal, infant, child, adolescent, adult))
-#Save racAkey - need to be updated
-for (i in 1:length(colnames(final_merge5))){
-  if (dim(final_merge5[i])[1] == 0) next
-  write.xlsx(arrange(final_merge5[i], desc(final_merge5[i])), file="ABA_GenesAkeyRac.xlsx", sheetName=names(final_merge5[i]), append = TRUE)
-}
-
-#Plot
-
-##For plot
-final_merge5 <- tibble::rownames_to_column(final_merge5, "Structure")
-final_merge5[[1]] <- sapply(strsplit(final_merge5[[1]], "_"), "[", 1)
-
-a<-ggparcoord(final_merge5,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Rac and Akey")+scale_color_viridis(discrete=TRUE)+theme(plot.title = element_text(size=10))+xlab("")+ylab("mean  expression")
-b <- ggparcoord(final_merge5,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
-c<-ggparcoord(final_merge5,
-    columns = 2:6, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
-a1<-arrangeGrob(a, left=textGrob("A"))
-b1<-arrangeGrob(b, left =textGrob("B"))
-c1<-arrangeGrob(c, left=textGrob("C"))
-grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
-
-pl5 <- grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
-##ggsave(file="ABA_GenesAkeyRac.pdf", pl5, width = 11.69, height = 8.27, units = "in")
-```
-
 #Raw Sestan
 ```{r}
-mRNAseqData=read.table("mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+mRNAseqData=read.table("~/tmp_psychENCODE/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
 modsb1= mRNAseqData %>% 
   separate(Geneid,c("EnsemblID","Genename"),extra="merge")
 modsb1$EnsemblID<-NULL
@@ -1189,6 +857,7 @@ finalraw2 <- finalrawSestan
 rownames(finalraw2)<- do.call(paste,c(finalraw2[c("Braincode","Regioncode", "Window")],sep="_"))
 finalraw2[(1:3)] <- NULL
 finalraw2<-finalraw2 %>% select(which(colMedians(as.matrix(finalraw2))>2))
+library(tibble)
 finalraw2 <- rownames_to_column(finalraw2) 
 finalraw2 <- finalraw2 %>% 
   separate(rowname, c("Braincode","Regioncode", "Window")) #Input to PC
@@ -1280,7 +949,7 @@ modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
 modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
 
 #With log
-finalakeySestan1=merge(modMetadatamRNAseq,logakeySestan1,by=c("Braincode", "Regioncode"))
+finalakeySestan1=merge(modMetadatamRNAseq,logakeySestan1,by=c("Braincode", "Regioncode")) #input
 
 # #write.csv(finalakeySestan1,"logakey.csv")
 
@@ -1577,7 +1246,7 @@ an <- n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=uniq
 ```
 
 
-#Preparing Figure X
+#Preparing Figure X1
 ```{r}
 traj_fig <- tot_pl %>% filter(Structure %in% "DFC" | Structure %in% "M1C" | Structure %in% "S1C" | Structure %in% "CBC") 
 
@@ -1597,6 +1266,16 @@ lay <- rbind(c(1,1,1,1,1,1),
 
 grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
 ```
+
+#Preparing Figure X2
+```{r}
+wilcoxAkeyDist <- read.csv("~/tmp_wilcoxtests/wilcoxAkeyDist.csv")
+
+
+
+
+```
+
 
 
 #Any set of genes
