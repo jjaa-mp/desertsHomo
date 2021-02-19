@@ -1,3 +1,4 @@
+#rawSestan
 ```{r}
 library(matrixStats)
 #raw Sestan data is filtered by median > 2 for each gene across all structures/stages
@@ -238,7 +239,6 @@ ggsave(supplfig_x, file="~/raul_tesina/2.plots/Sestan_raw_filtered_median2_traje
 
 ```
 
-
 #AKEY
 ```{r}
 akeySestan <- finalakeySestan1 #Input from jm_Allen
@@ -453,6 +453,7 @@ ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
 #write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv")
 ```
+
 #AKEPEY
 ```{r}
 akeypeySestan <- finalakeypeySestan #Input from jm_Allen or load("finalraw2_inputPC.RData")
@@ -688,10 +689,34 @@ write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akey
 
 ```
 
+#Preparing Table p-values
+```{r}
+rawp <- read.csv("~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
+colnames(rawp) <- c("Structure", "window", "log2(pvalAVG)") 
+rawp$pvalAVG <- 2**(rawp$`log2(pvalAVG)`)
+order <- c("Structure", "window", "pvalAVG", "log2(pvalAVG)")
+rawp <- rawp[, order]
 
-#AKEY
+akeyp <- read.csv("~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv", row.names = 1)
+colnames(akeyp) <- c("Structure", "window", "log2(pvalAVG)") 
+akeyp$pvalAVG <- 2**(akeyp$`log2(pvalAVG)`)
+order <- c("Structure", "window", "pvalAVG", "log2(pvalAVG)")
+akeyp <- akeyp[, order]
 
-#AKEYPEY
+akeypeyp <- read.csv("~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv", row.names = 1)
+colnames(akeypeyp) <- c("Structure", "window", "log2(pvalAVG)") 
+akeypeyp$pvalAVG <- 2**(akeypeyp$`log2(pvalAVG)`)
+order <- c("Structure", "window", "pvalAVG", "log2(pvalAVG)")
+akeypeyp <- akeypeyp[, order]
+
+write.csv(rawp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
+write.csv(akeyp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv")
+write.csv(akeypeyp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
+```
+
+
+
+
 
 #ALTERNATIVE HTML PLOT
 ```{r}
