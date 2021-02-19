@@ -15,7 +15,7 @@
 
 - [X] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan)
     +Friedman + Conover (AkeyPey: significant differences at three stages; Akey: all stages; mult comp cannot spot particular structures)
-    + [ ] Sestan permutation runs (AA)
+    + [X] Sestan permutation runs (AA)
     
 - [X] PCA for each stage (Raül)
     - [X] Pairwise distances from PC clusters (Raül)
@@ -24,6 +24,13 @@
     - [X] Stats on pairwise distances
 
   
+- [ ] **Permutation subtasks** (AA)
+    - [X] Difference plots (Sestan)
+    - [ ] Difference plots (ABA)
+    - [ ] Stats for diff plots
+    - [ ] Are some structures more prone to be at the top or bottom? Some kind of enrichment test w/ permutations 
+    - [ ] Are structures from R/L more prone to be at the top or bottom? Similar kind of test 
+    - [ ] Account for stages in permutations in Sestan
 ----  
   
 - [ ] Update **observations.md** file: Target date Friday 12

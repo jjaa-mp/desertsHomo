@@ -58,8 +58,7 @@ the_plan <- drake_plan(
   # 
   # 
   #  #Permutations  (using ABA data)
-  npermutations=1000,
-  permutationrun = permutation_test(npermutations, abadult),
+  permutationrun = permutation_test_s(100,abadult,100),
   permutationstats = stats_permutations(permutationrun, akey, abadult, "akey"),
   permutationstats_pey = stats_permutations(permutationrun, pey_coords, abadult, "peycoords"),
   pdiffplot1 = difference_perm_sestan(permutationstats, "abachen", 40),
