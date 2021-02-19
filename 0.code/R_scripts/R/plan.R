@@ -58,11 +58,13 @@ the_plan <- drake_plan(
   # 
   # 
   #  #Permutations  (using ABA data)
-  #npermutations=1000,
-  #permutationrun = permutation_test(npermutations, abadult),
-  #permutationstats = stats_permutations(permutationrun, akey, abadult, "akey"),
-  #permutationstats_pey = stats_permutations(permutationrun, pey_coords, abadult, "peycoords"),
-    
+  npermutations=1000,
+  permutationrun = permutation_test(npermutations, abadult),
+  permutationstats = stats_permutations(permutationrun, akey, abadult, "akey"),
+  permutationstats_pey = stats_permutations(permutationrun, pey_coords, abadult, "peycoords"),
+  pdiffplot1 = difference_perm_sestan(permutationstats, "abachen", 40),
+  pdiffplot2 = difference_perm_sestan(permutationstats_pey, "abachenpey", 40),
+  
   #sestan_a = mRNA_sestan(akey),
   #sestan_apey = mRNA_sestan(pey_coords),
   #sestan_raw = mRNA_sestan() #Done in cluster
@@ -102,8 +104,8 @@ the_plan <- drake_plan(
                     cleanperm10),
   
   stats_sestperm_chen = stats_permutations_s(permrun_s, akey, sestan, "akey"),
-  diffplot1 = difference_perm_sestan(stats_sestperm_chen, "chen"),
+  diffplot1 = difference_perm_sestan(stats_sestperm_chen, "chen", 8),
   stats_sestperm_chenpey = stats_permutations_s(permrun_s, pey_coords, sestan, "peycoords"),
-  diffplot2 = difference_perm_sestan(stats_sestperm_chenpey, "chenpey")
+  diffplot2 = difference_perm_sestan(stats_sestperm_chenpey, "chenpey", 8)
 )
 
