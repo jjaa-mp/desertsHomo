@@ -1246,16 +1246,16 @@ an <- n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=uniq
 ```
 
 
-#Preparing Figure X1
+#Preparing Figure X2
 ```{r}
 traj_fig <- tot_pl %>% filter(Structure %in% "DFC" | Structure %in% "M1C" | Structure %in% "S1C" | Structure %in% "CBC") 
 
 figtop1 <- ggparcoord(traj_fig,
-           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+labs(color="Dataset")+ facet_wrap(~Structure, ncol = 4)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=as.factor(dataset)), title="A")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+labs(color="Dataset")+ facet_wrap(~Structure, ncol = 4)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
 
 #Akey
 vpreli1 <- preli1
-vpreli1$Structure <- str_replace(vpreli1$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C| STC|V1C|VFC"), "NCX")
+vpreli1$Structure <- str_replace(vpreli1$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
 
 test <- vpreli1 %>%
     group_by(Structure) %>%
@@ -1268,7 +1268,7 @@ figtop2<-ggparcoord(test,
 #               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Deserts of introgression")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")
 #AKeyPey
 vpreli2 <- preli2
-vpreli2$Structure <- str_replace(vpreli2$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C| STC|V1C|VFC"), "NCX")
+vpreli2$Structure <- str_replace(vpreli2$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
 
 test2 <- vpreli2 %>%
     group_by(Structure) %>%
@@ -1284,15 +1284,72 @@ lay <- rbind(c(1,1,1,1,1,1),
              c(2,2,2,3,3,3))
 
 grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
+fig2_main <- grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
+ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/fig_combined.pdf", fig2_main, width = 11.69, height = 8.27, units = "in")
 ```
 
-#Preparing Figure X2
+#Preparing Figure X3
 ```{r}
-wilcoxAkeyDist <- read.csv("~/tmp_wilcoxtests/wilcoxAkeyDist.csv")
+#Extract legend
+figtop3<-ggparcoord(test2,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="C")+theme(plot.title = element_text(size=10),legend.position = "right", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)
+l <- get_legend(figtop3)
+l1 <- as_ggplot(l)#legend as figure
+
+trial1 <- ggparcoord(traj_fig,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=as.factor(dataset)), title="A")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "none")+xlab("")+ylab("expression")+labs(color="Dataset")+ facet_wrap(~Structure, ncol = 4)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
+
+str_ak <-ggparcoord(test,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#0a1c99"))
+cbl_ak <-ggparcoord(test,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))
+md_ak <-ggparcoord(test,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="MD Thalamus")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ffff00", "#ABABAB", "#ABABAB"))
+
+str_akpey <-ggparcoord(test2,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#0a1c99"))
+
+cbl_akpey <-ggparcoord(test2,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))
 
 
+lay1 <- rbind(c(1,2,3,8,9,10),
+             c(4,5,6,7,11,12))
 
 
+grid.arrange(boxplotsDist[[2]], boxplotsDist[[3]], boxplotsDist[[4]], boxplotDistakeypey[[2]], boxplotDistakeypey[[3]],boxplotDistakeypey[[4]], l1,cbl_ak, md_ak, str_ak, cbl_akpey,str_akpey,layout_matrix = lay1)
+
+
+#corner
+pt <- arrangeGrob(boxplotsDist[[2]], top = textGrob("A", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+pt2 <- arrangeGrob(boxplotsDist[[3]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+pt4 <- arrangeGrob(boxplotsDist[[4]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+
+part <- arrangeGrob(boxplotDistakeypey[[2]], top = textGrob("E", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+part2 <- arrangeGrob(boxplotDistakeypey[[3]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+part4 <- arrangeGrob(boxplotDistakeypey[[4]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+
+akb <- arrangeGrob(cbl_ak, top = textGrob("B", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+akc <- arrangeGrob(md_ak, top = textGrob("C", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+akd <- arrangeGrob(str_ak, top = textGrob("D", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+akpeyf <- arrangeGrob(cbl_akpey, top = textGrob("F", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+akpeyG <- arrangeGrob(str_akpey, top = textGrob("G", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+
+
+grid.arrange(pt, pt2, pt4, part, part2,part4, l1,akb, akc, akd, akpeyf,akpeyG,layout_matrix = lay1)
+fig3 <- grid.arrange(pt, pt2, pt4, part, part2,part4, l1,akb, akc, akd, akpeyf,akpeyG,layout_matrix = lay1)
+ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/fig3_boxplots.pdf", fig3, width = 11.69, height = 8.27, units = "in")
 ```
 
 
@@ -1322,7 +1379,7 @@ levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", 
 n <-ggparcoord(prelites2,
 columns = 3:9, groupColumn = 2, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")+theme(axis.text.x = element_text(angle = 45,hjust = 1))
 j1<-n + facet_wrap(~Genename)+scale_color_discrete(name="Structure",labels=unique(prelites2$Structure))
-#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median//GenesAkeyPey_log2_median_perGenes_1.pdf", j1, width = 11.69, height = 8.27, units = "in")
+#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_1.pdf", j1, width = 11.69, height = 8.27, units = "in")
 
 n1 <-ggparcoord(prelites2,
 columns = 3:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Genename)))+xlab("")+ylab("expression")

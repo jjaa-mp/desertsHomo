@@ -246,8 +246,7 @@ akeySestan <- finalakeySestan1 #Input from jm_Allen
 akeySestan[1] <- NULL
 
 structDistWind<-list()
-library(stringr)
-library(hash)
+
 for (i in 2:9){
   
 #akeySestan <- from jm_Allen finalraw2 inputPC
@@ -458,14 +457,12 @@ ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
 ```{r}
 akeypeySestan <- finalakeypeySestan #Input from jm_Allen or load("finalraw2_inputPC.RData")
 
-akeypeySestan[1] <- NULL
+#akeypeySestan[1] <- NULL
 
 structDistWind<-list()
 library(stringr)
 library(hash)
 for (i in 2:9){
-  
-#akeypeySestan <- from jm_Allen finalraw2 inputPC
   windowPCA<- akeypeySestan %>% filter(Window==i)
 
   windowPCA$Window<-NULL
@@ -521,7 +518,7 @@ correspStage[[7]]<-"Child"
 correspStage[[8]]<-"Adolescent"
 correspStage[[9]]<-"Adult"
 
-boxplotsDist<-list()
+boxplotDistakeypey<-list()
 valoresStruct <- list() 
 for (i in 2:9){
   structDist<-structDistWind[[i]]
@@ -537,19 +534,19 @@ for (i in 2:9){
   my_xlab <- paste(levels(valoresStructdf$Var1),"\n(N=",table(valoresStructdf$Var1),")",sep="")
   colnames(valoresStructdf) <- c("Structures", "Distance")
 # plot
-  boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=Distance, fill=Structures)) + geom_boxplot(varwidth = TRUE, alpha=0.5) +
+  boxplotDistakeypey[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=Distance, fill=Structures)) + geom_boxplot(varwidth = TRUE, alpha=0.5) +
   theme(legend.position="none",axis.text.x = element_blank()) + xlab(correspStage[[i]])
 }
 
-#save(boxplotsDist, file = "boxplotsFilteredRawSestan.R")
+#save(boxplotDistakeypey, file = "boxplotsFilteredRawSestan.R")
 
 #BOXPLOTS:
 #load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
 
-boxplotsDist[[2]]
-ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
-          boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
-          boxplotsDist[[8]],boxplotsDist[[9]],
+boxplotDistakeypey[[2]]
+ggarrange(boxplotDistakeypey[[2]], boxplotDistakeypey[[3]],boxplotDistakeypey[[4]],
+          boxplotDistakeypey[[5]],boxplotDistakeypey[[6]],boxplotDistakeypey[[7]],
+          boxplotDistakeypey[[8]],boxplotDistakeypey[[9]],
           common.legend = TRUE, legend = "right")
 
 #Pairwise wilcox tests
@@ -709,9 +706,9 @@ akeypeyp$pvalAVG <- 2**(akeypeyp$`log2(pvalAVG)`)
 order <- c("Structure", "window", "pvalAVG", "log2(pvalAVG)")
 akeypeyp <- akeypeyp[, order]
 
-write.csv(rawp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
-write.csv(akeyp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv")
-write.csv(akeypeyp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
+# write.csv(rawp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
+# write.csv(akeyp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv")
+# write.csv(akeypeyp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
 ```
 
 
