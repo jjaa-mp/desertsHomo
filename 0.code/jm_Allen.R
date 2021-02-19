@@ -1254,11 +1254,30 @@ figtop1 <- ggparcoord(traj_fig,
            columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=as.factor(dataset)))+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+labs(color="Dataset")+ facet_wrap(~Structure, ncol = 4)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
 
 #Akey
-figtop2 <- ggparcoord(preli1,
-              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Deserts of introgression")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")
+vpreli1 <- preli1
+vpreli1$Structure <- str_replace(vpreli1$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C| STC|V1C|VFC"), "NCX")
+
+test <- vpreli1 %>%
+    group_by(Structure) %>%
+    dplyr::summarise_all(mean, na.rm=TRUE)
+figtop2<-ggparcoord(test,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="B")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)
+
+
+# figtop2 <- ggparcoord(vpreli1,
+#               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Deserts of introgression")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")
 #AKeyPey
-figtop3 <- ggparcoord(preli2,
-              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Deserts and Positively selected regions")+theme(plot.title = element_text(size=10),legend.position = "right", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")
+vpreli2 <- preli2
+vpreli2$Structure <- str_replace(vpreli2$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C| STC|V1C|VFC"), "NCX")
+
+test2 <- vpreli2 %>%
+    group_by(Structure) %>%
+    dplyr::summarise_all(mean, na.rm=TRUE)
+figtop3<-ggparcoord(test2,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="C")+theme(plot.title = element_text(size=10),legend.position = "right", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)
+
+# figtop3 <- ggparcoord(preli2,
+#               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Deserts and Positively selected regions")+theme(plot.title = element_text(size=10),legend.position = "right", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")
 
 lay <- rbind(c(1,1,1,1,1,1),
              c(2,2,2,3,3,3), 
