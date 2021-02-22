@@ -450,6 +450,9 @@ willCoxPvals$window = factor(willCoxPvals$window,
 ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
+pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
+  geom_line(aes(color=Structure))+
+  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
 #write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv")
 ```
 
@@ -658,35 +661,17 @@ willCoxPvals$window <- str_replace(willCoxPvals$window, "9", "Adult")
 willCoxPvals$window = factor(willCoxPvals$window, 
     levels=c("Fetal_1","Fetal_2","Fetal_3","Birth/Inf","Inf/Child", "Child","Adolescence", "Adult"))
 
-#save(willCoxPvals, file="ggplot_wilcox_filteredRawSestan")
-#load("ggplot_wilcox_filteredRawSestan")
+
 ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
-write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
-
-# ##PREPARING SUPPL FIGURE
-# load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
-# subfigx <- ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
-#   geom_line(aes(color=Structure))+
-#   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")
-# 
-# #load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
-# ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
-#           boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
-#           boxplotsDist[[8]],boxplotsDist[[9]],
-#           common.legend = TRUE, legend = "right")
-# 
-# supplfig_x <- ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
-#           boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
-#           boxplotsDist[[8]],boxplotsDist[[9]], subfigx,
-#           common.legend = TRUE, legend = "right")
-# 
-# ggsave(supplfig_x, file="~/raul_tesina/2.plots/.pdf", width = 11.69, height = 8.27, units = "in")
-
+pvalAKEYPEY <- ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
+  geom_line(aes(color=Structure))+
+  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
+#write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
 ```
 
-#Preparing Table p-values
+#Table p-values
 ```{r}
 rawp <- read.csv("~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
 colnames(rawp) <- c("Structure", "window", "log2(pvalAVG)") 
@@ -711,6 +696,14 @@ akeypeyp <- akeypeyp[, order]
 # write.csv(akeypeyp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
 ```
 
+#Figure p-values
+```{r}
+pvala<-arrangeGrob(pvalAKEY, top = textGrob("A", x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top")))
+pvalb<-arrangeGrob(pvalAKEYPEY, top = textGrob("B", x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top")))
+pvals_inter<-grid.arrange(pvala, pvalb)
+
+ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/sf_pvals_ak_akpey.pdf", pvals_inter, width = 11.69, height = 8.27, units = "in")
+```
 
 
 
