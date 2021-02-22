@@ -1,4 +1,4 @@
-difference_perm_sestan <- function(stats_perm_df, which, height){
+difference_perm_sestan <- function(stats_perm_df, where, which, height){
 
   stats_perm_df <- stats_perm_df %>% 
     group_by(struct_id, datasource) %>% 
@@ -23,10 +23,10 @@ difference_perm_sestan <- function(stats_perm_df, which, height){
   
   a <-  ggplot(diff, aes (x= rest, y = struct_id )) +
     theme_minimal() + 
-    labs(x = c("Log2 mean difference"), y = c("Structures")) +
+    labs(x = c("Log2 mean difference"), y = c("Structure")) +
     geom_histogram(stat = "identity",  color="steelblue", fill="steelblue") 
   
-  ggsave(paste0("output/difference_perm_", which, ".pdf"), width = 8, height = height)
+  ggsave(paste0("output/difference_perm_", where, which, ".pdf"), width = 8, height = height)
   
   
 }

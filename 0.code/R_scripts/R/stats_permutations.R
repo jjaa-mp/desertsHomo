@@ -1,62 +1,69 @@
-stats_permutations <- function(permutationrun, regionofinterest, abdata, which){
-  means <- lapply(permutationrun, as.data.frame)
-  names <- means[[1]]$idBrainStruct
-  means <- lapply(means, '[[', 2)
-  means <- unlist(means)
-  #All the means of 414 organs
+stats_permutations <- function(permutationrun, regionofinterest, aba, which){
+  #Changes a bit compared to stats_permutations_s because of the ABA data structure
   
   perm_statsdf <- NULL
-  perm_statsdf$struct_id <- names
-  perm_statsdf$mean_struct <- means
-  perm_statsdf <- as.data.frame(perm_statsdf)
+  perm_statsdf <- permutationrun
   perm_statsdf$datasource <- "permutations"
+  colnames(perm_statsdf) <- c("idBrainStruct", "meansSubstruct", "datasource")
   
   #needed for later join
-  perm_statsdf$struct_id <- as.factor(perm_statsdf$struct_id) 
-  perm_statsdf$mean_struct <- as.numeric(perm_statsdf$mean_struct) 
+  perm_statsdf$idBrainStruct <- as.factor(perm_statsdf$idBrainStruct) 
+  perm_statsdf$meansSubstruct <- as.numeric(perm_statsdf$meansSubstruct) 
   
   #checking normality
-  #hist(perm_statsdf$mean_struct)
+  #hist(perm_statsdf$meansSubstruct)
   #very normal looking, as expected
   
-
-  #Gets mean expression from akey + brain allen (adults) combination 
-  ab_region_interest <- abdata[abdata$gene_name %in% regionofinterest$hgnc_symbol,]
-  
+  #Gets mean expression from akey + sestan combination 
+  aba_region_interest <- aba[aba$gene_name %in% regionofinterest$hgnc_symbol,]
+  #aba_region_interest <- aba_region_interest[-1]
   #data wrangling for tidyness
-  abakey_df <- melt(ab_region_interest)
+  abakey_df <- melt(aba_region_interest)
+  abakey_df <- abakey_df[-1]
   
   abakey_df <- abakey_df %>% 
     group_by(variable) %>% 
-    dplyr::select(variable, value)  %>% 
-    dplyr::filter(value > quantile(value, 0.10)) %>% 
-    dplyr::mutate(mean_struct = log(value)) %>% 
+    dplyr::select(variable, value)  %>%  
+    dplyr::filter(value > 2) %>% 
+    dplyr::mutate(mean_struct = log2(value)) %>% 
     dplyr::select(variable, mean_struct) %>% 
-    dplyr::mutate(datasource = ifelse(which == "akey", "Chen", "Chen + Pey")) 
+    dplyr::summarize(mean_struct = mean(mean_struct)) %>% 
+    dplyr::mutate(datasource = ifelse(which == "akey", "Chen", "Chen + Pey"))
+  
   
   colnames(abakey_df) <- c("struct_id", "mean_struct", "datasource")
-
+  
   #Checking normality
   #hist(abakey_df$mean_struct) 
   # Enough
+  colnames(perm_statsdf) <- c("struct_id", "mean_struct", "datasource")
+  
   
   full_data <- full_join(perm_statsdf, abakey_df)
-  
+  full_data$datasource <- as.factor(full_data$datasource)
   #quick visualization
   ggplot(full_data) +
     theme_minimal() +
     aes(x = mean_struct, color = datasource, fill = datasource) +
     geom_histogram() +
-    theme(legend.position = "none")
+    theme(legend.position = "top")
+  
+  full_data$struct_id <- stringr::str_remove_all(full_data$struct_id, ".*[.]")
+  
+  fulldata <- full_data %>% 
+    group_by(datasource, struct_id) %>% 
+    dplyr::summarize(mean_struct = mean(mean_struct)) # since duplicated ids happen 
+  #this differs from regular stats_permputations script
   
   #from car package: tests if variances are equal (they are)
   #leveneTest(mean_struct ~ struct_id, data = full_data)
   
   printf("Wait a bit; at 1000 permutations, this should take some time")
   res.aov <- anova_test(data = full_data, dv = mean_struct, wid = struct_id, between = datasource)
-  #printf(res.aov)
+  res.aov
   printf("Done!")
   
+  full_data$struct_id <- as.character(full_data$struct_id)
   printf("Posthoc by structure")
   one.way2 <- full_data %>%
     group_by(struct_id) %>%
@@ -65,27 +72,20 @@ stats_permutations <- function(permutationrun, regionofinterest, abdata, which){
     adjust_pvalue(method = "bonferroni")
   
   one.way2
-  #printf(one.way2)
-  if (which == "akey"){
-    write.csv(one.way2, paste0("output/perm_posthoc_", "chen.csv"))
-  } else if (which == "peycoords"){
-    write.csv(one.way2, paste0("output/perm_posthoc_", "chenpey.csv"))
-  } 
-
   
   if (which == "akey"){
-    plotting_topbottom(full_data, "top", "chen")
-    plotting_topbottom(full_data, "bottom", "chen")
+    write.csv(one.way2, paste0("output/ABAperm_posthoc_", "chen.csv"))
   } else if (which == "peycoords"){
-    plotting_topbottom(full_data, "top", "chenpey")
-    plotting_topbottom(full_data, "bottom", "chenpey")
+    write.csv(one.way2, paste0("output/ABAperm_posthoc_", "chenpey.csv"))
   } 
+  
+  
+  #if (which == "akey"){
+  #  plotting_topbottom(full_data, "sestantop", "chen")
+  #  plotting_topbottom(full_data, "sestanbottom", "chen")
+  #} else if (which == "peycoords"){
+  #  plotting_topbottom(full_data, "sestantop", "chenpey")
+  #  plotting_topbottom(full_data, "sestanbottom", "chenpey")
+  #} 
   return(full_data)
-
-  #residuals, with some artifacts from log transformation I guess
-  #plot(fitted(model),
-  #           residuals(model))
 }
-
-
-
