@@ -1288,73 +1288,6 @@ fig2_main <- grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
 ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/fig_combined.pdf", fig2_main, width = 11.69, height = 8.27, units = "in")
 ```
 
-#Preparing Figure X3
-```{r}
-#Extract legend
-figtop3<-ggparcoord(test2,
-           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="C")+theme(plot.title = element_text(size=10),legend.position = "right", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)
-l <- get_legend(figtop3)
-l1 <- as_ggplot(l)#legend as figure
-
-grid.arrange(boxplotsDist[[2]], boxplotsDist[[3]], boxplotsDist[[4]], boxplotsDist[[5]], boxplotsDist[[6]],boxplotsDist[[7]],boxplotsDist[[8]],boxplotsDist[[9]])
-
-
-trial1 <- ggparcoord(traj_fig,
-           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=as.factor(dataset)), title="A")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "none")+xlab("")+ylab("expression")+labs(color="Dataset")+ facet_wrap(~Structure, ncol = 4)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
-
-str_ak <-ggparcoord(test,
-           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#0a1c99"))
-cbl_ak <-ggparcoord(test,
-           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))
-md_ak <-ggparcoord(test,
-           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="MD Thalamus")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ffff00", "#ABABAB", "#ABABAB"))
-
-str_akpey <-ggparcoord(test2,
-           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#0a1c99"))
-
-cbl_akpey <-ggparcoord(test2,
-           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))
-
-
-lay1 <- rbind(c(1,2,3,4,5,6,7,8,9),
-             c(4,5,6,7,11,12))
-
-
-grid.arrange(boxplotsDist[[2]], boxplotsDist[[3]], boxplotsDist[[4]], boxplotsDist[[5]], boxplotsDist[[6]],boxplotsDist[[7]],boxplotsDist[[8]],boxplotsDist[[9]], l1,cbl_ak, md_ak, str_ak, cbl_akpey,str_akpey,layout_matrix = lay1)
-
-
-#corner
-pt <- arrangeGrob(boxplotsDist[[2]], top = textGrob("A", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-pt2 <- arrangeGrob(boxplotsDist[[3]], top = textGrob(" ", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-pt4 <- arrangeGrob(boxplotsDist[[4]], top = textGrob(" ", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-
-part <- arrangeGrob(boxplotDistakeypey[[2]], top = textGrob("E", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-part2 <- arrangeGrob(boxplotDistakeypey[[3]], top = textGrob(" ", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-part4 <- arrangeGrob(boxplotDistakeypey[[4]], top = textGrob(" ", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-
-akb <- arrangeGrob(cbl_ak, top = textGrob("B", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-akc <- arrangeGrob(md_ak, top = textGrob("C", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-akd <- arrangeGrob(str_ak, top = textGrob("D", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-akpeyf <- arrangeGrob(cbl_akpey, top = textGrob("F", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-akpeyG <- arrangeGrob(str_akpey, top = textGrob("G", x = unit(0, "npc")
-         , y   = unit(1, "npc"), just=c("left","top")))
-
-
-grid.arrange(pt, pt2, pt4, part, part2,part4, l1,akb, akc, akd, akpeyf,akpeyG,layout_matrix = lay1)
-fig3 <- grid.arrange(pt, pt2, pt4, part, part2,part4, l1,akb, akc, akd, akpeyf,akpeyG,layout_matrix = lay1)
-ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/fig3_boxplots.pdf", fig3, width = 11.69, height = 8.27, units = "in")
-```
-
 #Fig3 - Boxplots Akey + Selected structures
 ```{r}
 figtop3<-ggparcoord(test,
@@ -1400,6 +1333,45 @@ lay1 <- rbind(c(1,2,3,4,5,6,7,8,9),
 grid.arrange(pt2, pt3, pt4, pt5, pt6, pt7, pt8, pt9,leg1, akeyCBL, akMD, akSTR,layout_matrix = lay1)
 fig3 <- grid.arrange(pt2, pt3, pt4, pt5, pt6, pt7, pt8, pt9,leg1, akeyCBL, akMD, akSTR,layout_matrix = lay1)
 ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/fig3_boxplots.pdf", fig3, width = 11.69, height = 8.27, units = "in")
+```
+
+#Fig 4 Boxplots + Selected structures
+```{r}
+figtop4<-ggparcoord(test2,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="C")+theme(plot.title = element_text(size=10),legend.position = "right", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)
+leg2 <- get_legend(figtop4)
+leg2 <- as_ggplot(leg2)#legend as figure
+
+str_akpey <-ggparcoord(test2,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#0a1c99"))
+
+cbl_akpey <-ggparcoord(test2,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))
+
+
+
+
+part <- arrangeGrob(boxplotDistakeypey[[2]], top = textGrob("E", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+part2 <- arrangeGrob(boxplotDistakeypey[[3]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+part4 <- arrangeGrob(boxplotDistakeypey[[4]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+
+akpeyf <- arrangeGrob(cbl_akpey, top = textGrob("F", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+akpeyG <- arrangeGrob(str_akpey, top = textGrob("G", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+
+
+lay1 <- rbind(c(1,2,3,4,5,6,7,8,9),
+             c(NA,10,10,11,11,12,12,NA, NA),
+             c(NA,10,10,11,11,12,12,NA,NA))
+
+grid.arrange(pt2, pt3, pt4, pt5, pt6, pt7, pt8, pt9,leg2, akeyCBL, akMD, akSTR,layout_matrix = lay1)
+fig4 <- grid.arrange()
+ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/fig4_boxplots.pdf", fig4, width = 11.69, height = 8.27, units = "in")
+
 ```
 
 
