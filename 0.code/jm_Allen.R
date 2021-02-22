@@ -1349,27 +1349,35 @@ cbl_akpey <-ggparcoord(test2,
            columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)+scale_color_manual(values = c( "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))
 
 
-
-
-part <- arrangeGrob(boxplotDistakeypey[[2]], top = textGrob("E", x = unit(0, "npc")
+part2 <- arrangeGrob(boxplotDistakeypey[[2]], top = textGrob("A", x = unit(0, "npc")
          , y   = unit(1, "npc"), just=c("left","top")))
-part2 <- arrangeGrob(boxplotDistakeypey[[3]], top = textGrob(" ", x = unit(0, "npc")
+part3 <- arrangeGrob(boxplotDistakeypey[[3]], top = textGrob(" ", x = unit(0, "npc")
          , y   = unit(1, "npc"), just=c("left","top")))
 part4 <- arrangeGrob(boxplotDistakeypey[[4]], top = textGrob(" ", x = unit(0, "npc")
          , y   = unit(1, "npc"), just=c("left","top")))
-
-akpeyf <- arrangeGrob(cbl_akpey, top = textGrob("F", x = unit(0, "npc")
+part5 <- arrangeGrob(boxplotDistakeypey[[5]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(5, "npc"), just=c("left","top")))
+part6 <- arrangeGrob(boxplotDistakeypey[[6]], top = textGrob(" ", x = unit(0, "npc")
          , y   = unit(1, "npc"), just=c("left","top")))
-akpeyG <- arrangeGrob(str_akpey, top = textGrob("G", x = unit(0, "npc")
+part7 <- arrangeGrob(boxplotDistakeypey[[7]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+part8 <- arrangeGrob(boxplotDistakeypey[[8]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+part9 <- arrangeGrob(boxplotDistakeypey[[9]], top = textGrob(" ", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+
+akpeyCBL <- arrangeGrob(cbl_akpey, top = textGrob("B", x = unit(0, "npc")
+         , y   = unit(1, "npc"), just=c("left","top")))
+akpeySTR <- arrangeGrob(str_akpey, top = textGrob("C", x = unit(0, "npc")
          , y   = unit(1, "npc"), just=c("left","top")))
 
 
-lay1 <- rbind(c(1,2,3,4,5,6,7,8,9),
-             c(NA,10,10,11,11,12,12,NA, NA),
-             c(NA,10,10,11,11,12,12,NA,NA))
+lay2 <- rbind(c(1,2,3,4,5,6,7,8,9),
+             c(NA,NA,10,10,11,11,NA, NA,NA),
+             c(NA,NA,10,10,11,11,NA,NA,NA))
 
-grid.arrange(pt2, pt3, pt4, pt5, pt6, pt7, pt8, pt9,leg2, akeyCBL, akMD, akSTR,layout_matrix = lay1)
-fig4 <- grid.arrange()
+grid.arrange(part2, part3, part4, part5, part6, part7, part8, part9,leg2, akpeyCBL,akpeySTR,layout_matrix = lay2)
+fig4 <- grid.arrange(part2, part3, part4, part5, part6, part7, part8, part9,leg2, akpeyCBL,akpeySTR,layout_matrix = lay2)
 ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/fig4_boxplots.pdf", fig4, width = 11.69, height = 8.27, units = "in")
 
 ```
