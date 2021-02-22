@@ -30,3 +30,15 @@ chisq.test(p3)
 pvals <- c(chisq.test(p1)$p.value,chisq.test(p2)$p.value,chisq.test(p3)$p.value)
 
 p.adjust(pvals, method ="BH", n = length(pvals))
+
+
+#Summary table as Figure
+colnames(SummarySection1) <- c("Region", "Mean frequency", "% Fixed alleles")
+SummarySection1 <- SummarySection1[c(2,1,3),]
+levels(SummarySection1$Region) <- c(levels(SummarySection1$Region), "Non desertic")
+SummarySection1$Region[SummarySection1$Region == 'No deserts'] <- 'Non desertic'
+SummarySection1[,-1] <- round(SummarySection1[,-1], 4)
+
+tabl_1 <- tableGrob(SummarySection1, rows=NULL)
+
+#grid.arrange(tabl_1,tabl_1, ncol=2) #Share with circosplot
