@@ -28,7 +28,7 @@ difference_perm_sestan <- function(stats_perm_df, where, which, height){
   
   ggsave(paste0("output/difference_perm_", where, which, ".pdf"), width = 8, height = height)
   
-  
+  return(diff)
 }
 
 

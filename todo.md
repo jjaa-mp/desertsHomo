@@ -26,7 +26,7 @@
   
 - [ ] **Permutation subtasks** (AA)
     - [X] Difference plots (Sestan)
-    - [ ] Difference plots (ABA)
+    - [X] Difference plots (ABA)
     - [ ] Stats for diff plots
     - [ ] Are some structures more prone to be at the top or bottom? Some kind of enrichment test w/ permutations 
     - [ ] Are structures from R/L more prone to be at the top or bottom? Similar kind of test 
