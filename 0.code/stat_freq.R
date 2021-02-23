@@ -8,22 +8,21 @@ pairwise.wilcox.test(dfreq$freq, dfreq$group, p.adjust.method = "BH")
 
 
 ##Total numbers for Chi-sq test
-d <- as.table(rbind(c(591,3652-591), c(2587,31097-2587),  c(110,238-110)))
+d <- as.table(rbind(c(587,2246-587), c(2544,17783-2544),  c(110,229-110)))
 dimnames(d) <- list(group = c("Deserts","NoDeserts_chr", "Deserts+PosSel"), fixation = c("Fixed","No Fixed"))
-d
 
 chisq.test(d)
 
 ##Pairwise comparisons
-p1 <- as.table(rbind(c(591,3652-591),  c(2587,31097-2587)))
+p1 <- as.table(rbind(c(587,2246-587),   c(2544,17783-2544)))
 dimnames(p1) <- list(group = c("Deserts","NoDeserts_chr"), fixation = c("Fixed","No Fixed"))
 chisq.test(p1)
 
-p2 <- as.table(rbind(c(591,3652-591), c(110,238-110)))
+p2 <- as.table(rbind(c(587,2246-587), c(110,229-110)))
 dimnames(p2) <- list(group = c("Deserts","Deserts+PosSel"), fixation = c("Fixed","No Fixed"))
 chisq.test(p2)
 
-p3 <- as.table(rbind( c(2587,31097-2587), c(110,238-110)))
+p3 <- as.table(rbind(  c(2544,17783-2544),c(110,229-110)))
 dimnames(p3) <- list(group = c("NoDeserts_chr","Deserts+PosSel"), fixation = c("Fixed","No Fixed"))
 chisq.test(p3)
 
