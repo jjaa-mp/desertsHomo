@@ -28,6 +28,8 @@ library(regioneR)
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(R.utils)
 library(rstatix)
+library(outliers)
+library(calibrate)
 
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("reorder.factor", "gplots")
