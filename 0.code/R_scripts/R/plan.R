@@ -91,7 +91,24 @@ the_plan <- drake_plan(
   diffplot2 = difference_perm_sestan(stats_sestperm_chenpey, "sestan_", "chenpey", 8),
   outliers_sestan_chenpey = detect_outlier_tb(stats_sestperm_chenpey, diffplot2, "sestan_chenpey"),
 
+  #Posthocs for specific stages
+  ph_chen_fetal1 = stats_permutations_stages(permrun_s, akey, sestan, "akey", "fetal1"),
+  ph_chen_fetal2 = stats_permutations_stages(permrun_s, akey, sestan, "akey", "fetal2"),
+  ph_chen_fetal3 = stats_permutations_stages(permrun_s, akey, sestan, "akey", "fetal3"),
+  ph_chen_birth_inf = stats_permutations_stages(permrun_s, akey, sestan, "akey", "birth_inf"),
+  ph_chen_inf_child = stats_permutations_stages(permrun_s, akey, sestan, "akey", "inf_child"),
+  ph_chen_child = stats_permutations_stages(permrun_s, akey, sestan, "akey", "child"),
+  ph_chen_adolescence = stats_permutations_stages(permrun_s, akey, sestan, "akey", "adolescence"),
+  ph_chen_adult = stats_permutations_stages(permrun_s, akey, sestan, "akey", "adult"),
   
+  ph_chenpey_fetal1 = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "fetal1"),
+  ph_chenpey_fetal2 = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "fetal2"),
+  ph_chenpey_fetal3 = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "fetal3"),
+  ph_chenpey_birth_inf = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "birth_inf"),
+  ph_chenpey_inf_child = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "inf_child"),
+  ph_chenpey_child = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "child"),
+  ph_chenpey_adolescence = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "adolescence"),
+  ph_chenpey_adult = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "adult"),
 )
 
 
