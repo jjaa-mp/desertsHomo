@@ -17,7 +17,7 @@ Not adressed so far
 
 ## Differences between deserts of introgression
 [ ] Is chromosome 7 different in its expression profiles given previous literature on its human uniqueness?
-[ ] Are these differences reflected in specific brain regions?
+[ ] Are these differences reflected in expression in specific brain regions?
 [ ] Are they reflected in specific developmental stages?
  
 ## Differences between genes
