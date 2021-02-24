@@ -32,6 +32,6 @@ Feel free to add more, or to add/modify the tasks. Also, I'm not explicitely inc
 - [X] Visual representation across stages
 - [ ] What are the differences in the gene developmental trajectories across regions? (stats)
 - [ ] Are some genes specifically more expressed in a certain brain region? (in terms of stats, not only visualization)
-- [ ] Have certain genes in the deserts a higher than expected mean expression? (Compared to a set of genes of similar characteristics?)
+- [ ] Have positively selected genes in the deserts a higher than expected mean expression? (Compared to a set of genes of similar characteristics?)
 
 
