@@ -26,13 +26,13 @@ AA: I can take these questions
 
 ## Differences between deserts of introgression
 
-JM
-
 - [ ] Is chromosome 7 different in its expression profiles given previous literature on its human uniqueness?
 - [ ] Are these differences reflected in significantly different expression in specific brain regions?
 - [ ] Are they reflected in specific developmental stages?
  
 ## Differences between genes within positive selection in deserts
+
+JM
 
 - [X] Visual representation across stages
 - [ ] What are the differences in the gene developmental trajectories across regions? (stats)
