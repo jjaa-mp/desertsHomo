@@ -33,6 +33,7 @@ AA: I can take these questions
 ## Differences between genes within positive selection in deserts
 
 JM (I will target Wed 3rd)
+-Exploring alternatives to stats we used in the past (that did not capture much differences). Currently: https://doi.org/10.1186/s12859-018-2405-x
 
 - [X] Visual representation across stages
 - [ ] What are the differences in the gene developmental trajectories across regions? (stats)
