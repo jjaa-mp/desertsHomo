@@ -32,7 +32,7 @@ AA: I can take these questions
  
 ## Differences between genes within positive selection in deserts
 
-JM
+JM (I will target Wed 3rd)
 
 - [X] Visual representation across stages
 - [ ] What are the differences in the gene developmental trajectories across regions? (stats)
