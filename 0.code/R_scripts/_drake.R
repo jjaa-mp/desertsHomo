@@ -12,3 +12,4 @@ drake_config(the_plan,
              lock_envir = FALSE,
             garbage_collection = TRUE,
             memory_strategy = "preclean")
+

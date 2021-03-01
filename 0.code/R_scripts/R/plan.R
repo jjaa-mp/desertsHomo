@@ -109,6 +109,21 @@ the_plan <- drake_plan(
   ph_chenpey_child = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "child"),
   ph_chenpey_adolescence = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "adolescence"),
   ph_chenpey_adult = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "adult"),
+
+  
+  orderperm1 = permrun_order(permutationrun1),
+  orderperm2 =  permrun_order(permutationrun2),
+  orderperm3 = permrun_order(permutationrun3),
+  orderperm4 = permrun_order(permutationrun4),
+  orderperm5 = permrun_order(permutationrun5),
+  orderperm6 = permrun_order(permutationrun6),
+  orderperm7 = permrun_order(permutationrun7),
+  orderperm8 = permrun_order(permutationrun8),
+  orderperm9 = permrun_order(permutationrun9),
+  orderperm10 = permrun_order(permutationrun10),
+  
+  #test = top_structures_how_likely(permutationrun1, stats_sestperm_chen, "Deserts of introgression"),
+
 )
 
 
