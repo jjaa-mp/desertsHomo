@@ -3,7 +3,7 @@ I included tasks here as questions we aim to resolve. I didn't specifically incl
 Feel free to add more, or to add/modify the tasks. Also, I'm not explicitely including the answers to the solved tasks, to keep this clean in terms of logic.
 
 ## Deserts of introgression VS the rest of the genome
-AA: Currently at the verge of finishing, currently struggling mostly with making sense of the numerical/stats part
+AA: Currently at the verge of finishing, mostly struggling with making sense of the numerical/stats part
 
 - [X] Are results from previous studies, namely Vernot, similar to what we get?
 - [X] Are deserts of introgression different from other regions in the genome in terms of brain region values?
