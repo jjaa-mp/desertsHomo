@@ -122,7 +122,12 @@ the_plan <- drake_plan(
   orderperm9 = permrun_order(permutationrun9),
   orderperm10 = permrun_order(permutationrun10),
   
-  #test = top_structures_how_likely(permutationrun1, stats_sestperm_chen, "Deserts of introgression"),
+  ordered_all = allperm_order(orderperm1, orderperm2,
+                              orderperm3, orderperm4,
+                              orderperm5, orderperm6,
+                              orderperm7, orderperm8,
+                              orderperm9, orderperm10),
+  test = top_structures_how_likely(ordered_all, stats_sestperm_chen, "Deserts of introgression"),
 
 )
 

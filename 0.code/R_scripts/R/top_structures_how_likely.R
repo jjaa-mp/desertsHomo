@@ -11,9 +11,8 @@ top_structures_how_likely <- function(permutationrun, input, where){
   
   
   #gets bottom structure in permutations:
-  test <- permutationrun #permutationrun should come from allperm_order.R
-  test <- permrun_order(test)
-  expected <- test %>% 
+
+  expected <- permutationrun %>% 
     filter(structure == tailinput$struct_id) 
   expected$probability <- expected$probability/100 #due to ggplot funniness
   expected$position <- stringr::str_remove_all(expected$position, "V")
@@ -30,7 +29,7 @@ top_structures_how_likely <- function(permutationrun, input, where){
   
   #gets bottom structure in permutations:
   expected <- test %>% 
-    filter(structure == headinput$struct_id) 
+    dplyr::filter(structure == headinput$struct_id) 
   expected$probability <- expected$probability/100
   expected$position <- stringr::str_remove_all(expected$position, "V")
   expected$position <-  fct_reorder(expected$position,as.integer(expected$position))

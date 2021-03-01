@@ -1,12 +1,16 @@
-allperm_order <- function(permutationrun1, permutationrun2){
-  a <- permrun_order(permutationrun1)
-  b <- permrun_order(permutationrun2)
+allperm_order <- function(orderperm1, orderperm2,
+                          orderperm3, orderperm4,
+                          orderperm5, orderperm6,
+                          orderperm7, orderperm8,
+                          orderperm9, orderperm10) {
 
-
-
-  test <- full_join(a, b, c, d, e, f, g, h, i, j)
-  test2 <- test %>% 
+  test <- rbind(orderperm1, orderperm2,
+                        orderperm3, orderperm4,
+                        orderperm5, orderperm6,
+                        orderperm7, orderperm8,
+                        orderperm9, orderperm10)
+  test <- test %>% 
     group_by(structure, position) %>% 
     dplyr::summarise(probability = mean(probability))
-  return(test2)
+  return(test)
 }
