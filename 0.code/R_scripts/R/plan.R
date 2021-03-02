@@ -127,8 +127,9 @@ the_plan <- drake_plan(
                               orderperm5, orderperm6,
                               orderperm7, orderperm8,
                               orderperm9, orderperm10),
-  test = top_structures_how_likely(ordered_all, stats_sestperm_chen, "Deserts of introgression"),
-
+  likelihood_chen = top_structures_how_likely(ordered_all, stats_sestperm_chen, "Deserts of introgression"),
+  likelihood_chenpey = top_structures_how_likely(ordered_all, stats_sestperm_chenpey, "Positively selected in deserts of introgression"),
+  
 )
 
 
