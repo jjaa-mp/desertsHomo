@@ -10,11 +10,11 @@ AA: Currently at the verge of finishing, mostly struggling with making sense of 
 - [X] Are deserts of introgression different from other regions in the genome in terms of brain region values?
 - [X] Do you get a different developmental trajectory from genes in the deserts vs the rest of genome?
 - [X] Is the distance between the values in the genome and those in deserts particularly significant in the extremes (ie, way more down or upregulation than expected)
-- [ ] How likely is to have a high expression in particular structures (from genes in deserts), compared to the rest of the genome? Ie, does any structure have a higher or lower mean expression than one would expect from a random part of the genome?
+- [X] How likely is to have a high expression in particular structures (from genes in deserts), compared to the rest of the genome? Ie, does any structure have a higher or lower mean expression than one would expect from a random part of the genome? (AA: marking solved unless different method is agreed upon)
 
 
 ## Deserts of introgression VS regions under positive selection within
-AA: I can take these questions
+AA: I can take these questions.  Targetting question A for wednesday 3.
 
 - [ ] Are regions under positive selection different in their brain expression compared to any other region in the deserts?
 - [ ] How does this affect brain structures? How likely is for a structure to have a high expression relative to others in the regions under positive selection?
