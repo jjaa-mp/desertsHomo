@@ -32,7 +32,7 @@ genesnotin_pos <- anti_join(genesdeserts, genesdesertspos)
 #Select random 488 genes in positive selection + deserts
 # 488 because that's the body of genes in deserts not under possel
 set.seed(1)
-genesRandPS <- sample(resultsdesertspos$hgnc_symbol, 488)
+genesRandPS <- sample(genesdesertspos$hgnc_symbol, 488)
 genesRandPS_expr <- sestan %>% 
   filter(gene_name %in% genesRandPS) #466 instead of 488 due to name divergence
 
@@ -69,13 +69,25 @@ ggsave("boxplot.pdf", box, width = 8, height = 8)
 kruskal.test(value~L1, data = p)
 
 
-summary(model)
-
 p <- NULL
+p <- genes_notunder_ps[3:4]
+p <- rbind(p, genesRandPS_expr[3:4])
+datasource1 <- rep("Not under ps", length(genes_notunder_ps$value))
+datasource2 <- rep("Under ps", length(genesRandPS_expr$value))
+p$datasource <- c(datasource1, datasource2)
+ 
+violins <- ggplot(p, aes(datasource, value, fill = datasource)) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  labs(y = "Log2 expression per gene (n=466)", x= "Category") +
+  geom_violin() + 
+  facet_wrap(vars(structure),  ncol = 6)
+ggsave("violin_plots.pdf", violins, width = 8, height = 8)
+kruskal.test(value~structure+datasource, data = p)
 
+dunn_test(value ~ datasource, data = p, p.adjust.method = "bh")
 
-test <- genesRandPS_expr[2:4]
-test <- dcast(test, structure + stage ~ value)
 
 genesRandPS_expr %>%
   group_by(structure) %>% 
