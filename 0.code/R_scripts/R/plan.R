@@ -91,6 +91,44 @@ the_plan <- drake_plan(
   diffplot2 = difference_perm_sestan(stats_sestperm_chenpey, "sestan_", "chenpey", 8),
   outliers_sestan_chenpey = detect_outlier_tb(stats_sestperm_chenpey, diffplot2, "sestan_chenpey"),
 
+  #Posthocs for specific stages
+  ph_chen_fetal1 = stats_permutations_stages(permrun_s, akey, sestan, "akey", "fetal1"),
+  ph_chen_fetal2 = stats_permutations_stages(permrun_s, akey, sestan, "akey", "fetal2"),
+  ph_chen_fetal3 = stats_permutations_stages(permrun_s, akey, sestan, "akey", "fetal3"),
+  ph_chen_birth_inf = stats_permutations_stages(permrun_s, akey, sestan, "akey", "birth_inf"),
+  ph_chen_inf_child = stats_permutations_stages(permrun_s, akey, sestan, "akey", "inf_child"),
+  ph_chen_child = stats_permutations_stages(permrun_s, akey, sestan, "akey", "child"),
+  ph_chen_adolescence = stats_permutations_stages(permrun_s, akey, sestan, "akey", "adolescence"),
+  ph_chen_adult = stats_permutations_stages(permrun_s, akey, sestan, "akey", "adult"),
+  
+  ph_chenpey_fetal1 = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "fetal1"),
+  ph_chenpey_fetal2 = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "fetal2"),
+  ph_chenpey_fetal3 = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "fetal3"),
+  ph_chenpey_birth_inf = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "birth_inf"),
+  ph_chenpey_inf_child = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "inf_child"),
+  ph_chenpey_child = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "child"),
+  ph_chenpey_adolescence = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "adolescence"),
+  ph_chenpey_adult = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "adult"),
+
+  
+  orderperm1 = permrun_order(permutationrun1),
+  orderperm2 =  permrun_order(permutationrun2),
+  orderperm3 = permrun_order(permutationrun3),
+  orderperm4 = permrun_order(permutationrun4),
+  orderperm5 = permrun_order(permutationrun5),
+  orderperm6 = permrun_order(permutationrun6),
+  orderperm7 = permrun_order(permutationrun7),
+  orderperm8 = permrun_order(permutationrun8),
+  orderperm9 = permrun_order(permutationrun9),
+  orderperm10 = permrun_order(permutationrun10),
+  
+  ordered_all = allperm_order(orderperm1, orderperm2,
+                              orderperm3, orderperm4,
+                              orderperm5, orderperm6,
+                              orderperm7, orderperm8,
+                              orderperm9, orderperm10),
+  likelihood_chen = top_structures_how_likely(ordered_all, stats_sestperm_chen, "Deserts of introgression"),
+  likelihood_chenpey = top_structures_how_likely(ordered_all, stats_sestperm_chenpey, "Positively selected in deserts of introgression"),
   
 )
 

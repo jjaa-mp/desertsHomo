@@ -1,57 +1,45 @@
 
-- [X] Permutation tests for ABA 414 structures dataset (Alejandro) (done)
+I included tasks here as questions we aim to resolve. I didn't specifically included the answers, but I marked them for whenever we have adressed them overall. 
+Feel free to add more, or to add/modify the tasks. Also, I'm not explicitely including the answers to the solved tasks, to keep this clean in terms of logic.
 
-- [X] **Sestan data**.
-    + [X] Akey+Pey (Raül)
-    + [X] Akey alone (Juan)
-    + [X] Entire dataset (ubics cluster, Alejandro)
-    
- - [X] **Sestan data** *specific plots* (Juan)
-    + [X] Structure-by-structure plot
-    + [X] Gene-by-gene (ChenPey) plot
-  
-- [X] **Stats** for ABA temporal progression (data updated with log2(rpkm+1)) (Juan) 
-    + AkeyPey: All stages significant except 1; Akey: all stages
-
-- [X] **Stats** for Sestan temporal progression (data with log2(rpkm+1))  (Juan)
-    +Friedman + Conover (AkeyPey: significant differences at three stages; Akey: all stages; mult comp cannot spot particular structures)
-    + [X] Sestan permutation runs (AA)
-    
-- [X] PCA for each stage (Raül)
-    - [X] Pairwise distances from PC clusters (Raül)
-    - [X] PCA for Sestan raw (Juan)
-    - [X] Pairwise distances from PC clusters - raw data
-    - [X] Stats on pairwise distances
-
-  
-- [ ] **Permutation subtasks** (AA)
-    - [X] Difference plots (Sestan)
-    - [X] Difference plots (ABA)
-    - [ ] Stats for diff plots
-    - [ ] Are some structures more prone to be at the top or bottom? Some kind of enrichment test w/ permutations 
-    - [ ] Are structures from R/L more prone to be at the top or bottom? Similar kind of test 
-    - [ ] Account for stages in permutations in Sestan
-----  
-  
-- [ ] Update **observations.md** file: Target date Friday 12
+## Deserts of introgression VS the rest of the genome
+AA: Currently at the verge of finishing, mostly struggling with making sense of the numerical/stats part
 
 
---- 
-  
-- [ ] Intregrate **code** into drake workflow
-  + [ ] Check log2 consistency
-  + [ ] Erase non-parametric tests if not used (superseeded)
+- [X] Are results from previous studies, namely Vernot, similar to what we get?
+- [X] Are deserts of introgression different from other regions in the genome in terms of brain region values?
+- [X] Do you get a different developmental trajectory from genes in the deserts vs the rest of genome?
+- [X] Is the distance between the values in the genome and those in deserts particularly significant in the extremes (ie, way more down or upregulation than expected)
+- [X] How likely is to have a high expression in particular structures (from genes in deserts), compared to the rest of the genome? Ie, does any structure have a higher or lower mean expression than one would expect from a random part of the genome? (AA: marking solved unless different method is agreed upon)
 
---- 
---- 
 
-- [X] **Stats** for SNP count and frequency (not modified)
-- [X] **Stats** for cell type enrichment (not modified)
-- [X] Mean expression DEG from Cell Atlas data (modified with log2)
-  + [X] Stats (pairwise paired t tests) + heatmaps plot
-  
-- [X] **PCA** for the whole (414 structures) dataset.
-  + Comparison to PCAs for 414 Akey and 414 AkeyPey  
-  
+## Deserts of introgression VS regions under positive selection within
+AA: I can take these questions.  Targetting question A for wednesday 3.
+
+- [ ] Are regions under positive selection different in their brain expression compared to any other region in the deserts?
+- [ ] How does this affect brain structures? How likely is for a structure to have a high expression relative to others in the regions under positive selection?
+- [ ] Is it stage-sensitive?
+- [X] Are the extreme values in the distance between the values in the genome and those in positively selected windows in deserts particularly significant? (ie, way more down or upregulation than expected)
+
+## Regions unders positive selection VS those specifically in deserts
+
+(Not adressed so far)
+
+## Differences between deserts of introgression
+
+- [ ] Is chromosome 7 different in its expression profiles given previous literature on its human uniqueness?
+- [ ] Are these differences reflected in significantly different expression in specific brain regions?
+- [ ] Are they reflected in specific developmental stages?
+ 
+## Differences between genes within positive selection in deserts
+
+JM (I will target Wed 3rd)
+
+-Exploring alternatives to stats we used in the past (that did not capture much differences). Currently: https://doi.org/10.1186/s12859-018-2405-x
+
+- [X] Visual representation across stages
+- [ ] What are the differences in the gene developmental trajectories across regions? (stats)
+- [ ] Are some genes specifically more expressed in a certain brain region? (in terms of stats, not only visualization)
+- [ ] Have positively selected genes in the deserts a higher than expected mean expression? (Compared to a set of genes of similar characteristics?)
 
 
