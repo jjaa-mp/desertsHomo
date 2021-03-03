@@ -3,20 +3,20 @@ I included tasks here as questions we aim to resolve. I didn't specifically incl
 Feel free to add more, or to add/modify the tasks. Also, I'm not explicitely including the answers to the solved tasks, to keep this clean in terms of logic.
 
 ## Deserts of introgression VS the rest of the genome
-AA: Currently at the verge of finishing, mostly struggling with making sense of the numerical/stats part
-
 
 - [X] Are results from previous studies, namely Vernot, similar to what we get?
 - [X] Are deserts of introgression different from other regions in the genome in terms of brain region values?
 - [X] Do you get a different developmental trajectory from genes in the deserts vs the rest of genome?
 - [X] Is the distance between the values in the genome and those in deserts particularly significant in the extremes (ie, way more down or upregulation than expected)
-- [X] How likely is to have a high expression in particular structures (from genes in deserts), compared to the rest of the genome? Ie, does any structure have a higher or lower mean expression than one would expect from a random part of the genome? (AA: marking solved unless different method is agreed upon)
+- [X] How likely is to have a high expression in particular structures (from genes in deserts), compared to the rest of the genome? Ie, does any structure have a higher or lower mean expression than one would expect from a random part of the genome? 
+
+AA: marking the last one solved unless different method is agreed upon
 
 
 ## Deserts of introgression VS regions under positive selection within
-AA: I can take these questions.  Targetting question A for wednesday 3.
+AA: I can take these questions. Targetting question B for thursday 4.
 
-- [ ] Are regions under positive selection different in their brain expression compared to any other region in the deserts?
+- [X] Are regions under positsive selection different in their brain expression compared to any other region in the deserts?
 - [ ] How does this affect brain structures? How likely is for a structure to have a high expression relative to others in the regions under positive selection?
 - [ ] Is it stage-sensitive?
 - [X] Are the extreme values in the distance between the values in the genome and those in positively selected windows in deserts particularly significant? (ie, way more down or upregulation than expected)
