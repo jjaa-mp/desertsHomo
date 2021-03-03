@@ -33,9 +33,10 @@ AA: I can take these questions.  Targetting question A for wednesday 3.
  
 ## Differences between genes within positive selection in deserts
 
-JM (I will target Wed 3rd)
+JM 
+- Exploring again options to highlight differences in trajectories/expression.
 
--Exploring alternatives to stats we used in the past (that did not capture much differences). Currently: https://doi.org/10.1186/s12859-018-2405-x
+- [X] Trendy package: https://doi.org/10.1186/s12859-018-2405-x ([Observations](https://github.com/jjaa-mp/raul_tesina/blob/master/Observations.md) updated). (Wed 3rd)
 
 - [X] Visual representation across stages
 - [ ] What are the differences in the gene developmental trajectories across regions? (stats)
