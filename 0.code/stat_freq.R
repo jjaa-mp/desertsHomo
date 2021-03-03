@@ -1,4 +1,4 @@
-#Supplementary Table 1
+#Supplementary Table 1 & 2
 ##Frequency data retrieved with permissions from Kuhlwilm M, Boeckx C. Sci Rep. 2019. http://www.nature.com/articles/s41598-019-44877-x
 
 SummarySection1 <-read.csv("~/raul_tesina/1.data/stat_freq/Supplementary_Table_1.csv",sep = "\t")
