@@ -23,7 +23,8 @@ AA: I can take these questions. Targetting question B for thursday 4.
 
 ## Regions unders positive selection VS those specifically in deserts
 
-(Not adressed so far)
+- [X] Sestan genes Peyregne not in Akey plots and code
+- [ ] Using ABA data
 
 ## Differences between deserts of introgression
 
