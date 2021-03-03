@@ -15,7 +15,7 @@ DesertsPosSel <- c("1:113427676-113560554", "1:114641362-114645248",
                           "1:119322276-119387279", "3:77027847-77034264",
                           "7:106877730-107233808", "7:116762909-116773234",
                           "7:120147456-120174406", "7:122320035-122406480") #can be obtained from .bed file in circos plot files, if you wish so
-)
+
 
 resultsdeserts <- getBM(attributes = c("hgnc_symbol"),
                   filters = c("chromosomal_region","biotype"),
@@ -54,6 +54,7 @@ genes_notunder_ps <- sestan %>%
 genes_notunder_ps <- genesRandPS_expr %>% 
   filter(value > 2) %>% 
   dplyr::mutate(value = log2(value))
+genesRandPS_expr <- separate(genesRandPS_expr, variable, c("stage", "structure"), sep = "[.]")
 
 p <- NULL
 p$'Deserts (excluding positive selection)'  <- genes_notunder_ps$value
