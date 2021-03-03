@@ -132,24 +132,52 @@ cbcakey1[,cols.num] <- lapply(cbcakey1[cols.num],as.numeric)
 
 finalcbc <- t(cbcakey1)
 colnames(finalcbc) <- time.vector #READY FOR TRENDY
-
-res <- trendy(Data = finalcbc, tVectIn = time.vector, maxK = 3, minNumInSeg = 2)
+set.seed(10)
+res <- trendy(Data = finalcbc, tVectIn = time.vector, maxK = 3, minNumInSeg = 2, meanCut = 2)
 res <- results(res)
 res.top <- topTrendy(res)
-res.trend <- trendHeatmap(res.top)
+#Good fit in Des & Pos sel.
+rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol]
 
-library(gplots)
-heatmap.2(finalcbc[names(res.trend$firstup),],trace="none", Rowv=FALSE,Colv=FALSE,dendrogram='none',scale="row", main="top genes (first go up)")
+res.trend <- trendHeatmap(res.top)
+##Heatmap homemad
+class(res.top$Trends)
+pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1), filename = "~/raul_tesina/2.plots/trendy_segmentedRegression/pheatmap_UpDown_Deserts.pdf")
+
+sb_inDesPey <- res.top$Trends[rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol],]
+pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/raul_tesina/2.plots/trendy_segmentedRegression/pheatmap_UpDown_DesertsPosSel.pdf")
+
+#library(gplots)
+#heatmap.2(finalcbc[names(res.trend$firstup),],trace="none", Rowv=FALSE,Colv=FALSE,dendrogram='none',scale="row", main="top genes (first go up)")
+
+
+#Individual genes:
+names(res.trend$firstnochange)
+names(res.trend$firstnochange)[names(res.trend$firstnochange) %in% both$hgnc_symbol]
 
 par(mfrow=c(3,2))
-plotFeature(Data = finalcbc, tVectIn = time.vector, simple = TRUE,featureNames = names(res.trend$firstnochange)[1],trendyOutData = res)
+plotFeature(Data = finalcbc, tVectIn = time.vector, simple = TRUE,featureNames =names(res.trend$firstnochange)[c(1,6,8)],trendyOutData = res)
 
-par(mfrow=c(3,3))
-plotFeature(Data = finalcbc,tVectIn = time.vector, simple=TRUE,featureNames = names(res.trend$firstnochange)[1:5],trendyOutData = res)
-
-
-par(mfrow=c(3,3))
-plotFeature(Data = finalcbc, tVectIn = time.vector, simple = FALSE,featureNames = names(res.trend$firstnochange)[1:5],trendyOutData = res)
+par(mfrow=c(3,2))
+plotFeature(Data = finalcbc, tVectIn = time.vector, simple = FALSE,showLegend = FALSE, featureNames = names(res.trend$firstnochange)[c(1,6,8)],trendyOutData = res)
 
 
+#Genes with specific patterns
+##Genes that increase after first stages (e.g CADPS2)
+extractPattern(res, Pattern = c("same", "up"))
+par(mfrow=c(3,2))
+plotFeature(Data = finalcbc, tVectIn = time.vector, simple = FALSE,showLegend = FALSE, featureNames = names(res.trend$firstnochange)[c(6,8,9,13)],trendyOutData = res)
+
+#Selected genes
+par(mfrow=c(3,2))
+plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "CADPS2", "GPR22", "BCAP29"),trendyOutData = res)
+
+pdf("~/raul_tesina/2.plots/trendy_segmentedRegression/trendy_GenesDesertPosSel.pdf")
+par(mfrow=c(3,2))
+plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "CADPS2", "GPR22", "BCAP29"),trendyOutData = res)
+dev.off()
+
+#Timepoints breaks - all genes
+res.bp <- breakpointDist(res.top)
+barplot(res.bp, ylab="Number of breakpoints", col="lightblue")
 ```
