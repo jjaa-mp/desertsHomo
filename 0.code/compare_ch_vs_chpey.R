@@ -17,18 +17,17 @@ DesertsPosSel <- c("1:113427676-113560554", "1:114641362-114645248",
                           "7:120147456-120174406", "7:122320035-122406480") #can be obtained from .bed file in circos plot files, if you wish so
 
 
-resultsdeserts <- getBM(attributes = c("hgnc_symbol"),
+genesdeserts <- getBM(attributes = c("hgnc_symbol"),
                   filters = c("chromosomal_region","biotype"),
                   values = list(Deserts,biotype="protein_coding"), mart = ensembl)
 
-resultsdesertspos <- getBM(attributes = c("hgnc_symbol"),
+genesdesertspos <- getBM(attributes = c("hgnc_symbol"),
                         filters = c("chromosomal_region","biotype"),
                         values = list(DesertsPosSel,biotype="protein_coding"), mart = ensembl)
 
-# results* = list of genes in regions
 
 #Now, determining desert specific genes NOT under possel:
-diff <- anti_join(resultsdeserts, resultsdesertspos)
+genesnotin_pos <- anti_join(genesdeserts, genesdesertspos)
 
 #Select random 488 genes in positive selection + deserts
 # 488 because that's the body of genes in deserts not under possel
@@ -46,15 +45,16 @@ genesRandPS_expr <- genesRandPS_expr %>%
 genesRandPS_expr <- separate(genesRandPS_expr, variable, c("stage", "structure"), sep = "[.]")
 genesRandPS_expr$stage <- as.factor(genesRandPS_expr$stage)
 
-# Now for those not under positive selection:
+# Now for those NOT under positive selection:
 genes_notunder_ps <- sestan %>% 
-  filter(gene_name %in% diff$hgnc_symbol) #469 instead of 488
+  filter(gene_name %in% genesnotin_pos$hgnc_symbol) #469 instead of 488
 
+genes_notunder_ps <- melt(genes_notunder_ps)
 #Cutoff + normalization (but for the other dataset)
-genes_notunder_ps <- genesRandPS_expr %>% 
+genes_notunder_ps <- genes_notunder_ps %>% 
   filter(value > 2) %>% 
   dplyr::mutate(value = log2(value))
-genesRandPS_expr <- separate(genesRandPS_expr, variable, c("stage", "structure"), sep = "[.]")
+genes_notunder_ps <- separate(genes_notunder_ps, variable, c("stage", "structure"), sep = "[.]")
 
 p <- NULL
 p$'Deserts (excluding positive selection)'  <- genes_notunder_ps$value
