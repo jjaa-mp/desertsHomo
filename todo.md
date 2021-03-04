@@ -14,10 +14,10 @@ AA: marking the last one solved unless different method is agreed upon
 
 
 ## Deserts of introgression VS regions under positive selection within
-AA: I can take these questions. Targetting question B for thursday 4.
+AA: I can take these questions. Targetting question B for thursday 4 - currently dealing with designing a regression model for it
 
 - [X] Are regions under positsive selection different in their brain expression compared to any other region in the deserts?
-- [ ] How does this affect brain structures? How likely is for a structure to have a high expression relative to others in the regions under positive selection?
+- [X] How does this affect brain structures? How likely is for a structure to have a high expression relative to others in the regions under positive selection?
 - [ ] Is it stage-sensitive?
 - [X] Are the extreme values in the distance between the values in the genome and those in positively selected windows in deserts particularly significant? (ie, way more down or upregulation than expected)
 
