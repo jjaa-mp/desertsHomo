@@ -35,7 +35,7 @@ AA: I can take these questions. Targetting question B for thursday 4.
 ## Differences between genes within positive selection in deserts
 
 JM 
-- Exploring again options to highlight differences in trajectories/expression.
+- Exploring expression dynamics based on Deseq2
 
 - [X] Trendy package: https://doi.org/10.1186/s12859-018-2405-x ([Observations](https://github.com/jjaa-mp/raul_tesina/blob/master/Observations.md) updated). (Wed 3rd)
 
