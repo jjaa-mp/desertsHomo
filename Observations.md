@@ -5,9 +5,7 @@
 
 
 - **Are regions under positive selection in the deserts significantly different to those that are not, but still within deserts?**
-The difference in expression between the 12 positively selected genes and the ones that are not is overall significant (p = 0.0007, Kruskal - Wallis) but not structure specific (p = 0.655, linear regression model with mixed-effects). A comparison of regression lines between a model accounting for structure variability and one that does not confirms that no specific structures are relevant to significance deviances in variation (p= 0.9904, anova comparing two regression models). 
-
-In term of temporal data, ttages do play a significant role (0.0001, linear regression with mixed-effects). You can see the results of a posthoc (Tukey's) for each stage in a csv in the folder. Mostly, it says for most structures (but not all) the significance is dependent on the comparison between the two groups (in and out of positive selection).
+The difference in expression between the 12 positively selected genes and the ones that are not is overall significant (p = 0.0007, Kruskal - Wallis) but not structure specific (p = 0.655, linear regression model with mixed-effects). A comparison of regression lines between a model accounting for structure variability and one that does not confirms that no specific structures are relevant to significance deviances in variation (p= 0.9904, anova comparing two regression models). In term of temporal data, stages do play a significant role (0.0001, linear regression with mixed-effects). You can see the results of a posthoc (Tukey's) for each stage in a csv in the folder. Mostly, it says for most structures (but not all) the significance is dependent on the comparison between the two groups (in and out of positive selection).
 
 
 # Observations
