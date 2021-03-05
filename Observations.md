@@ -3,6 +3,13 @@
 - **Segmented regression analysis** was performed to characterize the expression trajectories of our genes of interest (Chen2020/Pey2017). As input, we used the the genes-by-time samples matrix from Sestan2018 (keeping time replicates, no log-transformation). [Here](https://github.com/jjaa-mp/raul_tesina/tree/master/2.plots/trendy_segmentedRegression) you can find an example for the cerebellum. Only genes with an adjusted R^2 higher than 0.5 for the optimal model fit were considered. Genes identified with increasing/decreasing expression, or stable expression, can be visualized in these pheatmaps [here](https://github.com/jjaa-mp/raul_tesina/tree/master/2.plots/trendy_segmentedRegression) and [here](https://github.com/jjaa-mp/raul_tesina/blob/master/2.plots/trendy_segmentedRegression/pheatmap_UpDown_DesertsPosSel.pdf)). This analysis 'adds numbers' to highlight some specific genes. For example, considering genes within Chen2020 & Pey2017: For ROBO2 we see a decreasing expression from the early stages to adulthood (R^2 0.8309911; while the opposite pattern is found for BCAP29 (R^2 0.6472140)). CADPS2 moves from low to high expression between stages 5 and 6 (R^2 0.8182701), and also after stage 5 GPR22 increases its expression (R^2 0.7990155).
 	- For this model, a maximun number of breakpoints was set at 3, mininum number of samples in each segment at 2, and mean expression for each gene, 2.
 
+
+- **Are regions under positive selection in the deserts significantly different to those that are not, but still within deserts?**
+The difference in expression between the 12 positively selected genes and the ones that are not is overall significant (p = 0.0007, Kruskal - Wallis) but not structure specific (p = 0.655, linear regression model with mixed-effects). A comparison of regression lines between a model accounting for structure variability and one that does not confirms that no specific structures are relevant to significance deviances in variation (p= 0.9904, anova comparing two regression models). 
+
+In term of temporal data, ttages do play a significant role (0.0001, linear regression with mixed-effects). You can see the results of a posthoc (Tukey's) for each stage in a csv in the folder. Mostly, it says for most structures (but not all) the significance is dependent on the comparison between the two groups (in and out of positive selection).
+
+
 # Observations
 ## Highlights from the data analysis
 
