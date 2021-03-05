@@ -130,6 +130,7 @@ the_plan <- drake_plan(
   likelihood_chen = top_structures_how_likely(ordered_all, stats_sestperm_chen, "Deserts of introgression"),
   likelihood_chenpey = top_structures_how_likely(ordered_all, stats_sestperm_chenpey, "Positively selected in deserts of introgression"),
   
+  internal_ch_vs_chpey = compare_ch_vs_chpey(sestan),
 )
 
 

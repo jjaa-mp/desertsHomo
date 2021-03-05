@@ -3,13 +3,13 @@ compare_ch_vs_chpey <- function(sestan){
                      dataset = 'hsapiens_gene_ensembl',
                      host = 'https://grch37.ensembl.org')
   
-  Deserts <- c("1:105400000-120600000", "3:74100000-89300000",
-               "7:106200000-123200000","8:49400000-66500000")
+  Deserts <- c("1:105400000:120600000", "3:74100000:89300000",
+               "7:106200000:123200000","8:49400000:66500000")
   
-  DesertsPosSel <- c("1:113427676-113560554", "1:114641362-114645248",
-                     "1:119322276-119387279", "3:77027847-77034264",
-                     "7:106877730-107233808", "7:116762909-116773234",
-                     "7:120147456-120174406", "7:122320035-122406480") #can be obtained from .bed file in circos plot files, if you wish so
+  DesertsPosSel <- c("1:113427676:113560554", "1:114641362:114645248",
+                     "1:119322276:119387279", "3:77027847:77034264",
+                     "7:106877730:107233808", "7:116762909:116773234",
+                     "7:120147456:120174406", "7:122320035:122406480") #can be obtained from .bed file in circos plot files, if you wish so
   
   
   genesdeserts <- getBM(attributes = c("hgnc_symbol"),
@@ -24,51 +24,46 @@ compare_ch_vs_chpey <- function(sestan){
   #Now, determining desert specific genes NOT under possel:
   genesnotin_pos <- anti_join(genesdeserts, genesdesertspos)
   
-  #Select random 488 genes in positive selection + deserts
-  # 488 because that's the body of genes in deserts not under possel
-  set.seed(1)
-  genesRandPS <- sample(genesdesertspos$hgnc_symbol, 488)
-  genesRandPS_expr <- sestan %>% 
-    filter(gene_name %in% genesRandPS) #466 instead of 488 due to name divergence
+  genesdes_expr <- sestan %>% 
+    filter(gene_name %in% genesnotin_pos$hgnc_symbol) 
   
   #Cutoff + normalization:
-  genesRandPS_expr <- melt(genesRandPS_expr)
-  genesRandPS_expr <- genesRandPS_expr %>% 
+  genesdes_expr <- melt(genesdes_expr)
+  genesdes_expr <- genesdes_expr %>% 
     filter(value > 2) %>% 
     dplyr::mutate(value = log2(value))
   
-  genesRandPS_expr <- separate(genesRandPS_expr, variable, c("stage", "structure"), sep = "[.]")
-  genesRandPS_expr$stage <- as.factor(genesRandPS_expr$stage)
+  genesdes_expr <- separate(genesdes_expr, variable, c("stage", "structure"), sep = "[.]")
+  genesdes_expr$stage <- as.factor(genesdes_expr$stage)
   
-  # Now for those NOT under positive selection:
-  genes_notunder_ps <- sestan %>% 
-    filter(gene_name %in% genesnotin_pos$hgnc_symbol) #469 instead of 488
+  # Now for those under positive selection:
+  genesdesertspos <- sestan %>% 
+    filter(gene_name %in% genesdesertspos$hgnc_symbol) #469 instead of 488
   
-  genes_notunder_ps <- melt(genes_notunder_ps)
+  genesdesertspos <- melt(genesdesertspos)
   #Cutoff + normalization (but for the other dataset)
-  genes_notunder_ps <- genes_notunder_ps %>% 
+  genesdesertspos <- genesdesertspos %>% 
     filter(value > 2) %>% 
     dplyr::mutate(value = log2(value))
-  genes_notunder_ps <- separate(genes_notunder_ps, variable, c("stage", "structure"), sep = "[.]")
+  genesdesertspos <- separate(genesdesertspos, variable, c("stage", "structure"), sep = "[.]")
   
   p <- NULL
-  p$'Deserts (excluding positive selection)'  <- genes_notunder_ps$value
-  p$'Deserts and positive selection' <- genesRandPS_expr$value
+  p$'Genes in deserts (no positive selection)'  <- genesdes_expr$value
+  p$'Deserts and positive selection' <- genesdesertspos$value
   p <- melt(p)
-  box <- ggplot(p, aes(L1, value)) +
+  violin1 <- ggplot(p, aes(value, L1)) + 
     theme_minimal() +
-    labs(y = "Log2 expression per gene (n=466)", x= "Category") +
-    geom_boxplot()
-  ggsave("boxplot.pdf", box, width = 8, height = 8)
+    geom_violin()
+  ggsave("violin_basic.pdf", violin1, width = 8, height = 8)
   #stats
   kruskal.test(value~L1, data = p)
   
   
   p <- NULL
-  p <- genes_notunder_ps[3:4]
-  p <- rbind(p, genesRandPS_expr[3:4])
-  datasource1 <- rep("Not under ps", length(genes_notunder_ps$value))
-  datasource2 <- rep("Under ps", length(genesRandPS_expr$value))
+  p <- genesdes_expr[3:4]
+  p <- rbind(p, genesdesertspos[3:4])
+  datasource1 <- rep("Not under ps", length(genesdes_expr$value))
+  datasource2 <- rep("Under ps", length(genesdesertspos$value))
   p$datasource <- c(datasource1, datasource2)
   
   violins <- ggplot(p, aes(datasource, value, fill = datasource)) +
@@ -78,10 +73,10 @@ compare_ch_vs_chpey <- function(sestan){
     labs(y = "Log2 expression per gene (n=466)", x= "Category") +
     geom_violin() + 
     facet_wrap(vars(structure),  ncol = 6)
-  ggsave("violin_plots.pdf", violins, width = 8, height = 8)
+  ggsave("violin_structures.pdf", violins, width = 8, height = 8)
   
   #Stats!
-  kruskal.test(value~structure, data = p) #first approximation: structure regardless of datasource significantly different
+  kruskal.test(value~structure, data = p) #Structure regardless of datasource not significantly different
   
   model <-  lme(value ~ datasource, random=~1|structure,
                 data=p,
@@ -102,12 +97,56 @@ compare_ch_vs_chpey <- function(sestan){
   
   anova(model, model.fixed) #0.042, meaning difference between structures is significant
   # (independently of where in the deserts they are)
+
   
+  #taking into account stages
+  p <- NULL
+  p <- genesdes_expr[2:4]
+  p <- rbind(p, genesdesertspos[2:4])
+  datasource1 <- rep("Not under ps", length(genesdes_expr$value))
+  datasource2 <- rep("Under ps", length(genesdesertspos$value))
+  p$datasource <- c(datasource1, datasource2)
+  p$stage <- p$stage %>% 
+    stringr::str_replace_all("HSB153|HSB150|HSB113|HSB103|HSB149|HSB114", "fetal1" ) %>% 
+    stringr::str_replace_all("HSB178|HSB154|HSB96|HSB97", "fetal2" ) %>% 
+    stringr::str_replace_all("HSB98|HSB107|HSB92|HSB159", "fetal3" ) %>% 
+    stringr::str_replace_all("HSB155|HSB194|HSB121|HSB132|HSB139", "birth_inf" ) %>% 
+    stringr::str_replace_all("HSB131|HSB171|HSB122|HSB143|HSB173", "inf_child" ) %>% 
+    stringr::str_replace_all("HSB172|HSB118|HSB141|HSB174|HSB175", "child" ) %>% 
+    stringr::str_replace_all("HSB124|HSB119|HSB105|HSB127", "adolescence" ) %>%   
+    stringr::str_replace_all("HSB130|HSB136|HSB126|HSB145|HSB123|HSB135", "adult" ) 
   
+  p <- p %>% # taking out prenatal 
+    filter(stage != ("HSB148")) %>% 
+    filter(stage != ("HSB112"))
+  
+  violin_stages <- ggplot(p, aes(value, stage)) + 
+    theme_minimal() +
+    geom_violin()
+  ggsave("violin_stages.pdf", violin_stages, width = 8, height = 8)
+  
+  model <-  lme(value ~ datasource, random=~1|stage,
+                data=p,
+                method="REML")
+  
+  anova.lme(model,
+            type="sequential",
+            adjustSigma = FALSE) # stage is significant
+  
+  leastsquare <- lsmeans(model, pairwise ~ datasource,
+                         adjust="tukey")
+  leastsquare  # agreement
+  
+  # Test significance of random variable
+  model.fixed <- gls(value ~ datasource,
+                     data=p,
+                     method="REML")
+  
+  anova(model, model.fixed) # stage does play a role
+  
+  #But which stages?
+  sig <- aov(value ~ stage*datasource, data = p) %>% tukey_hsd()
+  write.csv(sig, "posthoc_stages_chvschpey.csv")
 }
 
 
-#taking into account stages
-p <- NULL
-p <- genes_notunder_ps[2:4]
-p <- rbind(p, genesRandPS_expr[2:4])
