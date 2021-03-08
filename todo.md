@@ -23,7 +23,7 @@ AA: marking the last one solved unless different method is agreed upon
 ## Regions unders positive selection VS those specifically in deserts
 
 - [X] Sestan genes Peyregne not in Akey plots and code
-- [ ] Using ABA data
+- [X] Using ABA data
 
 ## Differences between deserts of introgression
 
