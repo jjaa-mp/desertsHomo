@@ -1,3 +1,72 @@
+#ABA PeyNotAkey
+#Preparing ABAdata for PCA and distances analysis
+
+##Loading dataset
+data("dataset_5_stages")
+resultsAkey<-read.csv("results_akey.csv")
+resultsAkeyPey<-read.csv("both_pey_akey_genes_pos.csv")
+#Selecting genes ID and structures present in dataset
+id <- unique(dataset_5_stages$ensembl_gene_id)
+st <- unique(dataset_5_stages$structure)
+st_allen <- paste("Allen",st, sep=":") 
+#Expression data for all structures and genes
+ab <- get_expression(structure_ids=st_allen, gene_ids = id, dataset='5_stages')
+abStatic<-copy(ab)
+#Converting data to a dataframe with useful format for later
+list1 = vector(mode="list")
+for (r in 1:length(ab)){
+  ab[[r]] <- t(ab[[r]]) #transpose
+  list1 <- get_name(colnames(ab[[r]])) #change Allen:XXXX to e.g. M1C_primary motor cortex, etc
+  colnames(ab[[r]]) <- list1
+  ab[[r]] <- as.data.frame(ab[[r]])
+}
+
+ab1 = vector(mode="list", length = length(ab))
+for (i in 1:length(ab)){
+  for (h in 1:length(names(ab[[i]]))){
+    ab1[[i]][[h]] <- ab[[i]][h]
+  }
+}
+
+for (i in 1:length(ab)){
+  for (h in 1:length(names(ab[[i]]))){
+    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab1[[i]][[h]]),mart=ensembl)
+    ab1[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab1[[i]][[h]]), G_list$ensembl_gene_id)]
+    ab1[[i]][[h]] <-ab1[[i]][[h]][order(ab1[[i]][[h]][[1]], decreasing = TRUE), ]
+  }
+}
+
+
+peyNotakeyABA = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
+for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
+  for (h in 1:length(names(ab[[i]]))){
+    peyNotakeyABA[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% resultsPeynotAkey$hgnc_symbol,] #in Akey
+    peyNotakeyABA[[i]][[h]] <-  peyNotakeyABA[[i]][[h]][!(is.na(peyNotakeyABA[[i]][[h]][[2]]) | peyNotakeyABA[[i]][[h]][[2]]==""), ]
+    # akeyABA[[i]][[h]][1] <- log2(akeyABA[[i]][[h]][1]+1)
+    #Cleaning
+  }
+}
+
+peyNotakeyABAwind<-list()
+peyNotakeyABAwind[["prenatal"]]<-as.data.frame(peyNotakeyABA[[1]])
+peyNotakeyABAwind[["infant"]]<-as.data.frame(peyNotakeyABA[[2]])
+peyNotakeyABAwind[["child"]]<-as.data.frame(peyNotakeyABA[[3]])
+peyNotakeyABAwind[["adolsecent"]]<-as.data.frame(peyNotakeyABA[[4]])
+peyNotakeyABAwind[["adult"]]<-as.data.frame(peyNotakeyABA[[5]])
+#For each window handling
+for(i in 1:5){
+  peyNotakeyABAdf<-peyNotakeyABAwind[[i]]
+  peyNotakeyABAdfTemp <- peyNotakeyABAdf %>% select(-contains("gene_name"))
+  peyNotakeyABAdfTemp<-as.data.frame(t(peyNotakeyABAdfTemp))
+  peyNotakeyABAdfTemp <- cbind(Regioncode = rownames(peyNotakeyABAdfTemp), peyNotakeyABAdfTemp)
+  rownames(peyNotakeyABAdfTemp) <- 1:nrow(peyNotakeyABAdfTemp)
+  peyNotakeyABAdfTemp<-peyNotakeyABAdfTemp%>%separate(Regioncode,c("Regioncode","Extra"),sep = "_")
+  peyNotakeyABAdfTemp$Extra<-NULL
+  peyNotakeyABAwind[[i]]<-peyNotakeyABAdfTemp
+}
+
+
+
 #PeynotAkey in Sestan data
 mRNAseqData=read.table("mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
 modsb1= mRNAseqData %>% 
@@ -94,8 +163,8 @@ for (i in 1:5){
   #CHANGE:logakeypeyPCA / logakeyPCA / logPeynotAkeySestan
   # windowPCA<-logPeynotAkeySestan %>% filter(Window==i)
   
-  #CHANGE: akeyABAwind / akeyPeyABAwind / wholeABAwind
-  windowPCA<-wholeABAwind[[i]]
+  #CHANGE: akeyABAwind / akeyPeyABAwind / peyNotAkeyABAwind / wholeABAwind
+  windowPCA<-peyNotakeyABAwind[[i]]
   
   windowPCA$Window<-NULL
   
@@ -179,8 +248,10 @@ for (i in 1:5){
 }
 valuesDist
 structs
+library(xlsx)
+install.packages("xlsx")
 #wilcoxAkeyDist / wilcoxAkeyPeyDist
-#write.xlsx(pairwiseWilcox,"wilcoxAkeyPeyDist.xlsx",col.names=TRUE,row.names=TRUE)
+#writexl::write_xlsx(pairwiseWilcox,"wilcoxPeyNotAkeyDist.xlsx")
 plot(pairwiseWilcox[[2]])
 #colMeans(wilcoxTests, na.rm = TRUE)
 
@@ -243,7 +314,7 @@ for (i in 1:5){
 willcoxPvaluesAVG<-as.data.frame(t(colMeans(wilcoxTests,na.rm=TRUE)))
 
 # wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
-write.csv(wilcoxTests,"wilcoxSestanPeynotAkeyDist.csv")
+write.csv(wilcoxTests,"wilcoxABAPeynotAkeyDist.csv")
 
 willCoxPvals<-as.data.frame(list("brainRegion","window","pvalAVG"))
 colnames(willCoxPvals)<-c("brainRegion","window","pvalAVG")
@@ -258,7 +329,7 @@ plotWillCox<-ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=brainRegion
   geom_line(aes(color=brainRegion))+
   geom_point(aes(color=brainRegion))
 plotWillCox
-ggsave(file="Sestan_WillcoxPvalPlotDistances_PeynotAkey.pdf", width = 11.69, height = 8.27)
+ggsave(file="ABA_WillcoxPvalPlotDistances_PeynotAkey.pdf", width = 11.69, height = 8.27)
 
 #Boxplots
 library(ggplot2)
@@ -308,6 +379,6 @@ ggarrange(boxplotsDist[[1]],boxplotsDist[[2]],boxplotsDist[[3]],
 # ggarrange(boxplotsDist[[2]],boxplotsDist[[3]],
 #           boxplotsDist[[4]],boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],boxplotsDist[[8]],boxplotsDist[[9]],plotWillCox,
 #           common.legend = TRUE, legend = "right")
-ggsave(file="ABA_whole_supplfig.pdf", width = 11.69, height = 8.27)
+ggsave(file="ABA_peyNotAkey_supplfig.pdf", width = 11.69, height = 8.27)
 
 
