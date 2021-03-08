@@ -63,6 +63,7 @@ colnames(finalcbc) <- nms
 
 finalcbc<-finalcbc[-1,] #READY FOR TRENDY
 
+
 time.vector <- 2:9
 res <- trendy(Data = finalcbc, tVectIn = time.vector, maxK = 3, minNumInSeg = 2)
 res <- results(res)
@@ -132,6 +133,8 @@ cbcakey1[,cols.num] <- lapply(cbcakey1[cols.num],as.numeric)
 
 finalcbc <- t(cbcakey1)
 colnames(finalcbc) <- time.vector #READY FOR TRENDY
+saveRDS(finalcbc, file = "~/CBC_trendy.rds")
+
 set.seed(10)
 res <- trendy(Data = finalcbc, tVectIn = time.vector, maxK = 3, minNumInSeg = 2, meanCut = 2)
 res <- results(res)
@@ -170,7 +173,7 @@ plotFeature(Data = finalcbc, tVectIn = time.vector, simple = FALSE,showLegend = 
 
 #Selected genes
 par(mfrow=c(3,2))
-plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "CADPS2", "GPR22", "BCAP29"),trendyOutData = res)
+plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = "CELSR2",trendyOutData = res)
 
 pdf("~/raul_tesina/2.plots/trendy_segmentedRegression/trendy_GenesDesertPosSel.pdf")
 par(mfrow=c(3,2))

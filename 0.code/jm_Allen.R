@@ -37,6 +37,7 @@ ensembl <- useMart(biomart = 'ENSEMBL_MART_ENSEMBL',
 resP=getBM(attributes = c("hgnc_symbol","gene_biotype"),
               filters = "biotype",
               values = list(biotype="protein_coding"), mart = ensembl)
+
 length(resP$hgnc_symbol[!(is.na(resP$hgnc_symbol) | resP$hgnc_symbol=="")])
 
 ##Akey Deserts coordinates (Ensembl 1-based):
