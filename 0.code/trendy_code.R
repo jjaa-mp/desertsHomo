@@ -68,6 +68,11 @@ res.top <- topTrendy(res)
 rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol]
 
 res.trend <- trendHeatmap(res.top)
+
+rcbc <- as.data.frame(res.top$AdjustedR2)
+names(rcbc) <- "Cerebellar cortex - R2"
+write.csv(rcbc, file="~/raul_tesina/1.data/trendy_adjR2/CBC_GenesDesertPosSel_adjR2.csv", row.names = TRUE, quote=T)
+
 ##Heatmap homemad
 class(res.top$Trends)
 pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1), filename = "~/raul_tesina/2.plots/trendy_segmentedRegression/CBC_UpDown_Deserts.pdf")
@@ -108,6 +113,11 @@ set.seed(10)
 res <- trendy(Data = finalstr, tVectIn = time.vector, maxK = 3, minNumInSeg = 2, meanCut = 2)
 res <- results(res)
 res.top <- topTrendy(res)
+
+rstr <- as.data.frame(res.top$AdjustedR2)
+names(rstr) <- "Striatum - R2"
+write.csv(rstr, file="~/raul_tesina/1.data/trendy_adjR2/STR_GenesDesertPosSel_adjR2.csv", row.names = TRUE, quote=T)
+
 #Good fit in Des & Pos sel.
 rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol]
 
@@ -122,12 +132,12 @@ pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = 
 
 
 #Selected genes
-par(mfrow=c(3,2))
+par(mfrow=c(2,2))
 plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "BCAP29", "ST7"),trendyOutData = res)
 
 pdf("~/raul_tesina/2.plots/trendy_segmentedRegression/STR_GenesDesertPosSel.pdf")
 par(mfrow=c(3,2))
-plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "BCAP29", "ST7"),trendyOutData = res)
+plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "BCAP29", "ST7", "SYT6"),trendyOutData = res)
 dev.off()
 ```
 
