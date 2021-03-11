@@ -88,7 +88,7 @@ plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "RO
 
 pdf("~/raul_tesina/2.plots/trendy_segmentedRegression/CBC_GenesDesertPosSel.pdf")
 par(mfrow=c(3,2))
-plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "CADPS2", "GPR22", "BCAP29"),trendyOutData = res)
+plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "CADPS2", "GPR22", "BCAP29"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child","Adult" ), xlab="")
 dev.off()
 ```
 
@@ -137,8 +137,10 @@ plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "B
 
 pdf("~/raul_tesina/2.plots/trendy_segmentedRegression/STR_GenesDesertPosSel.pdf")
 par(mfrow=c(3,2))
-plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "BCAP29", "ST7", "SYT6"),trendyOutData = res)
+plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "BCAP29", "ST7", "SYT6"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child"), xlab="")
 dev.off()
+
+
 ```
 
 #MD

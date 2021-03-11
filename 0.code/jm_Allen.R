@@ -944,8 +944,6 @@ logakeySestan1[3:ncol(logakeySestan1)] <- log2(logakeySestan1[3:ncol(logakeySest
 #Brining the metadata of the database
 library(readxl)
 metadatamRNAseq=read_xlsx("~/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
-
-
 modMetadatamRNAseq=na.omit(metadatamRNAseq)
 modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
 modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
@@ -1204,7 +1202,7 @@ an <- n + facet_wrap(~Structure)
 ##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
 ```
 
-#Trajectory plots2- Sestan
+#FIGURE #2
 ```{r}
 preli1 <- read.csv(file="~/raul_tesina/1.data/median_tables/median_Akey_Sestan.csv")
 preli1 <- as_tibble(preli1) #AKEY
@@ -1427,4 +1425,35 @@ j2 <- n1 + facet_wrap(~Structure)+scale_color_discrete(name="Genes",labels=uniqu
 # t2 <- filter(prelites2, Structure %in% c("CBC")) %>% ggparcoord(prelites2,
 # columns = 3:9, groupColumn = 2, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")
 # t2 + facet_wrap(~Genename)+scale_color_discrete(name="Structure",labels=c("CBC"))
+
+#PALMD & EBF1
+ap <- finalraw2 %>% select("PALMD"|Label)
+tes2 <- melt(ap, id=c("Label"))
+tes2_mean <- tes2 %>%
+  group_by(Label,variable) %>%
+  dplyr::summarise_all(median, na.rm=TRUE)
+
+tes2_mean <- tes2_mean %>% 
+  separate(Label, c("Structure","Window"))
+prelites2 <- pivot_wider(tes2_mean, names_from = Window, values_from = value)
+
+#
+prelites2[,11] <- NULL
+prelites2 <- prelites2[complete.cases(prelites2), ]
+
+#levels(prelites2$Genename) <- unique(prelites2$Genename)
+
+colnames(prelites2) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+#PLOT
+levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+
+n <-ggparcoord(prelites2,
+columns = 3:9, groupColumn = 2, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")+theme(axis.text.x = element_text(angle = 45,hjust = 1))
+j1<-n + facet_wrap(~Genename)+scale_color_discrete(name="Structure",labels=unique(prelites2$Structure))
+#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_1.pdf", j1, width = 11.69, height = 8.27, units = "in")
+
+n1 <-ggparcoord(prelites2,
+columns = 3:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Genename)))+xlab("")+ylab("expression")
+j2 <- n1 + facet_wrap(~Structure)+scale_color_discrete(name="Genes",labels=unique(prelites2$Genename))+theme(axis.text.x = element_text(angle = 45,hjust = 1))
+#ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_2.pdf", j2, width = 11.69, height = 8.27, units = "in")
 ```
