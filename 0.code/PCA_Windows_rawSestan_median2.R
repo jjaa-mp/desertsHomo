@@ -4,6 +4,7 @@ library(matrixStats)
 #raw Sestan data is filtered by median > 2 for each gene across all structures/stages
 ## AUTOMATIZED with WILCOX TEST
 
+#finalraw2 <- load("~/finalraw2_inputPC.RData")
 rawmedian2 <- finalraw2 #Input from jm_Allen or load("finalraw2_inputPC.RData")
 
 rawmedian2[1] <- NULL
@@ -422,15 +423,15 @@ willcoxPvaluesAVG<-as.data.frame(t(colMeans(wilcoxTests,na.rm=TRUE)))
 # wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
 #write.csv(wilcoxTests,"wilcoxAkeyDist.csv")
 
-willCoxPvals<-as.data.frame(list("Structure","window","pvalAVG"))
-colnames(willCoxPvals)<-c("Structure","window","pvalAVG")
-willCoxPvals$pvalAVG<-as.numeric(willCoxPvals$pvalAVG)
+willCoxPvals<-as.data.frame(list("Structure","window","log2pvalAVG"))
+colnames(willCoxPvals)<-c("Structure","window","log2pvalAVG")
+willCoxPvals$log2pvalAVG<-as.numeric(willCoxPvals$log2pvalAVG)
 willCoxPvals<-willCoxPvals[-1,]
 for (col in colnames(willcoxPvaluesAVG)){
   #change the window number
-  willCoxPvals<-willCoxPvals %>% add_row(Structure=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],pvalAVG=willcoxPvaluesAVG[col][[1]])
+  willCoxPvals<-willCoxPvals %>% add_row(Structure=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],log2pvalAVG=willcoxPvaluesAVG[col][[1]])
 }
-willCoxPvals$pvalAVG<-log2(willCoxPvals$pvalAVG)
+willCoxPvals$log2pvalAVG<-log2(willCoxPvals$log2pvalAVG)
 
 
 willCoxPvals$window <- str_replace(willCoxPvals$window, "2", "Fetal_1")
@@ -447,10 +448,10 @@ willCoxPvals$window = factor(willCoxPvals$window,
 
 #save(willCoxPvals, file="ggplot_wilcox_filteredRawSestan")
 #load("ggplot_wilcox_filteredRawSestan")
-ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
+ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
-pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
+pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
 #write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv")
@@ -638,15 +639,15 @@ willcoxPvaluesAVG<-as.data.frame(t(colMeans(wilcoxTests,na.rm=TRUE)))
 # wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
 #write.csv(wilcoxTests,"wilcoxAkeyDist.csv")
 
-willCoxPvals<-as.data.frame(list("Structure","window","pvalAVG"))
-colnames(willCoxPvals)<-c("Structure","window","pvalAVG")
-willCoxPvals$pvalAVG<-as.numeric(willCoxPvals$pvalAVG)
+willCoxPvals<-as.data.frame(list("Structure","window","log2pvalAVG"))
+colnames(willCoxPvals)<-c("Structure","window","log2pvalAVG")
+willCoxPvals$log2pvalAVG<-as.numeric(willCoxPvals$log2pvalAVG)
 willCoxPvals<-willCoxPvals[-1,]
 for (col in colnames(willcoxPvaluesAVG)){
   #change the window number
-  willCoxPvals<-willCoxPvals %>% add_row(Structure=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],pvalAVG=willcoxPvaluesAVG[col][[1]])
+  willCoxPvals<-willCoxPvals %>% add_row(Structure=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],log2pvalAVG=willcoxPvaluesAVG[col][[1]])
 }
-willCoxPvals$pvalAVG<-log2(willCoxPvals$pvalAVG)
+willCoxPvals$log2pvalAVG<-log2(willCoxPvals$log2pvalAVG)
 
 
 willCoxPvals$window <- str_replace(willCoxPvals$window, "2", "Fetal_1")
@@ -662,10 +663,10 @@ willCoxPvals$window = factor(willCoxPvals$window,
     levels=c("Fetal_1","Fetal_2","Fetal_3","Birth/Inf","Inf/Child", "Child","Adolescence", "Adult"))
 
 
-ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
+ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
-pvalAKEYPEY <- ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
+pvalAKEYPEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
 #write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
