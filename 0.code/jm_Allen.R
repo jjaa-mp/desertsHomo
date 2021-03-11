@@ -1202,7 +1202,7 @@ an <- n + facet_wrap(~Structure)
 ##ggsave(file="~/raul_tesina/2.plots/ABAData_AkeyPeyRac_log2/ABA_temporal_Structures.pdf", an, width = 11.69, height = 8.27, units = "in")
 ```
 
-#FIGURE #2
+#FIGURE #1
 ```{r}
 preli1 <- read.csv(file="~/raul_tesina/1.data/median_tables/median_Akey_Sestan.csv")
 preli1 <- as_tibble(preli1) #AKEY
@@ -1242,7 +1242,7 @@ columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mappi
 n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
 
 an <- n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
-#ggsave(file="~/raul_tesina/2.plots/Sestan_raw_filtered_median2_trajectories/Sestan_temporal_Structures_filteredRawmedian2.pdf", an, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/raul_tesina/2.plots/Sestan_raw_filtered_median2_trajectories/Sestan_temporal_Structures_filteredRawmedian2.pdf", an, width = 11.69, height = 8.27, units = "in")
 ```
 
 
