@@ -451,7 +451,7 @@ ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
 pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
+  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
 #write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv")
 ```
 
@@ -459,11 +459,10 @@ pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) 
 ```{r}
 akeypeySestan <- finalakeypeySestan #Input from jm_Allen or load("finalraw2_inputPC.RData")
 
-#akeypeySestan[1] <- NULL
+akeypeySestan[1] <- NULL
 
 structDistWind<-list()
-library(stringr)
-library(hash)
+
 for (i in 2:9){
   windowPCA<- akeypeySestan %>% filter(Window==i)
 
@@ -666,7 +665,7 @@ ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
 pvalAKEYPEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
+  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
 #write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
 ```
 
