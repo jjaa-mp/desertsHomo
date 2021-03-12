@@ -1,10 +1,10 @@
 #rawSestan
 ```{r}
-library(matrixStats)
+#library(matrixStats)
 #raw Sestan data is filtered by median > 2 for each gene across all structures/stages
 ## AUTOMATIZED with WILCOX TEST
 
-#finalraw2 <- load("~/finalraw2_inputPC.RData")
+#load("~/finalraw2_inputPC.RData")
 rawmedian2 <- finalraw2 #Input from jm_Allen or load("finalraw2_inputPC.RData")
 
 rawmedian2[1] <- NULL
@@ -223,7 +223,7 @@ write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_filt
 load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
 subfigx <- ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")
+  geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
 
 #load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
 ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
