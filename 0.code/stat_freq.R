@@ -45,6 +45,9 @@ tabl_1 <- tableGrob(SummarySection1, rows=NULL)
 
 
 #HF strict filtering
+
+dst <- read.csv("~/freqstats_raultesina/Supplementary_Table_2.csv", sep = ",")
+
 ##Total numbers for Chi-sq test
 d <- as.table(rbind(c(587,2246-587), c(2544,17783-2544),  c(110,229-110)))
 dimnames(d) <- list(group = c("Deserts","NoDeserts_chr", "Deserts+PosSel"), fixation = c("Fixed","No Fixed"))
