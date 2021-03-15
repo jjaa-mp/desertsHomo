@@ -1,20 +1,14 @@
 #rawSestan
 ```{r}
-#library(matrixStats)
-#raw Sestan data is filtered by median > 2 for each gene across all structures/stages
-## AUTOMATIZED with WILCOX TEST
-
-#load("~/finalraw2_inputPC.RData")
+load("~/finalraw2_inputPC.RData")
 rawmedian2 <- finalraw2 #Input from jm_Allen or load("finalraw2_inputPC.RData")
 
 rawmedian2[1] <- NULL
 
 structDistWind<-list()
-library(stringr)
-library(hash)
+
 for (i in 2:9){
   
-#rawmedian2 <- from jm_Allen finalraw2 inputPC
   windowPCA<- rawmedian2 %>% filter(Window==i)
 
   windowPCA$Window<-NULL
@@ -59,8 +53,6 @@ for (i in 2:9){
 structDistWind[[i]]<-structDist
 }
 
-# Final var structDistWind
-
 #Boxplots
 correspStage<-list()
 correspStage[[2]]<-"Fetal_1"
@@ -95,7 +87,7 @@ for (i in 2:9){
 #save(boxplotsDist, file = "boxplotsFilteredRawSestan.R")
 
 #BOXPLOTS:
-load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
+#load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
 
 boxplotsDist[[2]]
 ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
@@ -127,7 +119,7 @@ for (i in 2:9){
 #save(pairwiseWilcox, "pairwiseWilcox_filteredRawSestan.RData")
 #write.xlsx(pairwiseWilcox,"pairwiseWilcoxFilteredRawSestan.xlsx",col.names=TRUE,row.names=TRUE)
 
-load("~/tmp_wilcoxtests/pairwiseWilcox_filteredRawSestan.RData")
+#load("~/tmp_wilcoxtests/pairwiseWilcox_filteredRawSestan.RData")
 
 colMeans(wilcoxTests, na.rm = TRUE)
 
@@ -189,15 +181,15 @@ willcoxPvaluesAVG<-as.data.frame(t(colMeans(wilcoxTests,na.rm=TRUE)))
 # wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
 #write.csv(wilcoxTests,"wilcoxAkeyDist.csv")
 
-willCoxPvals<-as.data.frame(list("Structure","window","pvalAVG"))
-colnames(willCoxPvals)<-c("Structure","window","pvalAVG")
-willCoxPvals$pvalAVG<-as.numeric(willCoxPvals$pvalAVG)
+willCoxPvals<-as.data.frame(list("Structure","window","log2pvalAVG"))
+colnames(willCoxPvals)<-c("Structure","window","log2pvalAVG")
+willCoxPvals$log2pvalAVG<-as.numeric(willCoxPvals$log2pvalAVG)
 willCoxPvals<-willCoxPvals[-1,]
 for (col in colnames(willcoxPvaluesAVG)){
   #change the window number
-  willCoxPvals<-willCoxPvals %>% add_row(Structure=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],pvalAVG=willcoxPvaluesAVG[col][[1]])
+  willCoxPvals<-willCoxPvals %>% add_row(Structure=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],log2pvalAVG=willcoxPvaluesAVG[col][[1]])
 }
-willCoxPvals$pvalAVG<-log2(willCoxPvals$pvalAVG)
+willCoxPvals$log2pvalAVG<-log2(willCoxPvals$log2pvalAVG)
 
 
 willCoxPvals$window <- str_replace(willCoxPvals$window, "2", "Fetal_1")
@@ -214,14 +206,12 @@ willCoxPvals$window = factor(willCoxPvals$window,
 
 #save(willCoxPvals, file="ggplot_wilcox_filteredRawSestan")
 #load("ggplot_wilcox_filteredRawSestan")
-ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
-  geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
-write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
+
+#write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
 
 ##PREPARING SUPPL FIGURE
-load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
-subfigx <- ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=Structure)) +
+#load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
+subfigx <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
 
@@ -236,8 +226,7 @@ supplfig_x <- ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
           boxplotsDist[[8]],boxplotsDist[[9]], subfigx,
           common.legend = TRUE, legend = "right")
 
-ggsave(supplfig_x, file="~/raul_tesina/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
-
+#ggsave(supplfig_x, file="~/raul_tesina/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 ```
 
 #AKEY
