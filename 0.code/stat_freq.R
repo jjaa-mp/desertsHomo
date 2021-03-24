@@ -1,8 +1,8 @@
 #Supplementary Table 1 & 2
 ##Frequency data retrieved with permissions from Kuhlwilm M, Boeckx C. Sci Rep. 2019. http://www.nature.com/articles/s41598-019-44877-x
 
-SummarySection1 <-read.csv("~/raul_tesina/1.data/stat_freq/Supplementary_Table_1.csv",sep = "\t")
-dfreq <- read.csv("~/raul_tesina/1.data/stat_freq/Supplementary_Table_2.csv")
+SummarySection1 <-read.csv("~/desertsHomo/1.data/stat_freq/Supplementary_Table_1.csv",sep = "\t")
+dfreq <- read.csv("~/desertsHomo/1.data/stat_freq/Supplementary_Table_2.csv")
 
 pairwise.wilcox.test(dfreq$freq, dfreq$group, p.adjust.method = "BH")
 a <- pairwise.wilcox.test(dfreq$freq, dfreq$group, p.adjust.method = "BH")
@@ -46,9 +46,9 @@ tabl_1 <- tableGrob(SummarySection1, rows=NULL)
 
 
 #HF strict filtering
-SummarySection_strict <-read.csv("~/raul_tesina/1.data/stat_freq/ST_Summary_HFstrict_summary.csv",sep = "\t")
+SummarySection_strict <-read.csv("~/desertsHomo/1.data/stat_freq/ST_Summary_HFstrict_summary.csv",sep = "\t")
 
-dst <- read.csv("~/raul_tesina/1.data/stat_freq/ST_HFstrict_frequency.csv", sep = ",")
+dst <- read.csv("~/desertsHomo/1.data/stat_freq/ST_HFstrict_frequency.csv", sep = ",")
 pairwise.wilcox.test(dst$freq, dst$group, p.adjust.method = "BH")
 a1<-pairwise.wilcox.test(dst$freq, dst$group, p.adjust.method = "BH")
 a1$p.value
