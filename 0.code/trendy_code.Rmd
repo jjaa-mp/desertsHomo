@@ -73,7 +73,7 @@ rcbc <- as.data.frame(res.top$AdjustedR2)
 names(rcbc) <- "Cerebellar cortex - R2"
 write.csv(rcbc, file="~/desertsHomo/1.data/trendy_adjR2/CBC_GenesDesertPosSel_adjR2.csv", row.names = TRUE, quote=T)
 
-##Heatmap homemad
+##Heatmap homemade
 class(res.top$Trends)
 pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1), filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_UpDown_Deserts.pdf")
 
