@@ -13,7 +13,7 @@ for (i in 2:9){
 
   windowPCA$Window<-NULL
   
-  brainTopStruct<-read.csv("~/raul_tesina/0.code/brainRegionCorresp.csv",sep=":")
+  brainTopStruct<-read.csv("~/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
   colnames(brainTopStruct) <- c("Regioncode","FullReg")
 
   windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
@@ -207,7 +207,7 @@ willCoxPvals$window = factor(willCoxPvals$window,
 #save(willCoxPvals, file="ggplot_wilcox_filteredRawSestan")
 #load("ggplot_wilcox_filteredRawSestan")
 
-#write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
+#write.csv(willCoxPvals, file="~/desertsHomo/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
 
 ##PREPARING SUPPL FIGURE
 #load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
@@ -226,7 +226,7 @@ supplfig_x <- ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
           boxplotsDist[[8]],boxplotsDist[[9]], subfigx,
           common.legend = TRUE, legend = "right")
 
-#ggsave(supplfig_x, file="~/raul_tesina/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+#ggsave(supplfig_x, file="~/desertsHomo/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 ```
 
 #AKEY
@@ -244,7 +244,7 @@ for (i in 2:9){
 
   windowPCA$Window<-NULL
   
-  brainTopStruct<-read.csv("~/raul_tesina/0.code/brainRegionCorresp.csv",sep=":")
+  brainTopStruct<-read.csv("~/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
   colnames(brainTopStruct) <- c("Regioncode","FullReg")
 
   windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
@@ -441,7 +441,7 @@ ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
 pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
-#write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv")
+#write.csv(willCoxPvals, file="~/desertsHomo/1.data/distances_pvalues/wilcox_akeySestan.csv")
 ```
 
 #AKEPEY
@@ -457,7 +457,7 @@ for (i in 2:9){
 
   windowPCA$Window<-NULL
   
-  brainTopStruct<-read.csv("~/raul_tesina/0.code/brainRegionCorresp.csv",sep=":")
+  brainTopStruct<-read.csv("~/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
   colnames(brainTopStruct) <- c("Regioncode","FullReg")
 
   windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
@@ -655,32 +655,32 @@ ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
 pvalAKEYPEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
-#write.csv(willCoxPvals, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
+#write.csv(willCoxPvals, file="~/desertsHomo/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
 ```
 
 #Table p-values
 ```{r}
-rawp <- read.csv("~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
+rawp <- read.csv("~/desertsHomo/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
 colnames(rawp) <- c("Structure", "window", "log2(pvalAVG)") 
 rawp$pvalAVG <- 2**(rawp$`log2(pvalAVG)`)
 order <- c("Structure", "window", "pvalAVG", "log2(pvalAVG)")
 rawp <- rawp[, order]
 
-akeyp <- read.csv("~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv", row.names = 1)
+akeyp <- read.csv("~/desertsHomo/1.data/distances_pvalues/wilcox_akeySestan.csv", row.names = 1)
 colnames(akeyp) <- c("Structure", "window", "log2(pvalAVG)") 
 akeyp$pvalAVG <- 2**(akeyp$`log2(pvalAVG)`)
 order <- c("Structure", "window", "pvalAVG", "log2(pvalAVG)")
 akeyp <- akeyp[, order]
 
-akeypeyp <- read.csv("~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv", row.names = 1)
+akeypeyp <- read.csv("~/desertsHomo/1.data/distances_pvalues/wilcox_akeypeySestan.csv", row.names = 1)
 colnames(akeypeyp) <- c("Structure", "window", "log2(pvalAVG)") 
 akeypeyp$pvalAVG <- 2**(akeypeyp$`log2(pvalAVG)`)
 order <- c("Structure", "window", "pvalAVG", "log2(pvalAVG)")
 akeypeyp <- akeypeyp[, order]
 
-# write.csv(rawp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
-# write.csv(akeyp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeySestan.csv")
-# write.csv(akeypeyp, file="~/raul_tesina/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
+# write.csv(rawp, file="~/desertsHomo/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
+# write.csv(akeyp, file="~/desertsHomo/1.data/distances_pvalues/wilcox_akeySestan.csv")
+# write.csv(akeypeyp, file="~/desertsHomo/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
 ```
 
 #Figure p-values
@@ -689,5 +689,5 @@ pvala<-arrangeGrob(pvalAKEY, top = textGrob("A", x = unit(0, "npc"), y   = unit(
 pvalb<-arrangeGrob(pvalAKEYPEY, top = textGrob("B", x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top")))
 pvals_inter<-grid.arrange(pvala, pvalb)
 
-ggsave(file="~/raul_tesina/2.plots/Sestan_AkeyPey_log2_median/sf_pvals_ak_akpey.pdf", pvals_inter, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/desertsHomo/2.plots/Sestan_AkeyPey_log2_median/sf_pvals_ak_akpey.pdf", pvals_inter, width = 11.69, height = 8.27, units = "in")
 ```
