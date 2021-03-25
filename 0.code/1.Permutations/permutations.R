@@ -458,7 +458,7 @@ permutationrun = rbind(cleanpermABA1, cleanpermABA2, #joins the results int
                        cleanpermABA3, cleanpermABA4,
                        cleanpermABA5, cleanpermABA6,
                        cleanpermABA7, cleanpermABA8,
-                       cleanpermABA9, cleanpermABA10),
+                       cleanpermABA9, cleanpermABA10)
 
 #Statistics, including posthoc, + difference plot  outlier tests
 permutationstats = stats_permutations(permutationrun, akey, abadult, "akey")
@@ -473,7 +473,7 @@ outliers_ABA_chenpey = detect_outlier_tb(permutationstats_pey, pdiffplot2, "ABA_
 # Permutations for Sestan data
 # --
 
-sestan = clean_sestan(),
+sestan = clean_sestan()
 permutationrun1 = permutation_test_s(100, sestan, 100) # 100 = the seed has to change from perm run to perm run
 cleanperm1 = clean_perm_results_s(permutationrun1)
 permutationrun2 = permutation_test_s(100, sestan, 101)
@@ -518,4 +518,13 @@ ph_chen_inf_child = stats_permutations_stages(permrun_s, akey, sestan, "akey", "
 ph_chen_child = stats_permutations_stages(permrun_s, akey, sestan, "akey", "child")
 ph_chen_adolescence = stats_permutations_stages(permrun_s, akey, sestan, "akey", "adolescence")
 ph_chen_adult = stats_permutations_stages(permrun_s, akey, sestan, "akey", "adult")
+
+ph_chenpey_fetal1 = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "fetal1")
+ph_chenpey_fetal2 = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "fetal2")
+ph_chenpey_fetal3 = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "fetal3")
+ph_chenpey_birth_inf = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "birth_inf")
+ph_chenpey_inf_child = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "inf_child")
+ph_chenpey_child = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "child")
+ph_chenpey_adolescence = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "adolescence")
+ph_chenpey_adult = stats_permutations_stages(permrun_s, pey_coords, sestan, "peycoords", "adult")
 
