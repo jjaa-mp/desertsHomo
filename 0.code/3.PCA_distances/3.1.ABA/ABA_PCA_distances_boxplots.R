@@ -4,6 +4,7 @@
 data("dataset_5_stages")
 resultsAkey<-read.csv("results_akey.csv")
 resultsAkeyPey<-read.csv("both_pey_akey_genes_pos.csv")
+resultsPeynotAkey<-read.csv("both_pey_akey_genes_pos.csv")
 #Selecting genes ID and structures present in dataset
 id <- unique(dataset_5_stages$ensembl_gene_id)
 st <- unique(dataset_5_stages$structure)
@@ -119,181 +120,71 @@ for(i in 1:5){
   akeyPeyABAdfTemp$Extra<-NULL
   akeyPeyABAwind[[i]]<-akeyPeyABAdfTemp
 }
+
+peyNotakeyABA = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
+for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
+  for (h in 1:length(names(ab[[i]]))){
+    peyNotakeyABA[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% resultsPeynotAkey$hgnc_symbol,] #in Akey
+    peyNotakeyABA[[i]][[h]] <-  peyNotakeyABA[[i]][[h]][!(is.na(peyNotakeyABA[[i]][[h]][[2]]) | peyNotakeyABA[[i]][[h]][[2]]==""), ]
+    # akeyABA[[i]][[h]][1] <- log2(akeyABA[[i]][[h]][1]+1)
+    #Cleaning
+  }
+}
+
+peyNotakeyABAwind<-list()
+peyNotakeyABAwind[["prenatal"]]<-as.data.frame(peyNotakeyABA[[1]])
+peyNotakeyABAwind[["infant"]]<-as.data.frame(peyNotakeyABA[[2]])
+peyNotakeyABAwind[["child"]]<-as.data.frame(peyNotakeyABA[[3]])
+peyNotakeyABAwind[["adolsecent"]]<-as.data.frame(peyNotakeyABA[[4]])
+peyNotakeyABAwind[["adult"]]<-as.data.frame(peyNotakeyABA[[5]])
+#For each window handling
+for(i in 1:5){
+  peyNotakeyABAdf<-peyNotakeyABAwind[[i]]
+  peyNotakeyABAdfTemp <- peyNotakeyABAdf %>% select(-contains("gene_name"))
+  peyNotakeyABAdfTemp<-as.data.frame(t(peyNotakeyABAdfTemp))
+  peyNotakeyABAdfTemp <- cbind(Regioncode = rownames(peyNotakeyABAdfTemp), peyNotakeyABAdfTemp)
+  rownames(peyNotakeyABAdfTemp) <- 1:nrow(peyNotakeyABAdfTemp)
+  peyNotakeyABAdfTemp<-peyNotakeyABAdfTemp%>%separate(Regioncode,c("Regioncode","Extra"),sep = "_")
+  peyNotakeyABAdfTemp$Extra<-NULL
+  peyNotakeyABAwind[[i]]<-peyNotakeyABAdfTemp
+}
+
 #PCA AkeyPey
 
-akeyPeyNorm=read.csv("logakeypey.csv")
-akeyPeyNorm<-akeyPeyNorm[,-1]
-akeyNorm=read.csv("logakey.csv")
-
-logakeypeyPCA<-akeyPeyNorm
-logakeypeyPCA$X<-NULL
-logakeypeyPCA$Braincode<-NULL
-#sestan
-#windowAkeyPeyPCA<-logakeypeyPCA %>% filter(Window==9)
 #ABA
-windowAkeyPeyPCA<-akeyPeyABAwind[[5]]
-windowAkeyPeyPCA$Window<-NULL
+#akeyPeyABAwind here you can calculate the PCA for each window for the selected sets akeyABAwind/akeyPeyABAwind/peyNotAkeyABAwind/wholeABAwind
+windowPCA<-akeyPeyABAwind[[5]] #example
+windowPCA$Window<-NULL
 
 brainTopStruct<-read.csv("brainRegionCorresp.csv",sep=":")
-windowAkeyPeyPCASt=merge(brainTopStruct,windowAkeyPeyPCA,by="Regioncode")
+windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
 
-pca_res <- prcomp(windowAkeyPeyPCASt[,-1][,-1][,-1][,-1], scale. = TRUE)
+pca_res <- prcomp(windowPCASt[,-1][,-1][,-1][,-1], scale. = TRUE)
 
 #With alternative sets
-# PCi<-data.frame(pca_res$x,BrainRegion=windowAkeyPeyPCASt$Regioncode,topStructure=windowAkeyPeyPCASt$topStructure)
-PCi<-data.frame(pca_res$x,BrainRegion=windowAkeyPeyPCASt$Regioncode,topStructure=windowAkeyPeyPCASt$brainAreas) #Neocortex
+# PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure)
+PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) #Neocortex
+#Generating the plot of the pca for each window: w1,w2,w3,w4,w5
 w5<-ggplot(PCi,aes(x=PC1,y=PC2,col=topStructure))+
   geom_point(size=3,alpha=1)+ #Size and alpha just for fun
   scale_color_manual(values = c('#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe'))+ #your colors here
   theme_classic()#+
   #   theme(legend.position = "none")
-# "embrionic","fetal1", "fetal2","fetal3","Birth/Infan","Infan/Child","Child","Adolescent","Adult"]
 
-#sestan
-# ggarrange(w2, w3,w4,w5,w6,w7,w8,w9, labels = c("Fetal1", "Fetal2","Fetal3","Birth/Infan","Infan/Child","Child","Adolescent","Adult"),
-#           common.legend = TRUE, legend = "right")
 
-#ABA
+#Joining plots
 ggarrange(w1, w2,w3,w4,w5, labels = c("prenatal", "infant","child","adolsecent","adult"),
           common.legend = TRUE, legend = "right")
 
-ggsave(file="ABA_PCA_WindowsAkeyPeyNCXnoLog.pdf", width = 11.69, height = 8.27)
-
-#PCA Akey
-logakeyPCA<-akeyNorm
-logakeyPCA$X<-NULL
-logakeyPCA$Braincode<-NULL
-
-#sestan
-# windowAkeyPeyPCA<-logakeyPCA %>% filter(Window==9)
-#ABA
-windowAkeyPCA<-akeyABAwind[[3]]
-windowAkeyPCA$Window<-NULL
-
-brainTopStruct<-read.csv("brainRegionCorresp.csv",sep=":")
-windowAkeyPCASt=merge(brainTopStruct,windowAkeyPCA,by="Regioncode")
-#Cleaning columns equal to 0
-windowAkeyPCAStTemp<-windowAkeyPCASt[,-1][,-1][,-1][,-1][,-(which(colSums(windowAkeyPCASt[,-1][,-1][,-1][,-1])==0))]
-pca_res <- prcomp(windowAkeyPCAStTemp, scale. = TRUE)
-
-# PCi<-data.frame(pca_res$x,BrainRegion=windowAkeyPCASt$Regioncode,topStructure=windowAkeyPCASt$topStructure) 
-PCi<-data.frame(pca_res$x,BrainRegion=windowAkeyPCASt$Regioncode,topStructure=windowAkeyPCASt$brainAreas) #with neocortex
-w3Akey<-ggplot(PCi,aes(x=PC1,y=PC2,col=topStructure))+
-  geom_point(size=3,alpha=1)+ #Size and alpha just for fun
-  scale_color_manual(values = c('#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe'))+ #your colors here
-  theme_classic()#+
-#   theme(legend.position = "none")
-# "embrionic","fetal1", "fetal2","fetal3","Birth/Infan","Infan/Child","Child","Adolescent","Adult"]
-
-#sestan
-# ggarrange(w2Akey, w3Akey,w4Akey,w5Akey,w6Akey,w7Akey,w8Akey,w9Akey, labels = c("Fetal1", "Fetal2","Fetal3","Birth/Infan","Infan/Child","Child","Adolescent","Adult"),
-#           common.legend = TRUE, legend = "right")
-
-#ABA
-ggarrange(w1Akey, w2Akey, w3Akey,w4Akey,w5Akey, labels = c("prenatal", "infant","child","adolsecent","adult"),
-          common.legend = TRUE, legend = "right")
-ggsave(file="ABA_PCA_WindowsAkeyNCXnoLog.pdf", width = 11.69, height = 8.27)
-
+ggsave(file="ABA_PCA_WindowsAkeyPeyNCXnoLog.pdf", width = 11.69, height = 8.27) #axample
 
 #Euclidean distance between brain regions
 library(hash)
-#AkeyPey
-structDist<-hash()
-for (structure in unique(PCi$topStructure)){
-  
-  dfStructure<-PCi %>% filter(topStructure==structure)
-  dfOtherStructures<-PCi %>% filter(topStructure!=structure)
-  meansStruct<-c()
-  sdStruct<-c()
-  for (row in 1:nrow(dfStructure)) {
-    xstruct<-dfStructure[row,]$PC1
-    ystruct<-dfOtherStructures[row,]$PC2
-    nrowsOthers<-nrow(dfOtherStructures)
-    listDist<-c()
-    for (rowOth in 1:nrowsOthers){
-      xOtherstruct<-dfOtherStructures[rowOth,]$PC1
-      yOtherstruct<-dfOtherStructures[rowOth,]$PC2
-      distance<-dist(matrix(c(xstruct,ystruct,xOtherstruct,yOtherstruct),nrow=2,ncol=2),diag=TRUE)
-      #print(c("Distance:",distance))
-      listDist<-append(listDist,distance[1])
-      nrowsOthers
-    }
-    meansStruct<-append(meansStruct,mean(listDist))
-    sdStruct<-append(sdStruct,sd(listDist))
-    print(paste("Distance ",structure,": mean->",mean(listDist),"; sd->",sd(listDist)))
-  }
-  structDist[[structure]]<-c(mean(meansStruct),mean(sdStruct))
-}
-
-#initialize dataframe
-#dfDistancesAkeyPey<-data.frame(brainRegion=character(),window=integer(),dist=numeric(),sd=numeric())
-structDistw<-as.data.frame(values(structDist))
-for (col in colnames(structDistw)){
-  #change the window number
-  dfDistancesAkeyPey<-dfDistancesAkeyPey %>% add_row(brainRegion=col,window=2,dist=structDistw[col][[1]][1],sd=structDistw[col][[1]][2])
-}
-dfDistancesAkeyPey
-write.csv(dfDistancesAkeyPey,"distances_PCAakeyPey.csv")
-dfDistancesAkeyPey
-dfDistancesAkeyPeyTemp<-dfDistancesAkeyPey
-dfDistancesAkeyPeyTemp$window<-as.character(dfDistancesAkeyPey$window)
-
-dfDistancesAkeyPeyTemp$window[dfDistancesAkeyPeyTemp$window=="2"]<-"2fetal1"
-dfDistancesAkeyPeyTemp$window[dfDistancesAkeyPeyTemp$window=="3"]<-"3fetal2"
-dfDistancesAkeyPeyTemp$window[dfDistancesAkeyPeyTemp$window=="4"]<-"4fetal3"
-dfDistancesAkeyPeyTemp$window[dfDistancesAkeyPeyTemp$window=="5"]<-"5Birth/Infan"
-dfDistancesAkeyPeyTemp$window[dfDistancesAkeyPeyTemp$window=="6"]<-"6Infan/Child"
-dfDistancesAkeyPeyTemp$window[dfDistancesAkeyPeyTemp$window=="7"]<-"7Child"
-dfDistancesAkeyPeyTemp$window[dfDistancesAkeyPeyTemp$window=="8"]<-"8Adolescent"
-dfDistancesAkeyPeyTemp$window[dfDistancesAkeyPeyTemp$window=="9"]<-"9Adult"
-#"Birth/Infan","Infan/Child","Child","Adolescent","Adult"
-
-
-#Akey
-structDist<-hash()
-for (structure in unique(PCi$topStructure)){
-  
-  dfStructure<-PCi %>% filter(topStructure==structure)
-  dfOtherStructures<-PCi %>% filter(topStructure!=structure)
-  meansStruct<-c()
-  sdStruct<-c()
-  for (row in 1:nrow(dfStructure)) {
-    xstruct<-dfStructure[row,]$PC1
-    ystruct<-dfOtherStructures[row,]$PC2
-    nrowsOthers<-nrow(dfOtherStructures)
-    listDist<-c()
-    for (rowOth in 1:nrowsOthers){
-      xOtherstruct<-dfOtherStructures[rowOth,]$PC1
-      yOtherstruct<-dfOtherStructures[rowOth,]$PC2
-      distance<-dist(matrix(c(xstruct,ystruct,xOtherstruct,yOtherstruct),nrow=2,ncol=2),diag=TRUE)
-      #print(c("Distance:",distance))
-      listDist<-append(listDist,distance[1])
-      nrowsOthers
-    }
-    meansStruct<-append(meansStruct,mean(listDist))
-    sdStruct<-append(sdStruct,sd(listDist))
-    print(paste("Distance ",structure,": mean->",mean(listDist),"; sd->",sd(listDist)))
-  }
-  structDist[[structure]]<-c(mean(meansStruct),mean(sdStruct))
-}
-
-#initialize dataframe
-#dfDistancesAkey<-data.frame(brainRegion=character(),window=integer(),dist=numeric(),sd=numeric())
-structDistw<-as.data.frame(values(structDist))
-for (col in colnames(structDistw)){
-  #change the window number
-  dfDistancesAkey<-dfDistancesAkey %>% add_row(brainRegion=col,window=9,dist=structDistw[col][[1]][1],sd=structDistw[col][[1]][2])
-}
-#write.csv(dfDistancesAkey,"distances_PCAakey.csv")
-
-#Tests distances
-#Akey or AkeyPey distances tests
 
 structDistWind<-list()
 for (i in 1:5){
   
-#CHANGE:logakeypeyPCA / logakeyPCA
-  # windowPCA<-logakeyPCA %>% filter(Window==i)
+#CHANGE:akeyABAwind/akeyPeyABAwind/peyNotAkeyABAwind/wholeABAwind
   
   windowPCA<-akeyPeyABAwind[[i]]
   
@@ -341,8 +232,7 @@ for (structure in unique(PCi$topStructure)){
 structDistWind[[i]]<-structDist
 }
 
-# Final var structDistWind
-rm(pairwiseWilcox)
+#Testing distances with willcox test
 
 #Initialize dataframe
 wilcoxTests<-data.frame(matrix(ncol=30,nrow = 6))
@@ -441,21 +331,25 @@ willcoxPvaluesAVG<-as.data.frame(t(colMeans(wilcoxTests,na.rm=TRUE)))
 # wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
 write.csv(wilcoxTests,"wilcoxABAAkeyPeyDist.csv")
 
-willCoxPvals<-as.data.frame(list("brainRegion","window","pvalAVG"))
-colnames(willCoxPvals)<-c("brainRegion","window","pvalAVG")
+willCoxPvals<-as.data.frame(list("brainRegion","window","pvalAVG","log2pvalAVG"))
+colnames(willCoxPvals)<-c("brainRegion","window","pvalAVG","log2pvalAVG")
 willCoxPvals$pvalAVG<-as.numeric(willCoxPvals$pvalAVG)
 willCoxPvals<-willCoxPvals[-1,]
 for (col in colnames(willcoxPvaluesAVG)){
   #change the window number
   willCoxPvals<-willCoxPvals %>% add_row(brainRegion=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],pvalAVG=willcoxPvaluesAVG[col][[1]])
 }
-willCoxPvals$pvalAVG<-log2(willCoxPvals$pvalAVG)
-ggplot(willCoxPvals, aes(x=window, y=pvalAVG, group=brainRegion)) +
-  geom_line(aes(color=brainRegion))+
-  geom_point(aes(color=brainRegion))
-ggsave(file="ABA_WillcoxPvalPlotDistances_AkeyPey.pdf", width = 11.69, height = 8.27)
+willCoxPvals$log2pvalAVG<-log2(willCoxPvals$pvalAVG)
+colnames(willCoxPvals)<-c("Structure","window","pvalAVG","log2pvalAVG")
+plotWill<-ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
+  geom_line(aes(color=Structure),alpha=0.5)+
+  geom_point(aes(color=Structure),alpha=0.5)+
+  geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)+
+  # scale_x_discrete(breaks = c(2,3,4,5,6,7,8,9),labels=as.character(c("fetal1","fetal2","fetal3","Birth/Infant","Infant/Child","Child","Adolescent","Adult"))) + 
+  scale_x_discrete(breaks = c(1,2,3,4,5),labels=as.character(c("Prenatal","Infant","Child","Adolescent","Adult"))) + 
+  theme(axis.text.x = element_text(angle = 75, vjust = 0.5))
 
-#Boxplots
+#Boxplots + log2
 library(ggplot2)
 library(reshape2)
 
@@ -482,13 +376,13 @@ valoresStructdf$L1<-NULL
 my_xlab <- paste(levels(valoresStructdf$Var1),"\n(N=",table(valoresStructdf$Var1),")",sep="")
 colnames(valoresStructdf) <- c("names", "value")
 # plot
-boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=names, y=value, fill=names)) +
-  geom_boxplot(varwidth = TRUE, alpha=0.2) +
+boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=distance, fill=Structures)) +
+  geom_boxplot(varwidth = TRUE, alpha=0.5) +
   theme(legend.position="none",axis.text.x = element_blank()) + xlab(correspStage[[i]])
 
 }
-boxplotsDist[[2]]
+
 ggarrange(boxplotsDist[[1]], boxplotsDist[[2]],boxplotsDist[[3]],
-          boxplotsDist[[4]],boxplotsDist[[5]],
+          boxplotsDist[[4]],boxplotsDist[[5]],plotWill,
           common.legend = TRUE, legend = "right")
 ggsave(file="ABA_Boxplots_DistancesAkeyPey.pdf", width = 11.69, height = 8.27)
