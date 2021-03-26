@@ -590,6 +590,126 @@ grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
 plakpey_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
 
 ##ggsave(file="~/desertsHomo/2.plots/Sestan_AkeyPey_log2_median/Sestan_GenesAkeyPey_log2_median.pdf", plakpey_sestan, width = 11.69, height = 8.27, units = "in")
+
+```
+
+# PeyNotAkey in Sestan data
+```{r}
+mRNAseqData=read.table("~/tmp_psychENCODE/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+modsb1= mRNAseqData %>% 
+  separate(Geneid,c("EnsemblID","Genename"),extra="merge")
+modsb1$EnsemblID<-NULL
+#Filtering for Akey alone
+peyNotAkeySestan <- modsb1 %>% filter(modsb1$Genename %in% both$hgnc_symbol)
+peyNotAkeySestan=t(peyNotAkeySestan)
+
+
+
+#As dataframe
+peyNotAkeySestan=as.data.frame(peyNotAkeySestan)
+
+colnames(peyNotAkeySestan) <- as.matrix(unlist(peyNotAkeySestan[1,]))
+peyNotAkeySestan <- peyNotAkeySestan[-1, ]
+
+peyNotAkeySestan <- cbind(info = rownames(peyNotAkeySestan), peyNotAkeySestan)
+rownames(peyNotAkeySestan) <- 1:nrow(peyNotAkeySestan)
+
+#duplicated columns - issue in raw data. Here: 
+colnames(peyNotAkeySestan)[duplicated(colnames(peyNotAkeySestan))] #0
+#peyNotAkeySestan <- peyNotAkeySestan[, !duplicated(colnames(peyNotAkeySestan))]
+
+peyNotAkeySestan=peyNotAkeySestan %>% 
+  separate(info, c("Braincode","Regioncode"))
+
+# #Normality
+# normcheck <- peyNotAkeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+# normcheck$RPKM <- as.character(normcheck$RPKM)
+# normcheck$RPKM <- as.numeric(normcheck$RPKM)
+# 
+# norm_1=merge(modMetadatamRNAseq,normcheck,by=c("Braincode", "Regioncode"))
+# 
+# norm_1 <- as_tibble(norm_1)
+# 
+# ggqqplot(norm_1, "RPKM", facet.by = "Window")
+# 
+# #Transformation
+logpeyNotAkeysestan1 <- peyNotAkeySestan
+# 
+cols.num <- colnames(logpeyNotAkeysestan1[3:ncol(logpeyNotAkeysestan1)])
+# 
+logpeyNotAkeysestan1[,cols.num] <- lapply(logpeyNotAkeysestan1[cols.num],as.character)
+logpeyNotAkeysestan1[,cols.num] <- lapply(logpeyNotAkeysestan1[cols.num],as.numeric)
+# 
+logpeyNotAkeysestan1[3:ncol(logpeyNotAkeysestan1)] <- log2(logpeyNotAkeysestan1[3:ncol(logpeyNotAkeysestan1)]+1)
+#ta <- logpeyNotAkeysestan1 %>% filter(logpeyNotAkeysestan1[3:ncol(logpeyNotAkeysestan1)]>1)
+
+# 
+# #Normality after transformation
+# lognormcheck <- logpeyNotAkeysestan1 %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+# lognormcheck$RPKM <- as.character(lognormcheck$RPKM)
+# lognormcheck$RPKM <- as.numeric(lognormcheck$RPKM)
+# lognorm_1=merge(modMetadatamRNAseq,lognormcheck,by=c("Braincode", "Regioncode"))
+# # 
+# lognorm_1 <- as_tibble(lognorm_1)
+# # 
+# ggqqplot(lognorm_1, "RPKM", facet.by = "Window")
+# 
+
+#Brining the metadata of the database
+library(readxl)
+metadatamRNAseq=read_xlsx("~/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
+
+
+modMetadatamRNAseq=na.omit(metadatamRNAseq)
+modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
+modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
+
+#With log
+finalpeyNotAkeySestan=merge(modMetadatamRNAseq,logpeyNotAkeysestan1,by=c("Braincode", "Regioncode"))
+# #write.csv(finalpeyNotAkeySestan,"logpeyNotAkey.csv")
+#Without log:
+#finalpeyNotAkeySestan=merge(modMetadatamRNAseq,peyNotAkeySestan,by=c("Braincode", "Regioncode"))
+
+finalpeyNotAkeySestan$Braincode <- NULL
+finalpeyNotAkeySestan$Label<- paste(finalpeyNotAkeySestan$Regioncode, finalpeyNotAkeySestan$Window, sep="_")
+finalpeyNotAkeySestan$Regioncode <- NULL
+finalpeyNotAkeySestan$Window <- NULL
+
+finalpeyNotAkeySestan <- as_tibble(finalpeyNotAkeySestan)
+
+finalpeyNotAkeySestan_w_mean <- finalpeyNotAkeySestan %>%
+  group_by(Label) %>%
+  dplyr::summarise_all(median, na.rm=TRUE)
+
+
+#For plotting
+dfpeyNotAkeySestan <- data.frame(Structure=finalpeyNotAkeySestan_w_mean$Label, Means=rowMeans(finalpeyNotAkeySestan_w_mean[,-1]))
+
+dfpeyNotAkeySestan <- dfpeyNotAkeySestan %>% 
+  separate(Structure, c("Structure","Window"))
+preli2 <- pivot_wider(dfpeyNotAkeySestan, names_from = Window, values_from = Means)
+preli2[,10] <- NULL
+preli2 <- preli2[complete.cases(preli2), ]
+colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+#PLOT
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+
+#write.csv(preli2, file="~/desertsHomo/1.data/median_tables/median_peyNotAkey_Sestan.csv", row.names = FALSE)
+
+a<- ggparcoord(preli2,
+               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
+b <- ggparcoord(preli2,
+                columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Striatum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#FF0000", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
+c<-ggparcoord(preli2,
+              columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Cerebellum")+scale_color_manual(values = c( "#ABABAB", "#ABABAB", "#0000FF", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB"))+theme(plot.title = element_text(size=10), legend.position = "none")+xlab("")+ylab("expression")
+a1<-arrangeGrob(a, left=textGrob("A"))
+b1<-arrangeGrob(b, left =textGrob("B"))
+c1<-arrangeGrob(c, left=textGrob("C"))
+grid.arrange(a1, arrangeGrob(b1, c1), ncol = 2)
+
+plpeynotAk_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2), c(1, 1, 3)))
+
+##ggsave(file="~/desertsHomo/2.plots/Sestan_peyNotAkey_log2_median/Sestan_GenespeyNotAkey_log2_median.pdf", plpeynotAk_sestan, width = 11.69, height = 8.27, units = "in")
 ```
 
 #Trajectory plots1 - ABA
