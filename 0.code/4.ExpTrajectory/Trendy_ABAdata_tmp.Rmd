@@ -93,24 +93,11 @@ for (i in 1:length(ab)){
 }
 
 saveRDS(ab1, file = "~/desertsHomo/1.data/input_data/ABAdata_Trendy.rds")
-<<<<<<< HEAD
-
-=======
 
 
 ab1 <- readRDS(file = "~/desertsHomo/1.data/input_data/ABAdata_Trendy.rds")
 ```
 
-
-#CEREBELLUM
-```{r}
-ab_t <- as.data.frame(cbind(ab1[[1]][[16]], ab1[[2]][[16]], ab1[[3]][[16]], ab1[[4]][[16]], ab1[[5]][[16]]))
-colnames(ab_t) <- c("CBC_1", "gene_name","CBC_2", "gene_name","CBC_3", "gene_name","CBC_4","gene_name", "CBC_5","gene_name")
-rownames(ab_t) <- NULL
->>>>>>> 88154b4990adb3916cd5252914f51e05f3a9368f
-
-ab1 <- readRDS(file = "~/desertsHomo/1.data/input_data/ABAdata_Trendy.rds")
-```
 
 
 #CEREBELLUM
@@ -186,15 +173,8 @@ par(mfrow=c(3,2))
 plot2 <- plotFeature(aabb,tVectIn = time.vector,featureNames = c("ST7", "ROBO2", "CADPS2", "GPR22", "BCAP29", "KCND2", "SLC16A1"), trendyOutData = res_alt, customLabels.x = c("Prenatal","Child","Adol."), xlab="")
 dev.off()
 ```
-<<<<<<< HEAD
-=======
 
-#STRIATUM
-```{r}
-ab_t <- as.data.frame(cbind(ab1[[1]][[16]], ab1[[2]][[16]], ab1[[3]][[16]], ab1[[4]][[16]], ab1[[5]][[16]]))
-colnames(ab_t) <- c("CBC_1", "gene_name","CBC_2", "gene_name","CBC_3", "gene_name","CBC_4","gene_name", "CBC_5","gene_name")
-rownames(ab_t) <- NULL
->>>>>>> 88154b4990adb3916cd5252914f51e05f3a9368f
+
 
 #STRIATUM
 ```{r}
@@ -203,7 +183,6 @@ ab_1 <- ab_1[!(is.na(ab_1$gene_name) | ab_1$gene_name==""), ]
 rownames(ab_1) <- NULL
 colnames(ab_1)[1] <- "STR_1"
 
-<<<<<<< HEAD
 ab_2 <- as.data.frame(cbind(ab1[[2]][[13]]))
 ab_2 <- ab_2[!(is.na(ab_2$gene_name) | ab_2$gene_name==""), ]
 rownames(ab_2) <- NULL
@@ -218,54 +197,13 @@ ab_4 <- as.data.frame(cbind(ab1[[4]][[13]]))
 ab_4 <- ab_4[!(is.na(ab_4$gene_name) | ab_4$gene_name==""), ]
 rownames(ab_4) <- NULL
 colnames(ab_4)[1] <- "STR_4"
-=======
-ab_1 <- as.data.frame(cbind(ab1[[1]][[16]]))
-ab_1 <- ab_1[!(is.na(ab_1$gene_name) | ab_1$gene_name==""), ]
-rownames(ab_1) <- NULL
-colnames(ab_1)[1] <- "CBC_1"
-
-ab_2 <- as.data.frame(cbind(ab1[[2]][[16]]))
-ab_2 <- ab_2[!(is.na(ab_2$gene_name) | ab_2$gene_name==""), ]
-rownames(ab_2) <- NULL
-colnames(ab_2)[1] <- "CBC_2"
-
-ab_3 <- as.data.frame(cbind(ab1[[3]][[16]]))
-ab_3 <- ab_3[!(is.na(ab_3$gene_name) | ab_3$gene_name==""), ]
-rownames(ab_3) <- NULL
-colnames(ab_3)[1] <- "CBC_3"
-
-ab_4 <- as.data.frame(cbind(ab1[[4]][[16]]))
-ab_4 <- ab_4[!(is.na(ab_4$gene_name) | ab_4$gene_name==""), ]
-rownames(ab_4) <- NULL
-colnames(ab_4)[1] <- "CBC_4"
-
-
-ab_5 <- as.data.frame(cbind(ab1[[5]][[16]]))
-ab_5 <- ab_5[!(is.na(ab_5$gene_name) | ab_5$gene_name==""), ]
-rownames(ab_5) <- NULL
-colnames(ab_5)[1] <- "CBC_5"
-
-library(dplyr)
-aabb  <- right_join(ab_1, ab_2, by = "gene_name")
-aabb  <- right_join(aabb, ab_3, by = "gene_name")
-aabb  <- right_join(aabb, ab_4, by = "gene_name")
-aabb  <- right_join(aabb, ab_5, by = "gene_name")
-aabb <- aabb[!(is.na(aabb$gene_name) | aabb$gene_name==""), ]
-rownames(aabb) <- aabb$gene_name
-aabb$gene_name<- NULL
-
-time.vector <- c(rep(1:5))
->>>>>>> 88154b4990adb3916cd5252914f51e05f3a9368f
-
-colnames(aabb) <- time.vector 
-set.seed(10)
-res_alt <- trendy(Data = aabb, tVectIn = time.vector, maxK = 2, minNumInSeg = 1, meanCut = 2)
 
 ab_5 <- as.data.frame(cbind(ab1[[5]][[13]]))
 ab_5 <- ab_5[!(is.na(ab_5$gene_name) | ab_5$gene_name==""), ]
 rownames(ab_5) <- NULL
 colnames(ab_5)[1] <- "STR_5"
 
+
 library(dplyr)
 aabb  <- right_join(ab_1, ab_2, by = "gene_name")
 aabb  <- right_join(aabb, ab_3, by = "gene_name")
@@ -282,10 +220,7 @@ set.seed(10)
 res_alt <- trendy(Data = aabb, tVectIn = time.vector, maxK = 2, minNumInSeg = 1, meanCut = 2)
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 88154b4990adb3916cd5252914f51e05f3a9368f
 res_alt <- results(res_alt)
 res_alt.top <- topTrendy(res_alt)
 
@@ -294,15 +229,9 @@ rownames(res_alt.top$Trends)[rownames(res_alt.top$Trends) %in% both$hgnc_symbol]
 
 res_alt.trend <- trendHeatmap(res_alt.top)
 
-<<<<<<< HEAD
-#rstr_aba <- as.data.frame(res_alt.top$AdjustedR2)
-#names(rstr_aba) <- "Striatum - R2"
-#write.csv(rstr_aba, file="~/desertsHomo/1.data/trendy_adjR2/STR_GenesDesertPosSel_adjR2_ABA.csv", row.names = TRUE, quote=T)
-=======
 rcbc_aba <- as.data.frame(res_alt.top$AdjustedR2)
 names(rcbc_aba) <- "Cerebellar cortex - R2"
 write.csv(rcbc_aba, file="~/desertsHomo/1.data/trendy_adjR2/CBC_GenesDesertPosSel_adjR2_ABA.csv", row.names = TRUE, quote=T)
->>>>>>> 88154b4990adb3916cd5252914f51e05f3a9368f
 
 ##Heatmap homemade
 library(pheatmap)
