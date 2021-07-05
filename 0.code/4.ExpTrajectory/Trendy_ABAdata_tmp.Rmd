@@ -21,7 +21,7 @@ listMarts(host = "https://www.ensembl.org", port = 443)
 
 ensembl <- useMart(biomart = 'ENSEMBL_MART_ENSEMBL', 
                         dataset = 'hsapiens_gene_ensembl',
-                        host = 'https://grch37.ensembl.org', port=443,)
+                        host = 'https://grch37.ensembl.org', port=443)
 
 resP=getBM(attributes = c("hgnc_symbol","gene_biotype"),
               filters = "biotype",
@@ -92,6 +92,8 @@ for (i in 1:length(ab)){
   }
 }
 
+saveRDS(ab1, file = "~/desertsHomo/1.data/input_data/ABAdata_Trendy.rds")
+ab1 <- readRDS(file = "~/desertsHomo/1.data/input_data/ABAdata_Trendy.rds")
 
 #CEREBELLUM
 ab_t <- as.data.frame(cbind(ab1[[1]][[16]], ab1[[2]][[16]], ab1[[3]][[16]], ab1[[4]][[16]], ab1[[5]][[16]]))
