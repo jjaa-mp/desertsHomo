@@ -23,10 +23,6 @@ ensembl <- useMart(biomart = 'ENSEMBL_MART_ENSEMBL',
                         dataset = 'hsapiens_gene_ensembl',
                         host = 'https://grch37.ensembl.org', port=443,)
 
-mart2 <- useEnsembl(biomart = "ensembl", 
-                   dataset = "hsapiens_gene_ensembl", host = 'https://grch37.ensembl.org', 
-                   mirror = "useast")
-
 resP=getBM(attributes = c("hgnc_symbol","gene_biotype"),
               filters = "biotype",
               values = list(biotype="protein_coding"), mart = ensembl)
@@ -95,15 +91,6 @@ for (i in 1:length(ab)){
     ab1[[i]][[h]] <-ab1[[i]][[h]][order(ab1[[i]][[h]][[1]], decreasing = TRUE), ]
   }
 }
-##alternative to mart=ensebml
-for (i in 1:length(ab)){
-  for (h in 1:length(names(ab[[i]]))){
-    G_list <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id", "hgnc_symbol"),values=rownames(ab1[[i]][[h]]),mart=mart2)
-    ab1[[i]][[h]]['gene_name'] <-  G_list$hgnc_symbol[match(rownames(ab1[[i]][[h]]), G_list$ensembl_gene_id)]
-    ab1[[i]][[h]] <-ab1[[i]][[h]][order(ab1[[i]][[h]][[1]], decreasing = TRUE), ]
-  }
-}
-
 
 
 #CEREBELLUM
