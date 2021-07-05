@@ -229,23 +229,22 @@ rownames(res_alt.top$Trends)[rownames(res_alt.top$Trends) %in% both$hgnc_symbol]
 
 res_alt.trend <- trendHeatmap(res_alt.top)
 
-rcbc_aba <- as.data.frame(res_alt.top$AdjustedR2)
-names(rcbc_aba) <- "Cerebellar cortex - R2"
-write.csv(rcbc_aba, file="~/desertsHomo/1.data/trendy_adjR2/CBC_GenesDesertPosSel_adjR2_ABA.csv", row.names = TRUE, quote=T)
+#rstr_aba <- as.data.frame(res_alt.top$AdjustedR2)
+#names(str_aba) <- "Striatum - R2"
+#write.csv(rstr_aba, file="~/desertsHomo/1.data/trendy_adjR2/STR_GenesDesertPosSel_adjR2_ABA.csv", row.names = TRUE, quote=T)
 
 ##Heatmap homemade
 library(pheatmap)
-class(res_alt.top$Trends)
 #pheatmap(res_alt.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1), filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_UpDown_Deserts_ABA.pdf")
 
 sb_inDesPey <- res_alt.top$Trends[rownames(res_alt.top$Trends)[rownames(res_alt.top$Trends) %in% both$hgnc_symbol],]
 
-pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_UpDown_DesertsPosSel_ABA.pdf")
+pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/STR_UpDown_DesertsPosSel_ABA.pdf")
 
 
 
-pdf("~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_GenesDesertsPosSel_ABA.pdf")
+pdf("~/desertsHomo/2.plots/trendy_segmentedRegression/STR_GenesDesertsPosSel_ABA.pdf")
 par(mfrow=c(3,2))
-plot2 <- plotFeature(aabb,tVectIn = time.vector,featureNames = c("ST7", "ROBO2", "CADPS2", "GPR22", "BCAP29", "KCND2", "SLC16A1"), trendyOutData = res_alt, customLabels.x = c("Prenatal","Child","Adol."), xlab="")
+plot2 <- plotFeature(aabb,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "BCAP29"), trendyOutData = res_alt, customLabels.x = c("Prenatal","Child","Adol."), xlab="")
 dev.off()
 ```
