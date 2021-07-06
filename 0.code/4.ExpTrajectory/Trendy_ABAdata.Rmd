@@ -17,11 +17,11 @@ library(biomaRt)
 
 
 ```{r}
-listMarts(host = "https://www.ensembl.org", port = 443)
+#listMarts(host = "https://www.ensembl.org", port = 443)
 
 ensembl <- useMart(biomart = 'ENSEMBL_MART_ENSEMBL', 
                         dataset = 'hsapiens_gene_ensembl',
-                        host = 'https://grch37.ensembl.org', port=443)
+                        host = 'https://grch37.ensembl.org')
 
 resP=getBM(attributes = c("hgnc_symbol","gene_biotype"),
               filters = "biotype",
