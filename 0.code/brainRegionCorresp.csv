@@ -1,18 +1,18 @@
-regioncode:FullReg
-A1C:Primary Auditory Cortex
-AMY:Amygdala
-CBC:Cerebellar Cortex
-DFC:Dorsolateral Prefrontal Cortex
-HIP:Hippocampus
-IPC:Posterior Inferior Parietal Cortex
-ITC:Inferior Temporal Cortex
-M1C:Primary Motor Cortex
-MD:Mediodorsal Nucleus of the Thalamus
-MFC:Medial Prefrontal Cortex
-OFC:Orbital Prefrontal Cortex
-PFC:Prefrontal Cortex
-S1C:Primary Somatosensory Cortex
-STC:Superior Temporal Cortex
-STR:Striatum
-V1C:Primary Visual Cortex
-VFC:Ventrolateral Prefrontal Cortex
+Regioncode:FullReg:subSstructures:brainAreas
+A1C:Primary Auditory Cortex:Temporal_lobe:Neocortex
+AMY:Amygdala:Amygdala:Amygdala
+CBC:Cerebellar Cortex:Cerebellum:Cerebellum
+DFC:Dorsolateral Prefrontal Cortex:Frontal_lobe:Neocortex
+HIP:Hippocampus:Hippocampus:Hippocampus
+IPC:Posterior Inferior Parietal Cortex:Parietal_lobe:Neocortex
+ITC:Inferior Temporal Cortex:Temporal_lobe:Neocortex
+M1C:Primary Motor Cortex:Motor_cortexFL:Neocortex
+MD:Mediodorsal Nucleus of the Thalamus:Mediodorsal Nucleus of the Thalamus:Mediodorsal Nucleus of the Thalamus
+MFC:Medial Prefrontal Cortex:Frontal_lobe:Neocortex
+OFC:Orbital Prefrontal Cortex:Frontal_lobe:Neocortex
+PFC:Prefrontal Cortex:Frontal_lobe:Neocortex
+S1C:Primary Somatosensory Cortex:Parietal_lobe:Neocortex
+STC:Superior Temporal Cortex:Temporal_lobe:Neocortex
+STR:Striatum:Striatum:Striatum
+V1C:Primary Visual Cortex:Occipital_lobe:Neocortex
+VFC:Ventrolateral Prefrontal Cortex:Frontal_lobe:Neocortex

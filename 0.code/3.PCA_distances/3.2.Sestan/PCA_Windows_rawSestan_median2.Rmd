@@ -3,6 +3,7 @@
 load("~/finalraw2_inputPC.RData")
 rawmedian2 <- finalraw2 #Input from jm_Allen or load("finalraw2_inputPC.RData")
 
+getwd()
 rawmedian2[1] <- NULL
 
 structDistWind<-list()
@@ -13,7 +14,7 @@ for (i in 2:9){
 
   windowPCA$Window<-NULL
   
-  brainTopStruct<-read.csv("~/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
+  brainTopStruct<-read.csv("/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
   colnames(brainTopStruct) <- c("Regioncode","FullReg")
 
   windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
@@ -116,8 +117,8 @@ for (i in 2:9){
   }
   pairwiseWilcox[[correspStage[[i]]]]<-as.data.frame(pairwise.wilcox.test(valuesDist,structs, p.adj = "bonf")$p.value)
 }
-#save(pairwiseWilcox, "pairwiseWilcox_filteredRawSestan.RData")
-#write.xlsx(pairwiseWilcox,"pairwiseWilcoxFilteredRawSestan.xlsx",col.names=TRUE,row.names=TRUE)
+save(pairwiseWilcox, "pairwiseWilcox_filteredRawSestan.RData")
+write.xlsx(pairwiseWilcox,"~/pairwiseWilcoxFilteredRawSestan.xlsx",col.names=TRUE,row.names=TRUE)
 
 #load("~/tmp_wilcoxtests/pairwiseWilcox_filteredRawSestan.RData")
 
@@ -207,7 +208,7 @@ willCoxPvals$window = factor(willCoxPvals$window,
 #save(willCoxPvals, file="ggplot_wilcox_filteredRawSestan")
 #load("ggplot_wilcox_filteredRawSestan")
 
-#write.csv(willCoxPvals, file="~/desertsHomo/1.data/distances_pvalues/wilcox_filteredRawSestan.csv")
+write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_PsychEncode_distances/wilcox_filteredRawSestan.csv")
 
 ##PREPARING SUPPL FIGURE
 #load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
@@ -215,6 +216,7 @@ subfigx <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
 
+subfigx
 #load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
 ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
           boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
@@ -227,13 +229,13 @@ supplfig_x <- ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
           common.legend = TRUE, legend = "right")
 
 #ggsave(supplfig_x, file="~/desertsHomo/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_PsychEncode_distances/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 ```
 
 #AKEY
 ```{r}
 akeySestan <- finalakeySestan1 #Input from jm_Allen
-
-akeySestan[1] <- NULL
 
 structDistWind<-list()
 
@@ -244,13 +246,14 @@ for (i in 2:9){
 
   windowPCA$Window<-NULL
   
-  brainTopStruct<-read.csv("~/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
-  colnames(brainTopStruct) <- c("Regioncode","FullReg")
-
+  # brainTopStruct<-read.csv("desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
+  brainTopStruct<-brainTopStruct[c("Regioncode","FullReg")]
   windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
   
   pca_res <- prcomp(windowPCASt[,-1][,-1], scale. = TRUE)
+  ev <- pca_res$sdev^2
   
+  numPCA<-length(ev[ev>=1]) # Number of selected PCA by Kaiser’s rule
   # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure) 
   PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$FullReg)
   PCi$topStructure <- str_replace(PCi$topStructure, ("Primary Auditory Cortex|Inferior Temporal Cortex|Orbital Prefrontal Cortex|Superior Temporal Cortex|Primary Visual Cortex|Dorsolateral Prefrontal Cortex|Posterior Inferior Parietal Cortex|Primary Motor Cortex|Medial Prefrontal Cortex|Primary Somatosensory Cortex|Ventrolateral Prefrontal Cortex"), "Neocortex")
@@ -263,14 +266,18 @@ for (i in 2:9){
     distancesStruct<-c()
     sdStruct<-c()
     for (row in 1:nrow(dfStructure)) {
-      xstruct<-dfStructure[row,]$PC1
-      ystruct<-dfOtherStructures[row,]$PC2
+      # xstruct<-dfStructure[row,]$PC1
+      # ystruct<-dfOtherStructures[row,]$PC2
+      
+      pcasStruct<-dfStructure[row,][,1:numPCA]
       nrowsOthers<-nrow(dfOtherStructures)
       listDist<-c()
       for (rowOth in 1:nrowsOthers){
-        xOtherstruct<-dfOtherStructures[rowOth,]$PC1
-        yOtherstruct<-dfOtherStructures[rowOth,]$PC2
-        distance<-dist(matrix(c(xstruct,ystruct,xOtherstruct,yOtherstruct),nrow=2,ncol=2),diag=TRUE)
+        # xOtherstruct<-dfOtherStructures[rowOth,]$PC1
+        # yOtherstruct<-dfOtherStructures[rowOth,]$PC2
+        pcasOtherStruct<-dfOtherStructures[rowOth,][,1:numPCA]
+        distance<-dist(matrix(c(as.vector(pcasStruct),as.vector(pcasOtherStruct)),nrow=2,ncol=numPCA),diag=TRUE)
+        # distance<-dist(matrix(c(xstruct,ystruct,xOtherstruct,yOtherstruct),nrow=2,ncol=2),diag=TRUE)
         #print(c("Distance:",distance))
         listDist<-append(listDist,distance[1])
         nrowsOthers
@@ -320,7 +327,7 @@ for (i in 2:9){
 #BOXPLOTS:
 #load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
 
-boxplotsDist[[2]]
+
 ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
           boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
           boxplotsDist[[8]],boxplotsDist[[9]],
@@ -345,7 +352,10 @@ for (i in 2:9){
     structs<-append(structs,rep(str,length(values(structDist[str]))))
     valuesDist<-append(valuesDist,values(structDist[str]))
   }
+  correspStage[[i]]
+  correspStage
   pairwiseWilcox[[correspStage[[i]]]]<-as.data.frame(pairwise.wilcox.test(valuesDist,structs, p.adj = "bonf")$p.value)
+  pairwise.wilcox.test(valuesDist,structs, p.adj = "bonf")$p.value
 }
 #save(pairwiseWilcox, "pairwiseWilcox_filteredRawSestan.RData")
 #write.xlsx(pairwiseWilcox,"pairwiseWilcoxFilteredRawSestan.xlsx",col.names=TRUE,row.names=TRUE)
@@ -442,12 +452,34 @@ pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) 
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
 #write.csv(willCoxPvals, file="~/desertsHomo/1.data/distances_pvalues/wilcox_akeySestan.csv")
+
+write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_PsychEncode_distances/wilcox_peynotAkeySestan.csv")
+
+##PREPARING SUPPL FIGURE
+#load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
+subfigx <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
+  geom_line(aes(color=Structure))+
+  geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
+#load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
+ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
+          boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
+          boxplotsDist[[8]],boxplotsDist[[9]],
+          common.legend = TRUE, legend = "right")
+
+supplfig_x <- ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
+          boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
+          boxplotsDist[[8]],boxplotsDist[[9]], subfigx,
+          common.legend = TRUE, legend = "right")
+supplfig_x
+#ggsave(supplfig_x, file="~/desertsHomo/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_PsychEncode_distances/filtered_PeyNotAkey_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 ```
 
 #AKEPEY
 ```{r}
 akeypeySestan <- finalakeypeySestan #Input from jm_Allen or load("finalraw2_inputPC.RData")
-
+#setwd("~/Documents/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code")
 akeypeySestan[1] <- NULL
 
 structDistWind<-list()
@@ -457,7 +489,7 @@ for (i in 2:9){
 
   windowPCA$Window<-NULL
   
-  brainTopStruct<-read.csv("~/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
+  # brainTopStruct<-read.csv("~/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
   colnames(brainTopStruct) <- c("Regioncode","FullReg")
 
   windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
@@ -655,7 +687,7 @@ ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
 pvalAKEYPEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
-#write.csv(willCoxPvals, file="~/desertsHomo/1.data/distances_pvalues/wilcox_akeypeySestan.csv")
+
 ```
 
 #Table p-values

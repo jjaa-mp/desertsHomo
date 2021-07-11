@@ -1,10 +1,70 @@
 #Preparing ABAdata for PCA and distances analysis
+library(biomaRt)
+library(ABAData)
+library(ABAEnrichment)
+library(data.table)
+library(ggplot2)
+library(dplyr)
+library(GGally)
+library(viridis)
+library(ggpubr)
+library(grid)
+library(gridExtra)
+library(lattice)
+library(xlsx)
+library(tidyr)
+library(tidyverse)
+library(DescTools)
+library(reshape2)
+library(dplyr)
+library(Matrix)
+library(pheatmap)
+library(plyr)
+library(rstatix)
+library(matrixStats)
 
+#Genes within Desert region coordinates
+##Using hg19 genome
+ensembl <- useMart(biomart = 'ENSEMBL_MART_ENSEMBL', 
+                   dataset = 'hsapiens_gene_ensembl',
+                   host = 'https://grch37.ensembl.org')
+#Total number of protein coding genes in Ensembl
+resP=getBM(attributes = c("hgnc_symbol","gene_biotype"),
+           filters = "biotype",
+           values = list(biotype="protein_coding"), mart = ensembl)
+length(resP$hgnc_symbol[!(is.na(resP$hgnc_symbol) | resP$hgnc_symbol=="")])
+##Akey Deserts coordinates (Ensembl 1-based):
+filterlist <- c("1:105400000:120600000", "3:74100000:89300000", "7:106200000:123200000","8:49400000:66500000")
+##Select only protein-coding from Akey
+results=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+              filters = c("chromosomal_region","biotype"),
+              values = list(chromosomal_region=filterlist,biotype="protein_coding"), mart = ensembl)
+results <- results[!duplicated(results$hgnc_symbol),]
+#255
+length(results$hgnc_symbol[!(is.na(results$hgnc_symbol) | results$hgnc_symbol=="")])
+results <-  results[!(is.na(results$hgnc_symbol) | results$hgnc_symbol==""), ] #Cleaning
+##Pey coordinates (Ensembl 1-based):
+pey_coords <- read.delim("desertsHomo/1.data/input_data/2020_pey_coords.bed", header=FALSE) #File with start 0-based
+###Preparing bed file for input in bioMart
+pey_coords$V1 <- gsub("chr", "\\1", pey_coords$V1)
+pey_coords[2] <- pey_coords[2]+1 #Moving to 1-based for Ensembl
+df <- paste(pey_coords$V1, pey_coords$V2, pey_coords$V3, sep = ":")
+results_pey=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+                  filters = c("chromosomal_region","biotype"),
+                  values = list(chromosomal_region=df,biotype="protein_coding"), mart = ensembl)
+results_pey <- results_pey[!duplicated(results_pey$hgnc_symbol),]
+###Genes within Akey and Pey - RESULT
+both <- results_pey[results_pey$hgnc_symbol %in% results$hgnc_symbol,]
+both <-  both[!(is.na(both$hgnc_symbol) | both$hgnc_symbol==""), ] #Cleaning
+
+
+PeyNotAkey<- results_pey[!results_pey$hgnc_symbol %in% results$hgnc_symbol,]
+PeyNotAkey <-  PeyNotAkey[!(is.na(PeyNotAkey$hgnc_symbol) | PeyNotAkey$hgnc_symbol==""), ] #Cleaning
 ##Loading dataset
 data("dataset_5_stages")
-resultsAkey<-read.csv("results_akey.csv")
-resultsAkeyPey<-read.csv("both_pey_akey_genes_pos.csv")
-resultsPeynotAkey<-read.csv("both_pey_akey_genes_pos.csv")
+resultsAkey<-results # read.csv("results_akey.csv")
+resultsAkeyPey<-both # read.csv("both_pey_akey_genes_pos.csv")
+resultsPeynotAkey<-PeyNotAkey # read.csv("both_pey_akey_genes_pos.csv")
 #Selecting genes ID and structures present in dataset
 id <- unique(dataset_5_stages$ensembl_gene_id)
 st <- unique(dataset_5_stages$structure)
@@ -156,14 +216,35 @@ for(i in 1:5){
 windowPCA<-akeyPeyABAwind[[5]] #example
 windowPCA$Window<-NULL
 
-brainTopStruct<-read.csv("brainRegionCorresp.csv",sep=":")
+brainTopStruct<-read.csv("desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
 windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
 
 pca_res <- prcomp(windowPCASt[,-1][,-1][,-1][,-1], scale. = TRUE)
 
+
+pca_res.ve <- ev/sum(ev)
+
+par(mfrow = c(1,2), mar = c(4,5,3,1))
+plot(pca_res.ve,
+     xlab = "Principal Component",
+     ylab = "Proportion of Variance Explained", 
+     ylim = c(0,1), 
+     type = 'b',
+     main = 'Scree plot')
+
+plot(cumsum(pca_res.ve), 
+     xlab = "Principal Component", 
+     ylab = "Cumulative Proportion of\nVariance Explained", 
+     ylim = c(0,1),
+     type = 'b',
+     main = 'Scree plot')
+
+cumsum(ev/sum(ev))
 #With alternative sets
+
 # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure)
 PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) #Neocortex
+PCi
 #Generating the plot of the pca for each window: w1,w2,w3,w4,w5
 w5<-ggplot(PCi,aes(x=PC1,y=PC2,col=topStructure))+
   geom_point(size=3,alpha=1)+ #Size and alpha just for fun
@@ -171,12 +252,12 @@ w5<-ggplot(PCi,aes(x=PC1,y=PC2,col=topStructure))+
   theme_classic()#+
   #   theme(legend.position = "none")
 
-
+w5
 #Joining plots
-ggarrange(w1, w2,w3,w4,w5, labels = c("prenatal", "infant","child","adolsecent","adult"),
-          common.legend = TRUE, legend = "right")
+# ggarrange(w1, w2,w3,w4,w5, labels = c("prenatal", "infant","child","adolsecent","adult"),
+#          common.legend = TRUE, legend = "right")
 
-ggsave(file="ABA_PCA_WindowsAkeyPeyNCXnoLog.pdf", width = 11.69, height = 8.27) #axample
+# ggsave(file="ABA_PCA_WindowsAkeyPeyNCXnoLog.pdf", width = 11.69, height = 8.27) #axample
 
 #Euclidean distance between brain regions
 library(hash)
@@ -184,14 +265,14 @@ library(hash)
 structDistWind<-list()
 for (i in 1:5){
   
-#CHANGE:akeyABAwind/akeyPeyABAwind/peyNotAkeyABAwind/wholeABAwind
+#CHANGE:akeyABAwind/akeyPeyABAwind/peyNotakeyABAwind/wholeABAwind
   
-  windowPCA<-akeyPeyABAwind[[i]]
+  windowPCA<-peyNotakeyABAwind[[i]]
   
   windowPCA$Window<-NULL
   
   
-  brainTopStruct<-read.csv("brainRegionCorresp.csv",sep=":")
+  brainTopStruct<-read.csv("desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
   windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
   #Cleaning columns equal to 0
   windowPCAStTemp<-windowPCASt[,-1][,-1][,-1][,-1][,-(which(colSums(windowPCASt[,-1][,-1][,-1][,-1])==0))]
@@ -201,32 +282,40 @@ for (i in 1:5){
   pca_res <- prcomp(windowPCAStTemp, scale. = TRUE)
   # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure) 
   PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) #with neocortex
-structDist<-hash()
-for (structure in unique(PCi$topStructure)){
+  ev <- pca_res$sdev^2
   
-  dfStructure<-PCi %>% filter(topStructure==structure)
-  dfOtherStructures<-PCi %>% filter(topStructure!=structure)
-  distancesStruct<-c()
-  sdStruct<-c()
-  for (row in 1:nrow(dfStructure)) {
-    xstruct<-dfStructure[row,]$PC1
-    ystruct<-dfOtherStructures[row,]$PC2
-    nrowsOthers<-nrow(dfOtherStructures)
-    listDist<-c()
-    for (rowOth in 1:nrowsOthers){
-      xOtherstruct<-dfOtherStructures[rowOth,]$PC1
-      yOtherstruct<-dfOtherStructures[rowOth,]$PC2
-      distance<-dist(matrix(c(xstruct,ystruct,xOtherstruct,yOtherstruct),nrow=2,ncol=2),diag=TRUE)
-      #print(c("Distance:",distance))
-      listDist<-append(listDist,distance[1])
-      nrowsOthers
+  numPCA<-length(ev[ev>=1]) # Number of selected PCA by Kaiser’s rule
+  structDist<-hash()
+  for (structure in unique(PCi$topStructure)){
+    dfStructure<-PCi %>% filter(topStructure==structure)
+    dfOtherStructures<-PCi %>% filter(topStructure!=structure)
+    distancesStruct<-c()
+    sdStruct<-c()
+    for (row in 1:nrow(dfStructure)) {
+      pcasStruct<-dfStructure[row,][,1:numPCA]
+      # xstruct<-dfStructure[row,]$PC1
+      # ystruct<-dfStructure[row,]$PC2
+      # zstruct<-dfStructure[row,]$PC3
+      nrowsOthers<-nrow(dfOtherStructures)
+      listDist<-c()
+      for (rowOth in 1:nrowsOthers){
+        pcasOtherStruct<-dfOtherStructures[rowOth,][,1:numPCA]
+        # xOtherstruct<-dfOtherStructures[rowOth,]$PC1
+        # yOtherstruct<-dfOtherStructures[rowOth,]$PC2
+        # zOtherstruct<-dfOtherStructures[rowOth,]$PC3
+        distance<-dist(matrix(c(as.vector(pcasStruct),as.vector(pcasOtherStruct)),nrow=2,ncol=numPCA),diag=TRUE)
+        # distance<-dist(matrix(c(xstruct,ystruct,zstruct,xOtherstruct,yOtherstruct,zOtherstruct),nrow=2,ncol=3),diag=TRUE)
+   
+        #print(c("Distance:",distance))
+        listDist<-append(listDist,distance[1])
+        nrowsOthers
+      }
+      distancesStruct<-append(distancesStruct,listDist)
+      sdStruct<-append(sdStruct,sd(listDist))
+      print(paste("Distance ",structure,": list->",head(listDist),"; sd->",sd(listDist)))
     }
-    distancesStruct<-append(distancesStruct,listDist)
-    sdStruct<-append(sdStruct,sd(listDist))
-    print(paste("Distance ",structure,": list->",head(listDist),"; sd->",sd(listDist)))
+    structDist[[structure]]<-c(distancesStruct,mean(sdStruct))
   }
-  structDist[[structure]]<-c(distancesStruct,mean(sdStruct))
-}
 
 
 structDistWind[[i]]<-structDist
@@ -245,6 +334,14 @@ for (wind in 1:5){
 colnames(wilcoxTests)<-wilcoxTestsCol
 rownames(wilcoxTests)<-keys(structDist)
 pairwiseWilcox<-list()
+
+
+correspStage<-list()
+correspStage[[1]]<-"Prenatal"
+correspStage[[2]]<-"Infant"
+correspStage[[3]]<-"Child"
+correspStage[[4]]<-"Adolescent"
+correspStage[[5]]<-"Adult"
 for (i in 1:5){
   structDist<-structDistWind[[i]]
   structs<-c()
@@ -264,11 +361,10 @@ for (i in 1:5){
   }
   pairwiseWilcox[[correspStage[[i]]]]<-as.data.frame(pairwise.wilcox.test(valuesDist,structs, p.adj = "bonf")$p.value)
 }
-valuesDist
-structs
+
 #wilcoxAkeyDist / wilcoxAkeyPeyDist
 #write.xlsx(pairwiseWilcox,"wilcoxAkeyPeyDist.xlsx",col.names=TRUE,row.names=TRUE)
-plot(pairwiseWilcox[[2]])
+
 #colMeans(wilcoxTests, na.rm = TRUE)
 
 #Visualizing p-values wilcox
@@ -329,7 +425,7 @@ for (i in 1:5){
 willcoxPvaluesAVG<-as.data.frame(t(colMeans(wilcoxTests,na.rm=TRUE)))
 
 # wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
-write.csv(wilcoxTests,"wilcoxABAAkeyPeyDist.csv")
+#write.csv(wilcoxTests,"wilcoxABAAkeyDist.csv")
 
 willCoxPvals<-as.data.frame(list("brainRegion","window","pvalAVG","log2pvalAVG"))
 colnames(willCoxPvals)<-c("brainRegion","window","pvalAVG","log2pvalAVG")
@@ -352,37 +448,36 @@ plotWill<-ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
 #Boxplots + log2
 library(ggplot2)
 library(reshape2)
-
+library(reshape2)
 correspStage<-list()
 correspStage[[1]]<-"Prenatal"
 correspStage[[2]]<-"Infant"
 correspStage[[3]]<-"Child"
 correspStage[[4]]<-"Adolescent"
 correspStage[[5]]<-"Adult"
-library(reshape2)
+
 boxplotsDist<-list()
+valoresStruct <- list() 
 for (i in 1:5){
   structDist<-structDistWind[[i]]
-valoresStruct<-list()
-for (structure in keys(structDist)){
-  valoresStruct[[structure]]<-values(structDist[structure])
+  for (structure in keys(structDist)){
+    valoresStruct[[structure]]<-values(structDist[structure])
+  }
+  #In a melting pot
+  valoresStructdf <- melt(valoresStruct)
+  valoresStructdf$Var1<-NULL
+  valoresStructdf$L1<-NULL
+  
+  # prepare a special xlab with the number of obs for each group
+  my_xlab <- paste(levels(valoresStructdf$Var1),"\n(N=",table(valoresStructdf$Var1),")",sep="")
+  colnames(valoresStructdf) <- c("Structures", "Distance")
+  # plot
+  boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=Distance, fill=Structures)) + geom_boxplot(varwidth = TRUE, alpha=0.5) +
+    theme(legend.position="none",axis.text.x = element_blank()) + xlab(correspStage[[i]])
 }
-#In a melting pot
-valoresStructdf <- melt(valoresStruct)
-valoresStructdf$Var1<-NULL
-valoresStructdf$L1<-NULL
-
-# prepare a special xlab with the number of obs for each group
-my_xlab <- paste(levels(valoresStructdf$Var1),"\n(N=",table(valoresStructdf$Var1),")",sep="")
-colnames(valoresStructdf) <- c("names", "value")
-# plot
-boxplotsDist[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=distance, fill=Structures)) +
-  geom_boxplot(varwidth = TRUE, alpha=0.5) +
-  theme(legend.position="none",axis.text.x = element_blank()) + xlab(correspStage[[i]])
-
-}
-
-ggarrange(boxplotsDist[[1]], boxplotsDist[[2]],boxplotsDist[[3]],
+supplfig_x<-ggarrange(boxplotsDist[[1]], boxplotsDist[[2]],boxplotsDist[[3]],
           boxplotsDist[[4]],boxplotsDist[[5]],plotWill,
           common.legend = TRUE, legend = "right")
-ggsave(file="ABA_Boxplots_DistancesAkeyPey.pdf", width = 11.69, height = 8.27)
+write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_ABA_distances/wilcox_peyNoyAkeyABA.csv")
+# ggsave(file="ABA_Boxplots_DistancesAkeyPey.pdf", width = 11.69, height = 8.27)
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_ABA_distances/filtered_peyNoyAkey_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
