@@ -1,0 +1,415 @@
+"","struct_id","Effect","DFn","DFd","F","p","p<.05","ges","p.adj"
+"1","10_dorsal motor nucleus of the vagus, Left","datasource",1,9,17.479,0.002,"*",0.66,0.828
+"2","10_dorsal motor nucleus of the vagus, Right","datasource",1,9,12.711,0.006,"*",0.585,1
+"3","12_hypoglossal nucleus, Left","datasource",1,9,3.136,0.11,"",0.258,1
+"4","12_hypoglossal nucleus, Right","datasource",1,9,127.977,1.27e-06,"*",0.934,0.00052578
+"5","3_Oculomotor Nuclear Complex, Left","datasource",1,9,47.046,7.4e-05,"*",0.839,0.030636
+"6","3_Oculomotor Nuclear Complex, Right","datasource",1,9,49.231,6.21e-05,"*",0.845,0.0257094
+"7","4_trochlear nucleus, Left","datasource",1,9,119.217,1.71e-06,"*",0.93,0.00070794
+"8","4_trochlear nucleus, Right","datasource",1,9,74.515,1.2e-05,"*",0.892,0.004968
+"9","6_abducens nucleus, Left","datasource",1,9,25.174,0.000722,"*",0.737,0.298908
+"10","6_abducens nucleus, Right","datasource",1,9,36.831,0.000186,"*",0.804,0.077004
+"11","7_facial motor nucleus, Left","datasource",1,9,17.234,0.002,"*",0.657,0.828
+"12","7_facial motor nucleus, Right","datasource",1,9,28.771,0.000454,"*",0.762,0.187956
+"13","8Co_cochlear nuclei, Left","datasource",1,9,33.014,0.000278,"*",0.786,0.115092
+"14","8Co_cochlear nuclei, Right","datasource",1,9,6.646,0.03,"*",0.425,1
+"15","8Ve_vestibular nuclei, Left","datasource",1,9,5.773,0.04,"*",0.391,1
+"16","8Ve_vestibular nuclei, Right","datasource",1,9,26.579,0.000599,"*",0.747,0.247986
+"17","Acb_Nucleus Accumbens, Left","datasource",1,9,6.701,0.029,"*",0.427,1
+"18","Acb_Nucleus Accumbens, Right","datasource",1,9,9.81e-05,0.992,"",1.09e-05,1
+"19","AHA_Anterior Hypothalamic Area, Left","datasource",1,9,7.809,0.021,"*",0.465,1
+"20","AHA_Anterior Hypothalamic Area, Right","datasource",1,9,8.668,0.016,"*",0.491,1
+"21","AnG-i_angular gyrus, Left, inferior bank of gyrus","datasource",1,9,5.31,0.047,"*",0.371,1
+"22","AnG-i_angular gyrus, Right, inferior bank of gyrus","datasource",1,9,2.767,0.131,"",0.235,1
+"23","AnG-s_angular gyrus, Left, superior bank of gyrus","datasource",1,9,0.322,0.584,"",0.035,1
+"24","AnG-s_angular gyrus, Right, superior bank of gyrus","datasource",1,9,15.802,0.003,"*",0.637,1
+"25","AOrG_anterior orbital gyrus, Left","datasource",1,9,42.246,0.000111,"*",0.824,0.045954
+"26","AOrG_anterior orbital gyrus, Right","datasource",1,9,0.784,0.399,"",0.08,1
+"27","Arc_arcuate nucleus of medulla, Left","datasource",1,9,85.225,6.93e-06,"*",0.904,0.00286902
+"28","Arc_arcuate nucleus of medulla, Right","datasource",1,9,14.791,0.004,"*",0.622,1
+"29","ARH_Arcuate Nucleus of the Hypothalamus, Left","datasource",1,9,114.523,2.03e-06,"*",0.927,0.00084042
+"30","ARH_Arcuate Nucleus of the Hypothalamus, Right","datasource",1,9,1.048,0.333,"",0.104,1
+"31","ATZ_Amygdaloid Transition zone, Left","datasource",1,9,0.123,0.734,"",0.013,1
+"32","ATZ_Amygdaloid Transition zone, Right","datasource",1,9,6.312,0.033,"*",0.412,1
+"33","BCd_Body of Caudate Nucleus, Left","datasource",1,9,1.207,0.3,"",0.118,1
+"34","BCd_Body of Caudate Nucleus, Right","datasource",1,9,2.06,0.185,"",0.186,1
+"35","BLA_Basolateral Nucleus, Left","datasource",1,9,2.27,0.166,"",0.201,1
+"36","BLA_Basolateral Nucleus, Right","datasource",1,9,8.662,0.016,"*",0.49,1
+"37","BMA_Basomedial nucleus, Left","datasource",1,9,0.286,0.606,"",0.031,1
+"38","BMA_Basomedial nucleus, Right","datasource",1,9,2.153,0.176,"",0.193,1
+"39","BST_Nucleus of Stria Terminalis, Left","datasource",1,9,34.686,0.000232,"*",0.794,0.096048
+"40","CA1_CA1 field, Left","datasource",1,9,0.156,0.702,"",0.017,1
+"41","CA1_CA1 field, Right","datasource",1,9,22.044,0.001,"*",0.71,0.414
+"42","CA2_CA2 field, Left","datasource",1,9,0.005,0.947,"",0.000519,1
+"43","CA2_CA2 field, Right","datasource",1,9,19.906,0.002,"*",0.689,0.828
+"44","CA3_CA3 field, Left","datasource",1,9,10.661,0.01,"*",0.542,1
+"45","CA3_CA3 field, Right","datasource",1,9,3.058,0.114,"",0.254,1
+"46","CA4_CA4 field, Left","datasource",1,9,24.31,0.000813,"*",0.73,0.336582
+"47","CA4_CA4 field, Right","datasource",1,9,60.462,2.78e-05,"*",0.87,0.0115092
+"48","cc_corpus callosum","datasource",1,9,200.372,1.86e-07,"*",0.957,7.7004e-05
+"49","CeA_Central Nucleus, Left","datasource",1,9,30.285,0.000379,"*",0.771,0.156906
+"50","CeA_Central Nucleus, Right","datasource",1,9,23.737,0.000881,"*",0.725,0.364734
+"51","cgb_cingulum bundle, Left","datasource",1,9,273.208,4.84e-08,"*",0.968,2.00376e-05
+"52","cgb_cingulum bundle, Right","datasource",1,9,144.745,7.53e-07,"*",0.941,0.000311742
+"53","CgGf-i_Cingulate gyrus, frontal part, Left, inferior bank of gyrus","datasource",1,9,31.282,0.000337,"*",0.777,0.139518
+"54","CgGf-i_Cingulate gyrus, frontal part, Right, inferior bank of gyrus","datasource",1,9,15.517,0.003,"*",0.633,1
+"55","CgGf-s_Cingulate gyrus, frontal part, Left, superior bank of gyrus","datasource",1,9,7.493,0.023,"*",0.454,1
+"56","CgGf-s_Cingulate gyrus, frontal part, Right, superior bank of gyrus","datasource",1,9,5.048,0.051,"",0.359,1
+"57","CgGp-i_Cingulate gyrus, parietal part, Left, inferior bank of gyrus","datasource",1,9,0.319,0.586,"",0.034,1
+"58","CgGp-i_Cingulate gyrus, parietal part, Right, inferior bank of gyrus","datasource",1,9,0.825,0.387,"",0.084,1
+"59","CgGp-s_Cingulate gyrus, parietal part, Left, superior bank of gyrus","datasource",1,9,0.859,0.378,"",0.087,1
+"60","CgGp-s_Cingulate gyrus, parietal part, Right, superior bank of gyrus","datasource",1,9,15.968,0.003,"*",0.64,1
+"61","CgGr-i_Cingulate gyrus, retrosplenial part, Left, inferior bank of gyrus","datasource",1,9,6.864,0.028,"*",0.433,1
+"62","CgGr-i_Cingulate gyrus, retrosplenial part, Right, inferior bank of gyrus","datasource",1,9,71.275,1.44e-05,"*",0.888,0.0059616
+"63","CgGr-s_Cingulate gyrus, retrosplenial part, Left, superior bank of gyrus","datasource",1,9,13.508,0.005,"*",0.6,1
+"64","CgGr-s_Cingulate gyrus, retrosplenial part, Right, superior bank of gyrus","datasource",1,9,25.007,0.000738,"*",0.735,0.305532
+"65","CGMB_central grey substance of midbrain, Left","datasource",1,9,54.781,4.1e-05,"*",0.859,0.016974
+"66","CGMB_central grey substance of midbrain, Right","datasource",1,9,25.476,0.000693,"*",0.739,0.286902
+"67","CGPo_central grey of the pons, Left","datasource",1,9,25.544,0.000687,"*",0.739,0.284418
+"68","CGPo_central grey of the pons, Right","datasource",1,9,22.085,0.001,"*",0.71,0.414
+"69","CGS_central glial substance","datasource",1,9,256.005,6.43e-08,"*",0.966,2.66202e-05
+"70","Cl_Claustrum, Left","datasource",1,9,15.896,0.003,"*",0.639,1
+"71","Cl_Claustrum, Right","datasource",1,9,3.398,0.098,"",0.274,1
+"72","CMRt_central medullary reticular group, Left","datasource",1,9,13.886,0.005,"*",0.607,1
+"73","CMRt_central medullary reticular group, Right","datasource",1,9,32.378,0.000298,"*",0.782,0.123372
+"74","CnF_cuneiform nucleus, Left","datasource",1,9,32.825,0.000284,"*",0.785,0.117576
+"75","CnF_cuneiform nucleus, Right","datasource",1,9,48.717,6.47e-05,"*",0.844,0.0267858
+"76","COMA_Cortico-medial group, Left","datasource",1,9,2.174,0.174,"",0.195,1
+"77","COMA_Cortico-medial group, Right","datasource",1,9,30.076,0.000388,"*",0.77,0.160632
+"78","CPLV_Choroid Plexus of the lateral ventricle","datasource",1,9,135.518,9.97e-07,"*",0.938,0.000412758
+"79","Cu_cuneate nucleus, Left","datasource",1,9,96.538,4.14e-06,"*",0.915,0.00171396
+"80","Cu_cuneate nucleus, Right","datasource",1,9,99.471,3.66e-06,"*",0.917,0.00151524
+"81","Cun-pest_cuneus, Left, peristriate","datasource",1,9,17.554,0.002,"*",0.661,0.828
+"82","Cun-pest_cuneus, Right, peristriate","datasource",1,9,8.669,0.016,"*",0.491,1
+"83","Cun-str_cuneus, Left, striate","datasource",1,9,1.744,0.219,"",0.162,1
+"84","Cun-str_cuneus, Right, striate","datasource",1,9,16.178,0.003,"*",0.643,1
+"85","DBh_Diagonal Band, Horizontal Division, Left","datasource",1,9,0.034,0.858,"",0.004,1
+"86","DBv_Diagonal Band, Vertical Division, Left","datasource",1,9,31.016,0.000348,"*",0.775,0.144072
+"87","DG_Dentate gyrus, Left","datasource",1,9,0.567,0.471,"",0.059,1
+"88","DG_Dentate gyrus, Right","datasource",1,9,11.909,0.007,"*",0.57,1
+"89","Dk_nucleus of Darkschewitsch, Left","datasource",1,9,5.972,0.037,"*",0.399,1
+"90","DMH_Dorsomedial hypothalamic Nucleus, Left","datasource",1,9,13.75,0.005,"*",0.604,1
+"91","Dt_Dentate Nucleus, Left","datasource",1,9,13.593,0.005,"*",0.602,1
+"92","Dt_Dentate Nucleus, Right","datasource",1,9,54.998,4.03e-05,"*",0.859,0.0166842
+"93","DTA_Anterior Group of Nuclei, Left","datasource",1,9,11.044,0.009,"*",0.551,1
+"94","DTA_Anterior Group of Nuclei, Right","datasource",1,9,0.011,0.921,"",0.001,1
+"95","DTLd_Lateral group of Nuclei, Left, Dorsal Division","datasource",1,9,1.004,0.343,"",0.1,1
+"96","DTLd_Lateral group of Nuclei, Right, Dorsal Division","datasource",1,9,2.944,0.12,"",0.246,1
+"97","DTLv_Lateral group of Nuclei, Left, Ventral division","datasource",1,9,0.126,0.731,"",0.014,1
+"98","DTLv_Lateral group of Nuclei, Right, Ventral division","datasource",1,9,1.763,0.217,"",0.164,1
+"99","DTM_Medial Group of Nuclei, Left","datasource",1,9,4.31,0.068,"",0.324,1
+"100","DTM_Medial Group of Nuclei, Right","datasource",1,9,21.577,0.001,"*",0.706,0.414
+"101","DTP_Posterior Group of Nuclei, Left","datasource",1,9,18.581,0.002,"*",0.674,0.828
+"102","DTP_Posterior Group of Nuclei, Right","datasource",1,9,6.026,0.036,"*",0.401,1
+"103","Emb_Emboliform Nucleus, Left","datasource",1,9,224.622,1.14e-07,"*",0.961,4.7196e-05
+"104","Emb_Emboliform Nucleus, Right","datasource",1,9,70.052,1.54e-05,"*",0.886,0.0063756
+"105","EW_Edinger Westphal nucleus, Left","datasource",1,9,14.689,0.004,"*",0.62,1
+"106","EW_Edinger Westphal nucleus, Right","datasource",1,9,142.63,8.02e-07,"*",0.941,0.000332028
+"107","Fas_Fastigial Nucleus, Left","datasource",1,9,43.234,0.000102,"*",0.828,0.042228
+"108","Fas_Fastigial Nucleus, Right","datasource",1,9,46.976,7.44e-05,"*",0.839,0.0308016
+"109","FP-s_frontal pole, Left, superior aspect","datasource",1,9,9.841,0.012,"*",0.522,1
+"110","FP-s_frontal pole, Right, superior aspect","datasource",1,9,13.762,0.005,"*",0.605,1
+"111","FPi_frontal pole, Left, inferior aspect","datasource",1,9,19.621,0.002,"*",0.686,0.828
+"112","FPi_frontal pole, Right, inferior aspect","datasource",1,9,97.496,3.98e-06,"*",0.915,0.00164772
+"113","FPm_frontal pole, Left, medial aspect","datasource",1,9,37.919,0.000167,"*",0.808,0.069138
+"114","FPm_frontal pole, Right, medial aspect","datasource",1,9,1.85,0.207,"",0.17,1
+"115","fro_frontal operculum, Left","datasource",1,9,13.857,0.005,"*",0.606,1
+"116","fro_frontal operculum, Right","datasource",1,9,2.324,0.162,"",0.205,1
+"117","FuG-cos_fusiform gyrus, Left, bank of cos","datasource",1,9,21.567,0.001,"*",0.706,0.414
+"118","FuG-cos_fusiform gyrus, Right, bank of cos","datasource",1,9,28.624,0.000462,"*",0.761,0.191268
+"119","FuG-its_fusiform gyrus, Left, bank of the its","datasource",1,9,28.393,0.000476,"*",0.759,0.197064
+"120","FuG-its_fusiform gyrus, Right, bank of the its","datasource",1,9,1.645,0.232,"",0.155,1
+"121","FuG-l_fusiform gyrus, Left, lateral bank of gyrus","datasource",1,9,8.491,0.017,"*",0.485,1
+"122","FuG-l_fusiform gyrus, Right, lateral bank of gyrus","datasource",1,9,39.253,0.000147,"*",0.813,0.060858
+"123","GiRt_gigantocellular group, Left","datasource",1,9,46.534,7.72e-05,"*",0.838,0.0319608
+"124","GiRt_gigantocellular group, Right","datasource",1,9,52.16,4.96e-05,"*",0.853,0.0205344
+"125","Glo_Globose Nucleus, Left","datasource",1,9,1.872,0.204,"",0.172,1
+"126","Glo_Globose Nucleus, Right","datasource",1,9,57.554,3.37e-05,"*",0.865,0.0139518
+"127","GPe_globus pallidus, external segment, Left","datasource",1,9,46.36,7.83e-05,"*",0.837,0.0324162
+"128","GPe_globus pallidus, external segment, Right","datasource",1,9,21.431,0.001,"*",0.704,0.414
+"129","GPi_globus pallidus, internal segment, Left","datasource",1,9,40.979,0.000125,"*",0.82,0.05175
+"130","GPi_globus pallidus, internal segment, Right","datasource",1,9,39.977,0.000137,"*",0.816,0.056718
+"131","Gr_gracile nucleus, Left","datasource",1,9,121.171,1.6e-06,"*",0.931,0.0006624
+"132","Gr_gracile nucleus, Right","datasource",1,9,77.401,1.03e-05,"*",0.896,0.0042642
+"133","GRe_gyrus rectus, Left","datasource",1,9,7.514,0.023,"*",0.455,1
+"134","GRe_gyrus rectus, Right","datasource",1,9,21.765,0.001,"*",0.707,0.414
+"135","HCd_Head of Caudate Nucleus, Left","datasource",1,9,22.587,0.001,"*",0.715,0.414
+"136","HCd_Head of Caudate Nucleus, Right","datasource",1,9,0.428,0.529,"",0.045,1
+"137","He-Crus I_Crus I, Left Lateral Hemisphere","datasource",1,9,23.792,0.000874,"*",0.726,0.361836
+"138","He-Crus I_Crus I, Right Lateral Hemisphere","datasource",1,9,103.138,3.15e-06,"*",0.92,0.0013041
+"139","He-Crus II_Crus II, Left Lateral Hemisphere","datasource",1,9,30.541,0.000367,"*",0.772,0.151938
+"140","He-Crus II_Crus II, Right Lateral Hemisphere","datasource",1,9,60.971,2.69e-05,"*",0.871,0.0111366
+"141","He-III_III, Left Lateral Hemisphere","datasource",1,9,12.957,0.006,"*",0.59,1
+"142","He-IV_IV, Left Lateral Hemisphere","datasource",1,9,37.296,0.000178,"*",0.806,0.073692
+"143","He-IX_IX, Left Lateral Hemisphere","datasource",1,9,51.409,5.25e-05,"*",0.851,0.021735
+"144","He-V_V, Left Lateral Hemisphere","datasource",1,9,45.18,8.64e-05,"*",0.834,0.0357696
+"145","He-VI_VI, Left Lateral Hemisphere","datasource",1,9,15.662,0.003,"*",0.635,1
+"146","He-VI_VI, Right Lateral Hemisphere","datasource",1,9,41.369,0.000121,"*",0.821,0.050094
+"147","He-VIIB_VIIB, Left Lateral Hemisphere","datasource",1,9,34.055,0.000248,"*",0.791,0.102672
+"148","He-VIIB_VIIB, Right Lateral Hemisphere","datasource",1,9,117.504,1.82e-06,"*",0.929,0.00075348
+"149","He-VIIIA_VIIIA, Left Lateral Hemisphere","datasource",1,9,12.278,0.007,"*",0.577,1
+"150","He-VIIIA_VIIIA, Right Lateral Hemisphere","datasource",1,9,52.068,5e-05,"*",0.853,0.0207
+"151","He-VIIIB_VIIIB, Left Lateral Hemisphere","datasource",1,9,15.555,0.003,"*",0.633,1
+"152","He-X_X, Left Lateral Hemisphere","datasource",1,9,31.169,0.000342,"*",0.776,0.141588
+"153","HG_Heschls gyrus, Left","datasource",1,9,8.792,0.016,"*",0.494,1
+"154","HG_Heschls gyrus, Right","datasource",1,9,33.601,0.000261,"*",0.789,0.108054
+"155","Hl_Lateral Habenular Nucleus, Left","datasource",1,9,2.258,0.167,"",0.201,1
+"156","Hl_Lateral Habenular Nucleus, Right","datasource",1,9,25.583,0.000683,"*",0.74,0.282762
+"157","Hm_Medial Habenular Nucleus, Left","datasource",1,9,29.848,0.000399,"*",0.768,0.165186
+"158","Hm_Medial Habenular Nucleus, Right","datasource",1,9,19.201,0.002,"*",0.681,0.828
+"159","IC_Inferior Colliculus, Left","datasource",1,9,4.781,0.057,"",0.347,1
+"160","ICjl_interstitial nucleus of Cajal, Left","datasource",1,9,8.871,0.015,"*",0.496,1
+"161","ICjl_interstitial nucleus of Cajal, Right","datasource",1,9,90.408,5.44e-06,"*",0.909,0.00225216
+"162","ILc_Caudal Group of Intralaminar Nuclei, Left","datasource",1,9,40.202,0.000134,"*",0.817,0.055476
+"163","ILc_Caudal Group of Intralaminar Nuclei, Right","datasource",1,9,0.593,0.461,"",0.062,1
+"164","ILr_Rostral Group of intralaminar Nuclei, Left","datasource",1,9,10.57,0.01,"*",0.54,1
+"165","ILr_Rostral Group of intralaminar Nuclei, Right","datasource",1,9,7.74,0.021,"*",0.462,1
+"166","IO_inferior olivary complex, Left","datasource",1,9,2.942,0.12,"",0.246,1
+"167","IO_inferior olivary complex, Right","datasource",1,9,10.889,0.009,"*",0.547,1
+"168","IOG-i_inferior occipital gyrus, Left, inferior bank of gyrus","datasource",1,9,26.309,0.00062,"*",0.745,0.25668
+"169","IOG-i_inferior occipital gyrus, Right, inferior bank of gyrus","datasource",1,9,47.377,7.2e-05,"*",0.84,0.029808
+"170","IOG-s_inferior occipital gyrus, Left, superior bank of gyrus","datasource",1,9,5.338,0.046,"*",0.372,1
+"171","IOG-s_inferior occipital gyrus, Right, superior bank of gyrus","datasource",1,9,20.098,0.002,"*",0.691,0.828
+"172","IRoG_inferior rostral gyrus, Left","datasource",1,9,5.84,0.039,"*",0.394,1
+"173","IRoG_inferior rostral gyrus, Right","datasource",1,9,23.967,0.000853,"*",0.727,0.353142
+"174","ITG-its_inferior temporal gyrus, Left, bank of the its","datasource",1,9,8.609,0.017,"*",0.489,1
+"175","ITG-its_inferior temporal gyrus, Right, bank of the its","datasource",1,9,0.444,0.522,"",0.047,1
+"176","ITG-l_inferior temporal gyrus, Left, lateral bank of gyrus","datasource",1,9,4.917,0.054,"",0.353,1
+"177","ITG-l_inferior temporal gyrus, Right, lateral bank of gyrus","datasource",1,9,23.73,0.000882,"*",0.725,0.365148
+"178","ITG-mts_inferior temporal gyrus, Left, bank of mts","datasource",1,9,4.17,0.072,"",0.317,1
+"179","ITG-mts_inferior temporal gyrus, Right, bank of mts","datasource",1,9,8.514,0.017,"*",0.486,1
+"180","LA_Lateral Nucleus, Left","datasource",1,9,13.317,0.005,"*",0.597,1
+"181","LA_Lateral Nucleus, Right","datasource",1,9,4.046,0.075,"",0.31,1
+"182","LC_locus ceruleus, Left","datasource",1,9,0.07,0.798,"",0.008,1
+"183","LC_locus ceruleus, Right","datasource",1,9,16.967,0.003,"*",0.653,1
+"184","LGd_Dorsal Lateral Geniculate Nucleus, Left","datasource",1,9,4.494,0.063,"",0.333,1
+"185","LGd_Dorsal Lateral Geniculate Nucleus, Right","datasource",1,9,38.854,0.000153,"*",0.812,0.063342
+"186","LHA_Lateral hypothalamic area, Left","datasource",1,9,0.249,0.63,"",0.027,1
+"187","LHA_Lateral hypothalamic area, Right","datasource",1,9,15.693,0.003,"*",0.636,1
+"188","LHM_Lateral Hypothalamic Area, Mammillary Region, Left","datasource",1,9,2.557,0.144,"",0.221,1
+"189","LHM_Lateral Hypothalamic Area, Mammillary Region, Right","datasource",1,9,1.961,0.195,"",0.179,1
+"190","LHT_Lateral Hypothalamic Area, Tuberal Region, Left","datasource",1,9,0.563,0.472,"",0.059,1
+"191","LIG_Long Insular Gyri, Left","datasource",1,9,13.514,0.005,"*",0.6,1
+"192","LIG_Long Insular Gyri, Right","datasource",1,9,5.655,0.041,"*",0.386,1
+"193","LiG-pest_lingual gyrus, Left, peristriate","datasource",1,9,2.625,0.14,"",0.226,1
+"194","LiG-pest_lingual gyrus, Right, peristriate","datasource",1,9,1.86,0.206,"",0.171,1
+"195","LiG-str_lingual gyrus, Left, striate","datasource",1,9,28.369,0.000477,"*",0.759,0.197478
+"196","LiG-str_lingual gyrus, Right, striate","datasource",1,9,5.206,0.048,"*",0.366,1
+"197","LM_Lateral Mammillary Nucleus, Left","datasource",1,9,23.942,0.000856,"*",0.727,0.354384
+"198","LMRt_lateral medullary reticular group, Left","datasource",1,9,52.045,5.01e-05,"*",0.853,0.0207414
+"199","LMRt_lateral medullary reticular group, Right","datasource",1,9,34.773,0.00023,"*",0.794,0.09522
+"200","LOrG_lateral orbital gyrus, Left","datasource",1,9,14.689,0.004,"*",0.62,1
+"201","LOrG_lateral orbital gyrus, Right","datasource",1,9,1.485,0.254,"",0.142,1
+"202","LPB_lateral parabrachial nucleus, Left","datasource",1,9,5.848,0.039,"*",0.394,1
+"203","LPB_lateral parabrachial nucleus, Right","datasource",1,9,54.045,4.32e-05,"*",0.857,0.0178848
+"204","LTu_Lateral Tuberal Nucleus, Left","datasource",1,9,2.327,0.161,"",0.205,1
+"205","MB_Mammillary Body, Left","datasource",1,9,56.047,3.75e-05,"*",0.862,0.015525
+"206","MB_Mammillary Body, Right","datasource",1,9,110.319,2.37e-06,"*",0.925,0.00098118
+"207","MBRa_Midbrain Raphe Nuclei","datasource",1,9,0.135,0.722,"",0.015,1
+"208","MBRa_Midbrain Raphe Nuclei, Left","datasource",1,9,20.342,0.001,"*",0.693,0.414
+"209","MBRF_Midbrain Reticular Formation, Left","datasource",1,9,0.054,0.821,"",0.006,1
+"210","MBRF_Midbrain Reticular Formation, Right","datasource",1,9,2.361,0.159,"",0.208,1
+"211","MFG-i_middle frontal gyrus, Left, inferior bank of gyrus","datasource",1,9,1.132,0.315,"",0.112,1
+"212","MFG-i_middle frontal gyrus, Right, inferior bank of gyrus","datasource",1,9,13.627,0.005,"*",0.602,1
+"213","MFG-s_middle frontal gyrus, Left, superior bank of gyrus","datasource",1,9,14.537,0.004,"*",0.618,1
+"214","MFG-s_middle frontal gyrus, Right, superior bank of gyrus","datasource",1,9,1.608,0.237,"",0.152,1
+"215","MG_Medial Geniculate Complex, Left","datasource",1,9,32.743,0.000286,"*",0.784,0.118404
+"216","MG_Medial Geniculate Complex, Right","datasource",1,9,81.321,8.4e-06,"*",0.9,0.0034776
+"217","MM_Medial mammillary Nucleus, Left","datasource",1,9,17.816,0.002,"*",0.664,0.828
+"218","Mo5_motor nucleus of trigeminal nerve, Left","datasource",1,9,0.26,0.623,"",0.028,1
+"219","Mo5_motor nucleus of trigeminal nerve, Right","datasource",1,9,114.158,2.06e-06,"*",0.927,0.00085284
+"220","MOrG_medial orbital gyrus, Left","datasource",1,9,12.272,0.007,"*",0.577,1
+"221","MOrG_medial orbital gyrus, Right","datasource",1,9,18.669,0.002,"*",0.675,0.828
+"222","MPB_medial parabrachial nucleus, Left","datasource",1,9,76.549,1.08e-05,"*",0.895,0.0044712
+"223","MPB_medial parabrachial nucleus,Right","datasource",1,9,77.668,1.01e-05,"*",0.896,0.0041814
+"224","MTG-i_middle temporal gyrus, Left, inferior bank of gyrus","datasource",1,9,7.324,0.024,"*",0.449,1
+"225","MTG-i_middle temporal gyrus, Right, inferior bank of gyrus","datasource",1,9,6.65,0.03,"*",0.425,1
+"226","MTG-s_middle temporal gyrus, Left, superior bank of gyrus","datasource",1,9,8.501,0.017,"*",0.486,1
+"227","MTG-s_middle temporal gyrus, Right, superior bank of gyrus","datasource",1,9,1.558,0.243,"",0.148,1
+"228","nbM_Basal nucleus, Left","datasource",1,9,2.396,0.156,"",0.21,1
+"229","OlfT_Olfactory Tubercle, Left","datasource",1,9,15.742,0.003,"*",0.636,1
+"230","OPi_occipital pole, Left, inferior aspect","datasource",1,9,160.831,4.8e-07,"*",0.947,0.00019872
+"231","opIFG_inferior frontal gyrus, opercular part, Left","datasource",1,9,0.157,0.701,"",0.017,1
+"232","opIFG_inferior frontal gyrus, opercular part, Right","datasource",1,9,7.69,0.022,"*",0.461,1
+"233","OPl_occipital pole, Left, lateral aspect","datasource",1,9,13.458,0.005,"*",0.599,1
+"234","OPs_occipital pole, Left, superior aspect","datasource",1,9,41.311,0.000121,"*",0.821,0.050094
+"235","orIFG_inferior frontal gyrus, orbital part, Left","datasource",1,9,18.036,0.002,"*",0.667,0.828
+"236","orIFG_inferior frontal gyrus, orbital part, Right","datasource",1,9,20.346,0.001,"*",0.693,0.414
+"237","OTG-i_occipito-temporal gyrus, Left, inferior bank of gyrus","datasource",1,9,5.56,0.043,"*",0.382,1
+"238","OTG-i_occipito-temporal gyrus, Right, inferior bank of gyrus","datasource",1,9,0.542,0.48,"",0.057,1
+"239","OTG-s_occipito-temporal gyrus, Left, superior bank of gyrus","datasource",1,9,18.368,0.002,"*",0.671,0.828
+"240","OTG-s_occipito-temporal gyrus, Right, superior bank of gyrus","datasource",1,9,1.422,0.264,"",0.136,1
+"241","Pa_Paraventricular Nuclei, Left of Thalamus, Left","datasource",1,9,8.326,0.018,"*",0.481,1
+"242","Pa_Paraventricular Nuclei, Right of Thalamus, Right","datasource",1,9,15.546,0.003,"*",0.633,1
+"243","PalHy_Pallidohypothalamic Nucleus, Left","datasource",1,9,14.118,0.005,"*",0.611,1
+"244","PaOG_parolfactory gyri, Left","datasource",1,9,14.696,0.004,"*",0.62,1
+"245","PaOG_parolfactory gyri, Right","datasource",1,9,8.587,0.017,"*",0.488,1
+"246","PCLa_paracentral lobule, anterior part, Left","datasource",1,9,109.572,2.44e-06,"*",0.924,0.00101016
+"247","PCLa-i_paracentral lobule, anterior part, Left, inferior bank of gyrus","datasource",1,9,11.42,0.008,"*",0.559,1
+"248","PCLa-i_paracentral lobule, anterior part, Right, inferior bank of gyrus","datasource",1,9,0.11,0.747,"",0.012,1
+"249","PCLa-s_paracentral lobule, anterior part, Left, superior bank of gyrus","datasource",1,9,18.798,0.002,"*",0.676,0.828
+"250","PCLa-s_paracentral lobule, anterior part, Right, superior bank of gyrus","datasource",1,9,13.425,0.005,"*",0.599,1
+"251","PCLp-cs_paracentral lobule, posterior part, Left, bank of cingulate sulcus","datasource",1,9,69.305,1.61e-05,"*",0.885,0.0066654
+"252","PCLp-cs_paracentral lobule, posterior part, Right, bank of cingulate sulcus","datasource",1,9,5.78,0.04,"*",0.391,1
+"253","PCLp-l_paracentral lobule, posterior part, Left, lateral bank of gyrus","datasource",1,9,32.018,0.00031,"*",0.781,0.12834
+"254","PCLp-l_paracentral lobule, posterior part, Right, lateral bank of gyrus","datasource",1,9,0.201,0.664,"",0.022,1
+"255","Pcu-i_precuneus, Left, inferior lateral bank of gyrus","datasource",1,9,0.000962,0.976,"",0.000107,1
+"256","Pcu-i_precuneus, Right,  inferior lateral bank of gyrus","datasource",1,9,11.328,0.008,"*",0.557,1
+"257","Pcu-s_precuneus, Left,  superior lateral bank of gyrus","datasource",1,9,0.23,0.643,"",0.025,1
+"258","Pcu-s_precuneus, Right, superior lateral bank of gyrus","datasource",1,9,0.552,0.476,"",0.058,1
+"259","PeF_Perifornical Nucleus, Left","datasource",1,9,3.547,0.092,"",0.283,1
+"260","PHA_Posterior Hypothalamic Area, Left","datasource",1,9,6.697,0.029,"*",0.427,1
+"261","PHA_Posterior Hypothalamic Area, Right","datasource",1,9,1.681,0.227,"",0.157,1
+"262","PHG-cos_parahippocampal gyrus, Left, bank of the cos","datasource",1,9,25.565,0.000685,"*",0.74,0.28359
+"263","PHG-cos_parahippocampal gyrus, Right, bank of the cos","datasource",1,9,35.201,0.00022,"*",0.796,0.09108
+"264","PHG-l_parahippocampal gyrus, Left, lateral bank of gyrus","datasource",1,9,55.571,3.87e-05,"*",0.861,0.0160218
+"265","PHG-l_parahippocampal gyrus, Right, lateral bank of gyrus","datasource",1,9,2.39,0.157,"",0.21,1
+"266","PIN_pineal","datasource",1,9,47.017,7.42e-05,"*",0.839,0.0307188
+"267","Pir_piriform cortex, left","datasource",1,9,0.53,0.485,"",0.056,1
+"268","PLP_planum polare, Left","datasource",1,9,23.717,0.000884,"*",0.725,0.365976
+"269","PLP_planum polare, Right","datasource",1,9,20.854,0.001,"*",0.699,0.414
+"270","PLT_planum temporale, Left","datasource",1,9,10.556,0.01,"*",0.54,1
+"271","PLT_planum temporale, Right","datasource",1,9,13.041,0.006,"*",0.592,1
+"272","Pn_pontine nuclei, Left","datasource",1,9,104.314,3e-06,"*",0.921,0.001242
+"273","Pn_pontine nuclei, Right","datasource",1,9,106.967,2.7e-06,"*",0.922,0.0011178
+"274","PoG-cs_postcentral gyrus, Left, bank of the central sulcus","datasource",1,9,7.378,0.024,"*",0.45,1
+"275","PoG-cs_postcentral gyrus, Right, bank of the central sulcus","datasource",1,9,0.299,0.598,"",0.032,1
+"276","PoG-il_postcentral gyrus, Left, inferior lateral aspect of gyrus","datasource",1,9,6.264,0.034,"*",0.41,1
+"277","PoG-il_postcentral gyrus, Right, inferior lateral aspect of gyrus","datasource",1,9,11.284,0.008,"*",0.556,1
+"278","PoG-pcs_postcentral gyrus, Left, bank of the posterior central sulcus","datasource",1,9,10.211,0.011,"*",0.532,1
+"279","PoG-pcs_postcentral gyrus, Right, bank of the posterior central sulcus","datasource",1,9,4.981,0.053,"",0.356,1
+"280","PoG-sl_postcentral gyrus, Left, superior lateral aspect of gyrus","datasource",1,9,11.601,0.008,"*",0.563,1
+"281","PoG-sl_postcentral gyrus, Right, superior lateral aspect of gyrus","datasource",1,9,16.76,0.003,"*",0.651,1
+"282","POrG_posterior orbital gyrus, Left","datasource",1,9,48.367,6.65e-05,"*",0.843,0.027531
+"283","POrG_posterior orbital gyrus, Right","datasource",1,9,0.033,0.859,"",0.004,1
+"284","Pr5_principal sensory nucleus of trigeminal nerve, Left","datasource",1,9,3.776,0.084,"",0.296,1
+"285","Pr5_principal sensory nucleus of trigeminal nerve, Right","datasource",1,9,0.013,0.911,"",0.001,1
+"286","PRF_Pontine Reticular Formation, Left","datasource",1,9,14.499,0.004,"*",0.617,1
+"287","PRF_Pontine Reticular Formation, Right","datasource",1,9,62.587,2.42e-05,"*",0.874,0.0100188
+"288","PrG-cs_precentral gyrus, Left, bank of the central sulcus","datasource",1,9,9.33,0.014,"*",0.509,1
+"289","PrG-cs_precentral gyrus, Right, bank of the central sulcus","datasource",1,9,4.679,0.059,"",0.342,1
+"290","PrG-il_precentral gyrus, Left, inferior lateral aspect of gyrus","datasource",1,9,16.542,0.003,"*",0.648,1
+"291","PrG-il_precentral gyrus, Right, inferior lateral aspect of gyrus","datasource",1,9,18.455,0.002,"*",0.672,0.828
+"292","PrG-prc_precentral gyrus, Left, bank of the precentral sulcus","datasource",1,9,4.731,0.058,"",0.345,1
+"293","PrG-prc_precentral gyrus, Right, bank of the precentral sulcus","datasource",1,9,32.441,0.000296,"*",0.783,0.122544
+"294","PrG-sl_precentral gyrus, Left, superior lateral aspect of gyrus","datasource",1,9,24.722,0.000768,"*",0.733,0.317952
+"295","PrG-sl_precentral gyrus, Right, superior lateral aspect of gyrus","datasource",1,9,4.335,0.067,"",0.325,1
+"296","PrOR_Preoptic Region, Left","datasource",1,9,16.681,0.003,"*",0.65,1
+"297","PrOR_Preoptic Region, Right","datasource",1,9,1.807,0.212,"",0.167,1
+"298","PTec_Pretectal Region","datasource",1,9,16.819,0.003,"*",0.651,1
+"299","PTG_paraterminal gyrus, Right","datasource",1,9,54.232,4.26e-05,"*",0.858,0.0176364
+"300","Pu_Putamen, Left","datasource",1,9,12.879,0.006,"*",0.589,1
+"301","Pu_Putamen, Right","datasource",1,9,24.642,0.000776,"*",0.732,0.321264
+"302","PV-Crus I_Crus I, Left Paravermis","datasource",1,9,29.078,0.000437,"*",0.764,0.180918
+"303","PV-Crus I_Crus I, Right Paravermis","datasource",1,9,81.384,8.37e-06,"*",0.9,0.00346518
+"304","PV-Crus II_Crus II, Left Paravermis","datasource",1,9,65.04,2.08e-05,"*",0.878,0.0086112
+"305","PV-Crus II_Crus II, Right Paravermis","datasource",1,9,19.887,0.002,"*",0.688,0.828
+"306","PV-III_III, Left Paravermis","datasource",1,9,12.191,0.007,"*",0.575,1
+"307","PV-III_III, Right Paravermis","datasource",1,9,7.927,0.02,"*",0.468,1
+"308","PV-IV_IV, Left Paravermis","datasource",1,9,22.448,0.001,"*",0.714,0.414
+"309","PV-IV_IV, Right Paravermis","datasource",1,9,45.648,8.31e-05,"*",0.835,0.0344034
+"310","PV-IX_IX, Left Paravermis","datasource",1,9,39.035,0.00015,"*",0.813,0.0621
+"311","PV-IX_IX, Right Paravermis","datasource",1,9,136.005,9.82e-07,"*",0.938,0.000406548
+"312","PV-V_V, Left Paravermis","datasource",1,9,5.107,0.05,"",0.362,1
+"313","PV-V_V, Right Paravermis","datasource",1,9,72.278,1.36e-05,"*",0.889,0.0056304
+"314","PV-VI_VI, Left Paravermis","datasource",1,9,3.836,0.082,"",0.299,1
+"315","PV-VI_VI, Right Paravermis","datasource",1,9,58.594,3.14e-05,"*",0.867,0.0129996
+"316","PV-VIIB_VIIB, Left Paravermis","datasource",1,9,39.224,0.000147,"*",0.813,0.060858
+"317","PV-VIIB_VIIB, Right Paravermis","datasource",1,9,134.32,1.04e-06,"*",0.937,0.00043056
+"318","PV-VIIIA_VIIIA, Left Paravermis","datasource",1,9,28.951,0.000444,"*",0.763,0.183816
+"319","PV-VIIIA_VIIIA, Right Paravermis","datasource",1,9,34.627,0.000234,"*",0.794,0.096876
+"320","PV-VIIIB_VIIIB, Left Paravermis","datasource",1,9,0.907,0.366,"",0.092,1
+"321","PV-VIIIB_VIIIB, Right Paravermis","datasource",1,9,34.849,0.000228,"*",0.795,0.094392
+"322","PV-X_X, Left Paravermis","datasource",1,9,98.143,3.87e-06,"*",0.916,0.00160218
+"323","PVH_Paraventricular Nucleus of the Hypothalamus, Left","datasource",1,9,1.461,0.258,"",0.14,1
+"324","PVH_Paraventricular Nucleus of the Hypothalamus, Right","datasource",1,9,5.021,0.052,"",0.358,1
+"325","R_Reticular Nucleus of Thalamus, Left","datasource",1,9,143.959,7.71e-07,"*",0.941,0.000319194
+"326","R_Reticular Nucleus of Thalamus, Right","datasource",1,9,94.041,4.62e-06,"*",0.913,0.00191268
+"327","RaM_raphe nuclei of medulla","datasource",1,9,25.079,0.000731,"*",0.736,0.302634
+"328","RN_Red Nucleus, Left","datasource",1,9,50.463,5.64e-05,"*",0.849,0.0233496
+"329","RN_Red Nucleus, Right","datasource",1,9,90.557,5.4e-06,"*",0.91,0.0022356
+"330","RPn_pontine raphe nucleus","datasource",1,9,38.999,0.000151,"*",0.812,0.062514
+"331","RPn_pontine raphe nucleus, Left","datasource",1,9,3.655,0.088,"",0.289,1
+"332","S_subiculum, Left","datasource",1,9,2.836,0.126,"",0.24,1
+"333","S_subiculum, Right","datasource",1,9,2.22,0.17,"",0.198,1
+"334","Sb_Subthalamic Nucleus, Left","datasource",1,9,36.269,0.000197,"*",0.801,0.081558
+"335","Sb_Subthalamic Nucleus, Right","datasource",1,9,30.353,0.000376,"*",0.771,0.155664
+"336","SC_Superior Colliculus, Left","datasource",1,9,10.187,0.011,"*",0.531,1
+"337","SC_Superior Colliculus, Right","datasource",1,9,9.644,0.013,"*",0.517,1
+"338","SCG_subcallosal gyrus, Left","datasource",1,9,54.1,4.3e-05,"*",0.857,0.017802
+"339","SCG_subcollosal gyrus, Right","datasource",1,9,25.331,0.000706,"*",0.738,0.292284
+"340","SFG_superior frontal gyrus, Left","datasource",1,9,115.958,1.93e-06,"*",0.928,0.00079902
+"341","SFG-l_superior frontal gyrus, Left, lateral bank of gyrus","datasource",1,9,12.368,0.007,"*",0.579,1
+"342","SFG-l_superior frontal gyrus, Right, lateral bank of gyrus","datasource",1,9,11.464,0.008,"*",0.56,1
+"343","SFG-m_superior frontal gyrus, Left, medial bank of gyrus","datasource",1,9,9.047,0.015,"*",0.501,1
+"344","SFG-m_superior frontal gyrus, Right, medial bank of gyrus","datasource",1,9,8.051,0.019,"*",0.472,1
+"345","SI_Substantia Innominata, Left","datasource",1,9,31.433,0.000331,"*",0.777,0.137034
+"346","SI_Substantia Innominata, Right","datasource",1,9,4.364,0.066,"",0.327,1
+"347","SIG_Short Insular Gyri, Left","datasource",1,9,21.703,0.001,"*",0.707,0.414
+"348","SIG_Short Insular Gyri, Right","datasource",1,9,9.999,0.012,"*",0.526,1
+"349","SMG-i_supramarginal gyrus, Left, inferior bank of gyrus","datasource",1,9,0.067,0.801,"",0.007,1
+"350","SMG-i_supramarginal gyrus, Right, inferior bank of gyrus","datasource",1,9,5.777,0.04,"*",0.391,1
+"351","SMG-s_supramarginal gyrus, Left, superior bank of gyrus","datasource",1,9,15.886,0.003,"*",0.638,1
+"352","SMG-s_supramarginal gyrus, Right, superior bank of gyrus","datasource",1,9,19.573,0.002,"*",0.685,0.828
+"353","SNC_Substantia Nigra, pars compacta, Left","datasource",1,9,10.603,0.01,"*",0.541,1
+"354","SNC_Substantia Nigra, pars compacta, Right","datasource",1,9,10.006,0.011,"*",0.526,1
+"355","SNR_Substantia Nigra, pars reticulata, Left","datasource",1,9,63.191,2.33e-05,"*",0.875,0.0096462
+"356","SNR_Substantia Nigra, pars reticulata, Right","datasource",1,9,68.406,1.69e-05,"*",0.884,0.0069966
+"357","SO_Supraoptic Nucleus, Left","datasource",1,9,0.055,0.82,"",0.006,1
+"358","SO_Supraoptic Nucleus, Right","datasource",1,9,3.105,0.112,"",0.257,1
+"359","SOC_Superior Olivary Complex, Left","datasource",1,9,0.088,0.773,"",0.01,1
+"360","SOC_Superior Olivary Complex, Right","datasource",1,9,32.653,0.000289,"*",0.784,0.119646
+"361","SOG-i_superior occipital gyrus, Left, inferior bank of gyrus","datasource",1,9,2.251,0.168,"",0.2,1
+"362","SOG-i_superior occipital gyrus, Right, inferior bank of gyrus","datasource",1,9,77.013,1.05e-05,"*",0.895,0.004347
+"363","SOG-s_superior occipital gyrus, Left, superior bank of gyrus","datasource",1,9,3.074,0.113,"",0.255,1
+"364","SOG-s_superior occipital gyrus, Right, superior bank of gyrus","datasource",1,9,4.42,0.065,"",0.329,1
+"365","Sp5_spinal trigeminal nucleus, Left","datasource",1,9,6.086,0.036,"*",0.403,1
+"366","Sp5_spinal trigeminal nucleus, Right","datasource",1,9,31.858,0.000316,"*",0.78,0.130824
+"367","SPL-i_supraparietal lobule, Left, inferior bank of gyrus","datasource",1,9,2.975,0.119,"",0.248,1
+"368","SPL-i_supraparietal lobule, Right, inferior bank of gyrus","datasource",1,9,3.272,0.104,"",0.267,1
+"369","SPL-s_supraparietal lobule, Left, superior bank of gyrus","datasource",1,9,9.915,0.012,"*",0.524,1
+"370","SPL-s_supraparietal lobule, Right, superior bank of gyrus","datasource",1,9,13.972,0.005,"*",0.608,1
+"371","SptN_Septal nuclei, Left","datasource",1,9,2.978,0.118,"",0.249,1
+"372","SptN_Septal nuclei, Right","datasource",1,9,7.729,0.021,"*",0.462,1
+"373","SRoG_superior rostral gyrus, Left","datasource",1,9,28.354,0.000478,"*",0.759,0.197892
+"374","SRoG_superior rostral gyrus, Right","datasource",1,9,1.228,0.296,"",0.12,1
+"375","STG-i_superior temporal gyrus, Left, inferior bank of gyrus","datasource",1,9,6.891,0.028,"*",0.434,1
+"376","STG-i_superior temporal gyrus, Right, inferior bank of gyrus","datasource",1,9,1.144,0.313,"",0.113,1
+"377","STG-l_superior temporal gyrus, Left, lateral bank of gyrus","datasource",1,9,3.568,0.091,"",0.284,1
+"378","STG-l_superior temporal gyrus, Right, lateral bank of gyrus","datasource",1,9,7.83,0.021,"*",0.465,1
+"379","SubC_nucleus subceruleus, Left","datasource",1,9,21.677,0.001,"*",0.707,0.414
+"380","SubC_nucleus subceruleus, Right","datasource",1,9,68.094,1.73e-05,"*",0.883,0.0071622
+"381","SubCn_subcuneiform nucleus, Left","datasource",1,9,22.756,0.001,"*",0.717,0.414
+"382","SubCn_subcuneiform nucleus, Right","datasource",1,9,59.329,2.99e-05,"*",0.868,0.0123786
+"383","SuM_Supramammillary Nucleus, Left","datasource",1,9,0.042,0.842,"",0.005,1
+"384","TCd_Tail of Caudate Nucleus, Left","datasource",1,9,0.018,0.895,"",0.002,1
+"385","TCd_Tail of Caudate Nucleus, Right","datasource",1,9,1.415,0.265,"",0.136,1
+"386","TG_transverse gyri, Left","datasource",1,9,15.388,0.003,"*",0.631,1
+"387","TG_transverse gyri, Right","datasource",1,9,13.483,0.005,"*",0.6,1
+"388","TM_Tuberomammillary Nucleus, Left","datasource",1,9,18.498,0.002,"*",0.673,0.828
+"389","TP-i_temporal pole, Left, inferior aspect","datasource",1,9,0.106,0.752,"",0.012,1
+"390","TP-i_temporal pole, Right, inferior aspect","datasource",1,9,48.124,6.78e-05,"*",0.842,0.0280692
+"391","TP-m_temporal pole, Left, medial aspect","datasource",1,9,3.09,0.113,"",0.256,1
+"392","TP-m_temporal pole, Right, medial aspect","datasource",1,9,57.455,3.4e-05,"*",0.865,0.014076
+"393","TP-s_temporal pole, Left, superior aspect","datasource",1,9,9.483,0.013,"*",0.513,1
+"394","TP-s_temporal pole, Right, superior aspect","datasource",1,9,4.771,0.057,"",0.346,1
+"395","trIFG_Inferior frontal gyrus, triangular part, Left","datasource",1,9,36.108,2e-04,"*",0.8,0.0828
+"396","trIFG_Inferior frontal gyrus, triangular part, Right","datasource",1,9,44.441,9.2e-05,"*",0.832,0.038088
+"397","Ve-I-II_I-II","datasource",1,9,0.497,0.499,"",0.052,1
+"398","Ve-III_III","datasource",1,9,59.23,3.01e-05,"*",0.868,0.0124614
+"399","Ve-IV_IV","datasource",1,9,23.042,0.000973,"*",0.719,0.402822
+"400","Ve-IX_IX","datasource",1,9,10.285,0.011,"*",0.533,1
+"401","Ve-V_V","datasource",1,9,21.337,0.001,"*",0.703,0.414
+"402","Ve-VI_VI","datasource",1,9,13.047,0.006,"*",0.592,1
+"403","Ve-VIIAf_VIIAf","datasource",1,9,57.88,3.3e-05,"*",0.865,0.013662
+"404","Ve-VIIAt_VIIAt","datasource",1,9,5.605,0.042,"*",0.384,1
+"405","Ve-VIIB_VIIB","datasource",1,9,15.139,0.004,"*",0.627,1
+"406","Ve-VIIIA_VIIIA","datasource",1,9,7.555,0.023,"*",0.456,1
+"407","Ve-VIIIB_VIIIB","datasource",1,9,13.238,0.005,"*",0.595,1
+"408","Ve-X_X","datasource",1,9,29.34,0.000424,"*",0.765,0.175536
+"409","VMH_Ventromedial Hypothalamic Nucleus, Left","datasource",1,9,5.49,0.044,"*",0.379,1
+"410","VMH_Ventromedial Hypothalamic Nucleus, Right","datasource",1,9,0.758,0.406,"",0.078,1
+"411","VTA_ventral tegmental area, Left","datasource",1,9,13.116,0.006,"*",0.593,1
+"412","VTA_ventral tegmental area, Right","datasource",1,9,28.564,0.000466,"*",0.76,0.192924
+"413","ZI_Zona Incerta, Left","datasource",1,9,35.098,0.000222,"*",0.796,0.091908
+"414","ZI_Zona Incerta, Right","datasource",1,9,64.399,2.16e-05,"*",0.877,0.0089424
