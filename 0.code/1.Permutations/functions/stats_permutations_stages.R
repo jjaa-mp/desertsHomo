@@ -1,5 +1,6 @@
 stats_permutations_stages <- function(permrun_s, regionofinterest, sestan, which, stage){
   
+  stag <- NULL
   if(stage == "fetal1"){
     stag$idBrainStruct <- permrun_s[grep("153|150|113|103|149|114", permrun_s$idBrainStruct), "idBrainStruct"]
   } else if (stage == "fetal2") {

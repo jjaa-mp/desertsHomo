@@ -52,7 +52,8 @@ stats_permutations <- function(permutationrun_s, regionofinterest, sestan, which
   
   #printf("Wait a bit; at 1000 permutations, this should take some time")
   res.aov <- anova_test(data = full_data, dv = mean_struct, wid = struct_id, between = datasource)
-  res.aov
+  print(colnames(res.aov))
+  print(res.aov)
   #printf("Done!")
   
   full_data$struct_id <- as.character(full_data$struct_id)
@@ -62,6 +63,9 @@ stats_permutations <- function(permutationrun_s, regionofinterest, sestan, which
     anova_test(mean_struct ~ datasource) %>%
     get_anova_table() %>%
     adjust_pvalue(method = "bonferroni")
+  
+  print(colnames(one.way2))
+  print(one.way2$p)
   
 
   if (which == "akey"){

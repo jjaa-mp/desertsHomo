@@ -3,11 +3,25 @@ source("./packages.R")
 lapply(list.files("./functions", full.names = TRUE), source)
 
 
-# make sure to check file dependency paths- otherwise this will throw an error 
-# load expression data - otherw
+# --
+# Dependencies
+# --
+
+# NOTE:
+# make sure to check file path (ideally, provide them in a folder in the
+# working directiory called "file dependencies/" with the, well, dependencies
+# - otherwise this will throw an error 
+
+# load expression data for sestan and the adult stages of ABA
 sestan = clean_sestan()
+abadult = dt_adults()
 # load deserts of introgression data
 akey = retrieve_GenesDeserts()
+
+
+# --
+# Permutations for Sestan data
+# --
 
 
 #Runs permutations in batches of 50
@@ -20,7 +34,7 @@ for (i in num){
   cleanperm[[i]] <- clean_perm_results(permutationrun)
 }
 
-# DESERTS
+# SESTAN: DESERTS
 # reduces them to single permutation file
 cleanperm <- cleanperm %>%  
   purrr::reduce(full_join)
@@ -46,10 +60,52 @@ ph_chen_adolescence = stats_permutations_stages(rawperm, akey, sestan, "akey", "
 ph_chen_adult = stats_permutations_stages(rawperm, akey, sestan, "akey", "adult")
 
 
-# DESETS + POSITIVE SELECTION
+# SESTAN: DESETS + POSITIVE SELECTION
+pey <- read_table2("file_dependencies/2020_pey_coords.bed", 
+                                col_names = FALSE)
+pey_coords <- biominput(pey, akey, TRUE) # Genes within Akey and Peyregne
 
 
-stats_sestperm_chenpey = stats_permutations_s(permrun_s, pey_coords, sestan, "peycoords")
+stats_sestperm_chenpey = stats_permutations(cleanperm, pey_coords, sestan, "peycoords")
 diffplot2 = difference_perm_sestan(stats_sestperm_chenpey, "sestan_", "chenpey", 8)
 outliers_sestan_chenpey = detect_outlier_tb(stats_sestperm_chenpey, diffplot2, "sestan_chenpey")
 
+
+# posthocs per stage
+ph_chenpey_fetal1 = stats_permutations_stages(rawperm, pey_coords, sestan, "peycoords", "fetal1")
+ph_chenpey_fetal2 = stats_permutations_stages(rawperm, pey_coords, sestan, "peycoords", "fetal2")
+ph_chenpey_fetal3 = stats_permutations_stages(rawperm, pey_coords, sestan, "peycoords", "fetal3")
+ph_chenpey_birth_inf = stats_permutations_stages(rawperm, pey_coords, sestan, "peycoords", "birth_inf")
+ph_chenpey_inf_child = stats_permutations_stages(rawperm, pey_coords, sestan, "peycoords", "inf_child")
+ph_chenpey_child = stats_permutations_stages(rawperm, pey_coords, sestan, "peycoords", "child")
+ph_chenpey_adolescence = stats_permutations_stages(rawperm, pey_coords, sestan, "peycoords", "adolescence")
+ph_chenpey_adult = stats_permutations_stages(rawperm, pey_coords, sestan, "peycoords", "adult")
+
+
+
+# --
+# Permutations for ABA data
+# --
+
+#Runs permutations in batches of 50
+num <- 1:30
+cleanperm <- NULL 
+rawperm <- NULL 
+for (i in num){
+  permutationrun <- permutation_test(50, abadult, i)
+  rawperm[[i]] <- permutationrun
+  cleanperm[[i]] <- clean_perm_results(permutationrun)
+}
+
+# reduces them to single permutation file
+cleanperm <- cleanperm %>%  
+  purrr::reduce(full_join)
+
+# ABA: DESERTS
+permutationstats = stats_permutations(cleanperm, akey, abadult, "akey")
+pdiffplot1 = difference_perm_sestan(permutationstats, "ABA_",  "chen", 40)
+outliers_ABA_chen = detect_outlier_tb(permutationstats, pdiffplot1, "ABA_chen")
+
+permutationstats_pey = stats_permutations(cleanperm, pey_coords, abadult, "peycoords")
+pdiffplot2 = difference_perm_sestan(permutationstats_pey, "ABA_", "chenpey", 40)
+outliers_ABA_chenpey = detect_outlier_tb(permutationstats_pey, pdiffplot2, "ABA_chenpey")
