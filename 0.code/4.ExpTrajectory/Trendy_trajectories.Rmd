@@ -432,10 +432,10 @@ pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = 
 
 
 #Selected genes
-#par(mfrow=c(3,2))
-#pdf("~/MDT_GenesDesertsPosSel_ABA.pdf")
-#plot2 <- plotFeature(aabb,tVectIn = time.vector,featureNames = c("ST7", "ROBO2", "CADPS2", "GPR22", "BCAP29", "KCND2", "SLC15A1"),trendyOutData = res)
-#dev.off()
+par(mfrow=c(2,2))
+pdf("~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_GenesDesertsPosSel_ABA.pdf")
+plot2 <- plotFeature(aabb,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "SLC16A1"),trendyOutData = res)
+dev.off()
 
 
 #par(mfrow=c(3,2))
