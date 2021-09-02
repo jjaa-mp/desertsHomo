@@ -205,7 +205,7 @@ plot2 <- plotFeature(finalmdt,tVectIn = time.vector,featureNames = c("ROBO2", "S
 
 pdf("~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_GenesDesertPosSel.pdf")
 par(mfrow=c(3,2))
-plot2 <- plotFeature(finalmdt,tVectIn = time.vector,featureNames = c("ROBO2", "ST7", "SYT6"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child"), xlab="")
+plot2 <- plotFeature(finalmdt,tVectIn = time.vector,featureNames = c("ROBO2", "ST7"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child"), xlab="")
 dev.off()
 ```
 
@@ -329,7 +329,7 @@ pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks
 
 sb_inDesPey <- res.top$Trends[rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol],]
 
-pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_UpDown_DesertsPosSel.pdf")
+pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_UpDown_DesertsPosSel_ABA.pdf")
 
 
 #Selected genes
