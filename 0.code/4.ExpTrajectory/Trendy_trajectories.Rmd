@@ -159,6 +159,55 @@ plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "B
 dev.off()
 ```
 
+#THALAMUS
+```{r}
+mdtakey <- filter(finalakeySestan1, Regioncode == "MD")
+mdtakey <- arrange(mdtakey, Window)
+time.vector <- mdtakey$Window
+mdtakey <- mdtakey %>% unite("code", c("Braincode","Regioncode","Window"))
+rownames(mdtakey) <- mdtakey$code
+mdtakey$code <- NULL
+
+mdtakey1 <- as_tibble(mdtakey)
+
+cols.num <- colnames(mdtakey1)
+mdtakey1[,cols.num] <- lapply(mdtakey1[cols.num],as.character)
+mdtakey1[,cols.num] <- lapply(mdtakey1[cols.num],as.numeric)
+
+finalmdt <- t(mdtakey1)
+colnames(finalmdt) <- time.vector 
+set.seed(10)
+res <- trendy(Data = finalmdt, tVectIn = time.vector, maxK = 3, minNumInSeg = 2, meanCut = 2)
+res <- results(res)
+res.top <- topTrendy(res)
+
+rmdt <- as.data.frame(res.top$AdjustedR2)
+names(rmdt) <- "MD - R2"
+write.csv(rmdt, file="~/desertsHomo/1.data/trendy_adjR2/MDT_GenesDesertPosSel_adjR2.csv", row.names = TRUE, quote=T)
+
+#Good fit in Des & Pos sel.
+rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol]
+
+res.trend <- trendHeatmap(res.top)
+##Heatmap homemade
+class(res.top$Trends)
+library(pheatmap)
+pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1), filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_UpDown_Deserts.pdf")
+
+sb_inDesPey <- res.top$Trends[rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol],]
+
+pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_UpDown_DesertsPosSel.pdf")
+
+
+#Selected genes
+par(mfrow=c(2,2))
+plot2 <- plotFeature(finalmdt,tVectIn = time.vector,featureNames = c("ROBO2", "ST7"),trendyOutData = res)
+
+pdf("~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_GenesDesertPosSel.pdf")
+par(mfrow=c(3,2))
+plot2 <- plotFeature(finalmdt,tVectIn = time.vector,featureNames = c("ROBO2", "ST7", "SYT6"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child"), xlab="")
+dev.off()
+```
 
 #ABADATA
 ```{r}
