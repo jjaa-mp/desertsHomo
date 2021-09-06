@@ -1,3 +1,147 @@
+#Packages
+```{r}
+#Packages
+library(biomaRt)
+library(factoextra)
+library(ABAData)
+library(ABAEnrichment)
+library(tsne)
+library(data.table)
+library(ggplot2)
+library(dplyr)
+library(GGally)
+library(viridis)
+library(ggpubr)
+library(grid)
+library(gridExtra)
+library(lattice)
+library(xlsx)
+library(tidyr)
+library(tidyverse)
+library(DescTools)
+library(reshape2)
+library(dplyr)
+library(Matrix)
+library(pheatmap)
+library(plyr)
+library(rstatix)
+```
+
+
+#Ensembl
+
+```{r}
+ensembl <- useMart(biomart = 'ENSEMBL_MART_ENSEMBL', 
+                   dataset = 'hsapiens_gene_ensembl',
+                   host = 'https://grch37.ensembl.org')
+
+filterlist <- c("1:105400000:120600000", "3:74100000:89300000", "7:106200000:123200000","8:49400000:66500000")
+#Random
+# filterlist <- c("1:24032465:39232465", "3:109334238:124534238", "7:133253620:150253620","8:66716836:83816836") 
+##Select only protein-coding from Akey
+# resultsRand=getBM(attributes = c("ensembl_gene_id","hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+                  
+results=getBM(attributes = c("hgnc_symbol","hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+              filters = c("chromosomal_region","biotype"),
+              values = list(chromosomal_region=filterlist,biotype="protein_coding"), mart = ensembl)
+results <- results[!duplicated(results$hgnc_symbol),]
+#255
+length(results$hgnc_symbol[!(is.na(results$hgnc_symbol) | results$hgnc_symbol=="")])
+
+
+#ALTERNATIVE: 800 genes (protein coding genes plus other genes)
+##results_alternative =getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position"),
+#filters = c("chromosomal_region"),
+#values = list(chromosomal_region=filterlist), mart = ensembl)
+##Save:
+#write.csv(results, file="2020_Genes_in_Deserts.csv")
+
+##Pey coordinates (Ensembl 1-based):
+pey_coords <- read.delim("desertsHomo/1.data/input_data/2020_pey_coords.bed", header=FALSE) #File with start 0-based
+###Preparing bed file for input in bioMart
+pey_coords$V1 <- gsub("chr", "", pey_coords$V1)
+pey_coords[2] <- pey_coords[2]+1 #Moving to 1-based for Ensembl
+peyCoords <- paste(pey_coords$V1, pey_coords$V2, pey_coords$V3, sep = ":")
+
+results_pey=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+                  filters = c("chromosomal_region","biotype"),
+                  values = list(chromosomal_region=peyCoords,biotype="protein_coding"), mart = ensembl)
+results_pey <- results_pey[!duplicated(results_pey$hgnc_symbol),]
+###Genes within Akey and Pey - RESULT
+both <- results_pey[results_pey$hgnc_symbol %in% results$hgnc_symbol,]
+both <-  both[!(is.na(both$hgnc_symbol) | both$hgnc_symbol==""), ] #Cleaning
+###Genes Pey not Akey - RESULT
+both_notAkey <- results_pey[!results_pey$hgnc_symbol %in% results$hgnc_symbol,]
+both_notAkey <-  both_notAkey[!(is.na(both_notAkey$hgnc_symbol) | both_notAkey$hgnc_symbol==""), ] #Cleaning
+resultsPeynotAkey<-both_notAkey
+```
+
+#Akey in Sestan data
+```{r}
+mRNAseqData=read.table("~/AA_investigation/Introgression_deserts/code/new_brain_data/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+modsb1= mRNAseqData %>% 
+  separate(Geneid,c("EnsemblID","Genename"),extra="merge")
+modsb1$EnsemblID<-NULL
+#Filtering for Akey alone
+# results - (akey)/ results_pey - (akey+pey) / both_notAkey / (withoufilter whole)
+selectionData <- modsb1  %>% filter(modsb1$Genename %in% both_notAkey$hgnc_symbol)
+selectionData=t(selectionData)
+
+#As dataframe
+selectionData=as.data.frame(selectionData)
+
+colnames(selectionData) <- as.matrix(unlist(selectionData[1,]))
+selectionData <- selectionData[-1, ]
+
+selectionData <- cbind(info = rownames(selectionData), selectionData)
+rownames(selectionData) <- 1:nrow(selectionData)
+
+#duplicated columns - issue in raw data. Here: 
+colnames(selectionData)[duplicated(colnames(selectionData))] #1
+selectionData <- selectionData[, !duplicated(colnames(selectionData))]
+
+selectionData=selectionData %>% 
+  separate(info, c("Braincode","Regioncode"))
+selectionData = selectionData[-1,]
+#Normality
+#normcheck <- akeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+#normcheck$RPKM <- as.numeric(normcheck$RPKM)
+#ggqqplot(normcheck, "RPKM", facet.by = "Regioncode")
+
+#Transformation
+logselectionData <- selectionData
+
+cols.num <- colnames(logselectionData[3:ncol(logselectionData)])
+
+logselectionData[,cols.num] <- lapply(logselectionData[cols.num],as.character)
+logselectionData[,cols.num] <- lapply(logselectionData[cols.num],as.numeric)
+
+logselectionData[3:ncol(logselectionData)] <- log2(logselectionData[3:ncol(logselectionData)]+1)
+
+#Normality after transformation
+#lognormcheck <- logakeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
+#lognormcheck$RPKM <- as.numeric(lognormcheck$RPKM)
+#ggqqplot(lognormcheck, "RPKM", facet.by = "Regioncode")
+
+
+#Brining the metadata of the database
+library(readxl)
+metadatamRNAseq=read_xlsx("~/AA_investigation/Introgression_deserts/code/new_brain_data/mRNA-seq_QC.xlsx",skip = 3)
+
+
+modMetadatamRNAseq=na.omit(metadatamRNAseq)
+modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
+modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
+
+#With log
+finalselectionData=merge(modMetadatamRNAseq,logselectionData,by=c("Braincode", "Regioncode"))
+finalselectionData$Braincode <- NULL #important
+#Without log:
+#finalselectionData=merge(modMetadatamRNAseq,akeypeySestan,by=c("Braincode", "Regioncode"))
+
+```
+
+
 #rawSestan
 ```{r}
 load("~/finalraw2_inputPC.RData")
@@ -15,14 +159,14 @@ for (i in 2:9){
   windowPCA$Window<-NULL
   
   brainTopStruct<-read.csv("/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
-  colnames(brainTopStruct) <- c("Regioncode","FullReg")
+  colnames(brainTopStruct) <- c("Regioncode","brainAreas")
 
   windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
   
   pca_res <- prcomp(windowPCASt[,-1][,-1], scale. = TRUE)
   
   # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure) 
-  PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$FullReg)
+  PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas)
   PCi$topStructure <- str_replace(PCi$topStructure, ("Primary Auditory Cortex|Inferior Temporal Cortex|Orbital Prefrontal Cortex|Superior Temporal Cortex|Primary Visual Cortex|Dorsolateral Prefrontal Cortex|Posterior Inferior Parietal Cortex|Primary Motor Cortex|Medial Prefrontal Cortex|Primary Somatosensory Cortex|Ventrolateral Prefrontal Cortex"), "Neocortex")
  
   structDist<-hash()
@@ -233,12 +377,95 @@ supplfig_x <- ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
 ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_PsychEncode_distances/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 ```
 
+#JackStraw
+```{r}
+
+
+correspStage<-list()
+correspStage[[2]]<-"Fetal_1"
+correspStage[[3]]<-"Fetal_2"
+correspStage[[4]]<-"Fetal_3"
+correspStage[[5]]<-"Birth/Inf"
+correspStage[[6]]<-"Infan_Child"
+correspStage[[7]]<-"Child"
+correspStage[[8]]<-"Adolescent"
+correspStage[[9]]<-"Adult"
+
+akeySestan <- finalselectionDataWhole
+
+#jackSplot<-list()
+for( i in 2:9){
+  #CHANGE:akeyABAwind/akeyPeyABAwind/peyNotakeyABAwind/wholeABAwind
+#akeySestan <- from jm_Allen finalraw2 inputPC
+  windowPCA<- akeySestan %>% filter(Window==i)
+
+  windowPCA$Window<-NULL
+  
+  #brainTopStruct<-read.csv("desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
+  brainTopStruct<-brainTopStruct[c("Regioncode","brainAreas")]
+  windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
+  
+  pca_res <- prcomp(windowPCASt[,-1][,-1], scale. = TRUE)
+  
+  
+  counts<-data.frame(t(windowPCASt[,-1][,-1]))
+  meta<-data.frame(t(data.frame(t(windowPCASt[1:2]))))
+  seurat_obj<-CreateSeuratObject(counts, project = "SeuratProject", assay = "RNA", meta.data = meta)
+  #We have 16 features so we define the maximum number of PCS as 15
+  numpcs<-15
+  
+  #Then at some point we have 12 items in one case, we define in it in 11 pcs
+  if(nrow(counts)==12){
+    numpcs<-11
+  }
+  all.genes <- rownames(counts)
+  seurat_obj <- NormalizeData(seurat_obj)
+  seurat_obj <- ScaleData(seurat_obj, features = all.genes)
+  seurat_obj<-  FindVariableFeatures(seurat_obj)
+  seurat_obj <- RunPCA(seurat_obj,npcs =numpcs)
+  seurat_obj <- JackStraw(seurat_obj, num.replicate = 100)
+  seurat_obj <- ScoreJackStraw(seurat_obj, dims = 1:numpcs)
+  jackSplot[[i]]<-JackStrawPlot(seurat_obj, dims = 1:numpcs)+ggtitle(correspStage[[i]])
+
+}
+
+supplfig_x<-ggarrange(jackSplot[[2]],jackSplot[[3]],
+                      jackSplot[[4]],jackSplot[[5]], 
+                      jackSplot[[6]],jackSplot[[7]],
+                      jackSplot[[8]],jackSplot[[9]])
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/JackStraw_Sestan_whole_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+jackStrawPCAAkey=c(0,10,7,7,9,7,8,6,9)
+jackStrawPCAAkeyPey=c(0,12,8,8,7,7,9,7,11)
+jackStrawPCAPeyNotAkey=c(0,12,7,10,9,6,7,6,8)
+jackStrawPCAWhole=c(0,12,10,9,9,8,8,8,11)
+```
+
+
+
+
 #AKEY
 ```{r}
-akeySestan <- finalakeySestan1 #Input from jm_Allen
+setwd("~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code")
+
+correspStage<-list()
+correspStage[[2]]<-"Fetal_1"
+correspStage[[3]]<-"Fetal_2"
+correspStage[[4]]<-"Fetal_3"
+correspStage[[5]]<-"Birth/Inf"
+correspStage[[6]]<-"Infan_Child"
+correspStage[[7]]<-"Child"
+correspStage[[8]]<-"Adolescent"
+correspStage[[9]]<-"Adult"
+
+#finalselectionDataAkey/finalselectionDataPeyAkey/finalselectionDataPeyNotAkey/finalselectionDataWhole
+
+#finalselectionDataWhole<-finalselectionData
+akeySestan <- finalselectionDataWhole #Input from jm_Allen
 
 structDistWind<-list()
-
+varPCA<-list()
+plotsPCA<-list()
+plotsKmeans<-list()
 for (i in 2:9){
   
 #akeySestan <- from jm_Allen finalraw2 inputPC
@@ -246,18 +473,63 @@ for (i in 2:9){
 
   windowPCA$Window<-NULL
   
-  # brainTopStruct<-read.csv("desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
-  brainTopStruct<-brainTopStruct[c("Regioncode","FullReg")]
+  #brainTopStruct<-read.csv("desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
+  brainTopStruct<-brainTopStruct[c("Regioncode","brainAreas")]
   windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
   
   pca_res <- prcomp(windowPCASt[,-1][,-1], scale. = TRUE)
+  #tsne_res <- tsne(windowPCASt[,-1][,-1],max_iter = 1000)
   ev <- pca_res$sdev^2
+  jackStrawPCAAkey
+  #numPCA<-length(ev[ev>=1]) # Number of selected PCA by Kaiser’s rule
+  #numPCA<-ncol(tsne_res) #In case tnse and not PCA
+  #jackStrawPCAAkey/jackStrawPCAAkeyPey/jackStrawPCAPeyNotAkey/jackStrawPCAWhole
+  numPCA<-jackStrawPCAAkey[[i]]
   
-  numPCA<-length(ev[ev>=1]) # Number of selected PCA by Kaiser’s rule
-  # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure) 
-  PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$FullReg)
+  
+  PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) 
+  
+  #PCi<-data.frame(tsne_res,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas)
   PCi$topStructure <- str_replace(PCi$topStructure, ("Primary Auditory Cortex|Inferior Temporal Cortex|Orbital Prefrontal Cortex|Superior Temporal Cortex|Primary Visual Cortex|Dorsolateral Prefrontal Cortex|Posterior Inferior Parietal Cortex|Primary Motor Cortex|Medial Prefrontal Cortex|Primary Somatosensory Cortex|Ventrolateral Prefrontal Cortex"), "Neocortex")
- 
+  
+  
+  
+  
+  # res.km <- kmeans(scale(windowPCASt[,-1][,-1]), 3, nstart = 25)
+  # 
+  # ind.coord <- as.data.frame(get_pca_ind(pca_res)$coord)
+  # # Add clusters obtained using the K-means algorithm
+  # ind.coord$cluster <- factor(res.km$cluster)
+  # # Add Species groups from the original data sett
+  # 
+  # ind.coord$brainAreas <- windowPCASt$brainAreas
+  # 
+  # eigenvalue <- round(get_eigenvalue(pca_res), 1)
+  # variance.percent <- eigenvalue$variance.percent
+  # plot<-ggscatter(
+  #   ind.coord, x = "Dim.1", y = "Dim.2", 
+  #   color = "cluster", palette = "npg", ellipse = TRUE, ellipse.type = "convex",
+  #   shape = "brainAreas", size = 1.5,  legend = "right", ggtheme = theme_bw()
+  # ) + xlab(correspStage[[i]])+ stat_mean(aes(color = cluster), size = 0.5)
+  # plotsKmeans[[i]]<-plot
+  
+  
+  #PCA plots
+  ind.p <- fviz_pca_ind(pca_res, geom = "point", col.ind = PCi$topStructure)
+  plotsPCA[[i]]<-ggpubr::ggpar(ind.p,
+                       title = correspStage[[i]],
+                       caption = "Source: factoextra",
+                       xlab = "PC1", ylab = "PC2",
+                       legend.title = "Species", legend.position = "top",
+                       ggtheme = theme_gray(), palette = "jco"
+  )
+  
+  #Variance PCA
+  pca_res.ve <- ev/sum(ev)
+  vardf<-data.frame(var=pca_res.ve, PCA=1:length(pca_res.ve))
+  varPCA[[i]]<- ggplot(vardf, aes(PCA, var)) +labs(x="Principal Component",ylab="Proportion of Variance Explained")+ggtitle(paste('Scree plot,','Krule: ',toString(length(ev[ev>=1]))))+
+    geom_line() +
+    geom_point()
   structDist<-hash()
   for (structure in unique(PCi$topStructure)){
   
@@ -328,10 +600,10 @@ for (i in 2:9){
 #load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
 
 
-ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
-          boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
-          boxplotsDist[[8]],boxplotsDist[[9]],
-          common.legend = TRUE, legend = "right")
+# ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
+#           boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
+#           boxplotsDist[[8]],boxplotsDist[[9]],
+#           common.legend = TRUE, legend = "right")
 
 #Pairwise wilcox tests
 wilcoxTests<-data.frame(matrix(ncol=48,nrow = 6))
@@ -453,13 +725,13 @@ pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) 
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
 #write.csv(willCoxPvals, file="~/desertsHomo/1.data/distances_pvalues/wilcox_akeySestan.csv")
 
-write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_PsychEncode_distances/wilcox_peynotAkeySestan.csv")
+write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/JSPCA_Sestan_distances/wilcox_wholeSestan.csv")
 
 ##PREPARING SUPPL FIGURE
 #load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
 subfigx <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
+  geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5)
 #load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
 ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
           boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
@@ -473,222 +745,30 @@ supplfig_x <- ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
 supplfig_x
 #ggsave(supplfig_x, file="~/desertsHomo/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 
-ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_PsychEncode_distances/filtered_PeyNotAkey_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/JSPCA_Sestan_distances/filtered_whole_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+supplfig_x<-ggarrange( plotsKmeans[[2]],plotsKmeans[[3]],
+                      plotsKmeans[[4]],plotsKmeans[[5]],plotsKmeans[[6]],
+                      plotsKmeans[[7]],plotsKmeans[[8]],plotsKmeans[[9]],
+                      common.legend = TRUE, legend = "right")
+
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/Kmeans_Sestan/filtered_whole_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+supplfig_x<-ggarrange(varPCA[[2]],varPCA[[3]],
+                      varPCA[[4]],varPCA[[5]],
+                      varPCA[[6]],varPCA[[7]],
+                      varPCA[[8]],varPCA[[9]],
+                      common.legend = TRUE, legend = "right")
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/varPCA/variancePCA_PeyNotAkeySestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+supplfig_x<-ggarrange(plotsPCA[[2]], plotsPCA[[2]],plotsPCA[[3]],
+                      plotsPCA[[4]],plotsPCA[[5]],
+                      plotsPCA[[6]], plotsPCA[[7]],plotsPCA[[8]],
+                      plotsPCA[[9]],
+                      common.legend = TRUE, legend = "right")
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/PCA_Sestan_whole_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 ```
 
-#AKEPEY
-```{r}
-akeypeySestan <- finalakeypeySestan #Input from jm_Allen or load("finalraw2_inputPC.RData")
-#setwd("~/Documents/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code")
-akeypeySestan[1] <- NULL
-
-structDistWind<-list()
-
-for (i in 2:9){
-  windowPCA<- akeypeySestan %>% filter(Window==i)
-
-  windowPCA$Window<-NULL
-  
-  # brainTopStruct<-read.csv("~/desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
-  colnames(brainTopStruct) <- c("Regioncode","FullReg")
-
-  windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
-  
-  pca_res <- prcomp(windowPCASt[,-1][,-1], scale. = TRUE)
-  
-  # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure) 
-  PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$FullReg)
-  PCi$topStructure <- str_replace(PCi$topStructure, ("Primary Auditory Cortex|Inferior Temporal Cortex|Orbital Prefrontal Cortex|Superior Temporal Cortex|Primary Visual Cortex|Dorsolateral Prefrontal Cortex|Posterior Inferior Parietal Cortex|Primary Motor Cortex|Medial Prefrontal Cortex|Primary Somatosensory Cortex|Ventrolateral Prefrontal Cortex"), "Neocortex")
- 
-  structDist<-hash()
-  for (structure in unique(PCi$topStructure)){
-  
-    dfStructure<-PCi %>% filter(topStructure==structure)
-    dfOtherStructures<-PCi %>% filter(topStructure!=structure)
-    distancesStruct<-c()
-    sdStruct<-c()
-    for (row in 1:nrow(dfStructure)) {
-      xstruct<-dfStructure[row,]$PC1
-      ystruct<-dfOtherStructures[row,]$PC2
-      nrowsOthers<-nrow(dfOtherStructures)
-      listDist<-c()
-      for (rowOth in 1:nrowsOthers){
-        xOtherstruct<-dfOtherStructures[rowOth,]$PC1
-        yOtherstruct<-dfOtherStructures[rowOth,]$PC2
-        distance<-dist(matrix(c(xstruct,ystruct,xOtherstruct,yOtherstruct),nrow=2,ncol=2),diag=TRUE)
-        #print(c("Distance:",distance))
-        listDist<-append(listDist,distance[1])
-        nrowsOthers
-      }
-      distancesStruct<-append(distancesStruct,listDist)
-      sdStruct<-append(sdStruct,sd(listDist))
-      print(paste("Distance ",structure,": list->",head(listDist),"; sd->",sd(listDist)))
-    }
-  structDist[[structure]]<-c(distancesStruct,mean(sdStruct))
-  }
-structDistWind[[i]]<-structDist
-}
-
-#Boxplots
-correspStage<-list()
-correspStage[[2]]<-"Fetal_1"
-correspStage[[3]]<-"Fetal_2"
-correspStage[[4]]<-"Fetal_3"
-correspStage[[5]]<-"Birth/Inf"
-correspStage[[6]]<-"Infan_Child"
-correspStage[[7]]<-"Child"
-correspStage[[8]]<-"Adolescent"
-correspStage[[9]]<-"Adult"
-
-boxplotDistakeypey<-list()
-valoresStruct <- list() 
-for (i in 2:9){
-  structDist<-structDistWind[[i]]
-  for (structure in keys(structDist)){
-    valoresStruct[[structure]]<-values(structDist[structure])
-  }
-#In a melting pot
-  valoresStructdf <- melt(valoresStruct)
-  valoresStructdf$Var1<-NULL
-  valoresStructdf$L1<-NULL
-
-# prepare a special xlab with the number of obs for each group
-  my_xlab <- paste(levels(valoresStructdf$Var1),"\n(N=",table(valoresStructdf$Var1),")",sep="")
-  colnames(valoresStructdf) <- c("Structures", "Distance")
-# plot
-  boxplotDistakeypey[[i]]<-ggplot(valoresStructdf, aes(x=Structures, y=Distance, fill=Structures)) + geom_boxplot(varwidth = TRUE, alpha=0.5) +
-  theme(legend.position="none",axis.text.x = element_blank()) + xlab(correspStage[[i]])
-}
-
-#save(boxplotDistakeypey, file = "boxplotsFilteredRawSestan.R")
-
-#BOXPLOTS:
-#load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
-
-boxplotDistakeypey[[2]]
-ggarrange(boxplotDistakeypey[[2]], boxplotDistakeypey[[3]],boxplotDistakeypey[[4]],
-          boxplotDistakeypey[[5]],boxplotDistakeypey[[6]],boxplotDistakeypey[[7]],
-          boxplotDistakeypey[[8]],boxplotDistakeypey[[9]],
-          common.legend = TRUE, legend = "right")
-
-#Pairwise wilcox tests
-wilcoxTests<-data.frame(matrix(ncol=48,nrow = 6))
-wilcoxTestsCol<-c()
-for (wind in 2:9){
-  for (str in keys(structDist)){
-    wilcoxTestsCol<-append(wilcoxTestsCol,paste(str,"_",wind))
-  }
-}
-colnames(wilcoxTests)<-wilcoxTestsCol
-rownames(wilcoxTests)<-keys(structDist)
-pairwiseWilcox<-list()
-for (i in 2:9){
-  structDist<-structDistWind[[i]]
-  structs<-c()
-  valuesDist<-c()
-  for(str in keys(structDist)){
-    structs<-append(structs,rep(str,length(values(structDist[str]))))
-    valuesDist<-append(valuesDist,values(structDist[str]))
-  }
-  pairwiseWilcox[[correspStage[[i]]]]<-as.data.frame(pairwise.wilcox.test(valuesDist,structs, p.adj = "bonf")$p.value)
-}
-#save(pairwiseWilcox, "pairwiseWilcox_filteredRawSestan.RData")
-#write.xlsx(pairwiseWilcox,"pairwiseWilcoxFilteredRawSestan.xlsx",col.names=TRUE,row.names=TRUE)
-
-#load("~/tmp_wilcoxtests/pairwiseWilcox_filteredRawSestan.RData")
-
-colMeans(wilcoxTests, na.rm = TRUE)
-
-wilcoxTests<-data.frame(matrix(ncol=48,nrow = 6))
-wilcoxTestsCol<-c()
-for (wind in 2:9){
-  for (str in keys(structDist)){
-    wilcoxTestsCol<-append(wilcoxTestsCol,paste(str,"_",wind))
-  }
-}
-colnames(wilcoxTests)<-wilcoxTestsCol
-rownames(wilcoxTests)<-keys(structDist)
-for (i in 2:9){
-  #Restructuring the data
-  #Introducing to the dataframe
-  
-  isSaved<-list()
-  pairwiseData<-pairwiseWilcox[[correspStage[[i]]]]
-  for(str in keys(structDist)){
-    for(str2 in keys(structDist)){
-      print(paste(str,"-->",str2,": ",pairwiseData[str,str2],is.null(pairwiseData[str,str2]),is.na(pairwiseData[str,str2])))
-      #isSaved[[paste(str,str2)]-->isSaved[[paste(str2,str)] for just half of the tables
-      if((is.null(isSaved[[paste(str,str2)]]))&&(str!=str2)){
-        if(!is.null(pairwiseData[str,str2])){
-          if(!is.na(pairwiseData[str,str2])){
-            wilcoxTests[str2,paste(str,"_",i)]<-pairwiseData[str,str2]
-          }else{
-            if(!is.null(pairwiseData[str2,str])){
-              if(!is.na(pairwiseData[str2,str])){
-                wilcoxTests[str2,paste(str,"_",i)]<-pairwiseData[str2,str]
-              }else{
-                wilcoxTests[str2,paste(str,"_",i)]<-NA
-              }
-            }else{
-              wilcoxTests[str2,paste(str,"_",i)]<-NA
-            }
-          }
-        } else if(!is.null(pairwiseData[str2,str])){
-          if(!is.na(pairwiseData[str2,str])){
-              wilcoxTests[str2,paste(str,"_",i)]<-pairwiseData[str2,str]
-            }else{
-              wilcoxTests[str2,paste(str,"_",i)]<-NA
-            }
-          }else{
-            wilcoxTests[str2,paste(str,"_",i)]<-NA
-          }
-          
-        }else{
-          wilcoxTests[str2,paste(str,"_",i)]<-NA
-        }
-        isSaved[[paste(str,str2)]]<-TRUE
-      
-    }
-  }
-}
-
-willcoxPvaluesAVG<-as.data.frame(t(colMeans(wilcoxTests,na.rm=TRUE)))
-
-# wilcoxAkeyDist.csv/wilcoxAkeyPeyDist.csv
-#write.csv(wilcoxTests,"wilcoxAkeyDist.csv")
-
-willCoxPvals<-as.data.frame(list("Structure","window","log2pvalAVG"))
-colnames(willCoxPvals)<-c("Structure","window","log2pvalAVG")
-willCoxPvals$log2pvalAVG<-as.numeric(willCoxPvals$log2pvalAVG)
-willCoxPvals<-willCoxPvals[-1,]
-for (col in colnames(willcoxPvaluesAVG)){
-  #change the window number
-  willCoxPvals<-willCoxPvals %>% add_row(Structure=strsplit(col," _ ")[[1]][1],window=strsplit(col," _ ")[[1]][2],log2pvalAVG=willcoxPvaluesAVG[col][[1]])
-}
-willCoxPvals$log2pvalAVG<-log2(willCoxPvals$log2pvalAVG)
-
-
-willCoxPvals$window <- str_replace(willCoxPvals$window, "2", "Fetal_1")
-willCoxPvals$window <- str_replace(willCoxPvals$window, "3", "Fetal_2")
-willCoxPvals$window <- str_replace(willCoxPvals$window, "4", "Fetal_3")
-willCoxPvals$window <- str_replace(willCoxPvals$window, "5", "Birth/Inf")
-willCoxPvals$window <- str_replace(willCoxPvals$window, "6", "Inf/Child")
-willCoxPvals$window <- str_replace(willCoxPvals$window, "7", "Child")
-willCoxPvals$window <- str_replace(willCoxPvals$window, "8", "Adolescence")
-willCoxPvals$window <- str_replace(willCoxPvals$window, "9", "Adult")
-
-willCoxPvals$window = factor(willCoxPvals$window, 
-    levels=c("Fetal_1","Fetal_2","Fetal_3","Birth/Inf","Inf/Child", "Child","Adolescence", "Adult"))
-
-
-ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
-  geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
-pvalAKEYPEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
-  geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
-
-```
 
 #Table p-values
 ```{r}
@@ -722,4 +802,48 @@ pvalb<-arrangeGrob(pvalAKEYPEY, top = textGrob("B", x = unit(0, "npc"), y   = un
 pvals_inter<-grid.arrange(pvala, pvalb)
 
 ggsave(file="~/desertsHomo/2.plots/Sestan_AkeyPey_log2_median/sf_pvals_ak_akpey.pdf", pvals_inter, width = 11.69, height = 8.27, units = "in")
+```
+
+```{r}
+wilcox_AkeyPeySestan<-read.csv("~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_AkeyPeySestan.csv")
+wilcox_AkeyPeySestan$X<-NULL
+wilcox_AkeyPeySestan$Structure <- paste0(wilcox_AkeyPeySestan$Structure," - AkeyPey")
+
+wilcox_AkeySestan<-read.csv("~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_AkeySestan.csv")
+wilcox_AkeySestan$X<-NULL
+wilcox_AkeySestan$Structure <- paste0(wilcox_AkeySestan$Structure," - Akey")
+
+wilcox_PeyNotAkeySestan<-read.csv("~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_PeyNotAkeySestan.csv")
+wilcox_PeyNotAkeySestan$X<-NULL
+wilcox_PeyNotAkeySestan$Structure <- paste0(wilcox_PeyNotAkeySestan$Structure," - PeyNotAkey")
+
+
+wilcox_wholeSestan<-read.csv("~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_wholeSestan.csv")
+wilcox_wholeSestan$X<-NULL
+wilcox_wholeSestan$Structure <- paste0(wilcox_wholeSestan$Structure," - whole")
+
+wilcoxAll<-rbind(wilcox_AkeySestan,wilcox_AkeyPeySestan,wilcox_PeyNotAkeySestan,wilcox_wholeSestan)
+
+library(stringr)
+library(dplyr)
+structures<-c("Cerebellum","Neocortex","Amygdala","Striatum","Hippocampus","Mediodorsal Nucleus of the Thalamus")
+graphSupp<-list()
+for (i in 1:6){
+  wilcoxStruct<-wilcoxAll %>%
+  filter(str_detect(Structure, structures[[i]]))
+
+wilcoxStruct$window <- factor(wilcoxStruct$window, levels=c("Fetal_1", "Fetal_2", "Fetal_3","Birth/Inf","Inf/Child","Child","Adolescence","Adult"))
+graphSupp[[i]] <- ggplot(wilcoxStruct, aes(x=window, y=log2pvalAVG, group=Structure)) +
+  geom_line(aes(color=Structure))+
+  geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5)
+subfigx
+}
+
+
+
+supplfig_x<-ggarrange(graphSupp[[1]], graphSupp[[2]],graphSupp[[3]],
+                      graphSupp[[4]],graphSupp[[5]],
+                      graphSupp[[6]], legend = "right")
+supplfig_x
+ggsave(graphSupp[[6]], file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/wilcox_plot_thalamus.pdf", width = 11.69, height = 8.27, units = "in")
 ```

@@ -1,5 +1,10 @@
 #Preparing ABAdata for PCA and distances analysis
+library(tsne)
 library(biomaRt)
+library(Seurat)
+library(ggplot2)
+library(fviz_pca_ind)
+library("factoextra")
 library(ABAData)
 library(ABAEnrichment)
 library(data.table)
@@ -7,6 +12,7 @@ library(ggplot2)
 library(dplyr)
 library(GGally)
 library(viridis)
+library(factoextra)
 library(ggpubr)
 library(grid)
 library(gridExtra)
@@ -22,6 +28,8 @@ library(pheatmap)
 library(plyr)
 library(rstatix)
 library(matrixStats)
+library(cluster)
+library(purrr)
 
 #Genes within Desert region coordinates
 ##Using hg19 genome
@@ -101,7 +109,7 @@ for (i in 1:length(ab)){
 akeyABA = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
 for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
   for (h in 1:length(names(ab[[i]]))){
-    akeyABA[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% resultsAkey$hgnc_symbol,] #in Akey
+    akeyABA[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% results$hgnc_symbol,] #in Akey
     akeyABA[[i]][[h]] <-  akeyABA[[i]][[h]][!(is.na(akeyABA[[i]][[h]][[2]]) | akeyABA[[i]][[h]][[2]]==""), ]
     # akeyABA[[i]][[h]][1] <- log2(akeyABA[[i]][[h]][1]+1)
     #Cleaning
@@ -156,7 +164,7 @@ for(i in 1:5){
 akeyPeyABA = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
 for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
   for (h in 1:length(names(ab[[i]]))){
-    akeyPeyABA[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% resultsAkeyPey$hgnc_symbol,] #in Akey
+    akeyPeyABA[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% both$hgnc_symbol,] #in Akey
     akeyPeyABA[[i]][[h]] <-  akeyPeyABA[[i]][[h]][!(is.na(akeyPeyABA[[i]][[h]][[2]]) | akeyPeyABA[[i]][[h]][[2]]==""), ]
     # akeyPeyABA[[i]][[h]][1] <- log2(akeyPeyABA[[i]][[h]][1]+1)
     #Cleaning
@@ -184,7 +192,7 @@ for(i in 1:5){
 peyNotakeyABA = vector(mode="list", length = length(ab)) #Creating empty list with 5 elements as ab
 for (i in 1:length(ab)){ #(h in 1:length(names(ab[[i]]))) to generate same number of dataframes (in this case 16) as original in ab 
   for (h in 1:length(names(ab[[i]]))){
-    peyNotakeyABA[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% resultsPeynotAkey$hgnc_symbol,] #in Akey
+    peyNotakeyABA[[i]][[h]] <- ab1[[i]][[h]][ab1[[i]][[h]][[2]] %in% PeyNotAkey$hgnc_symbol,] #in Akey
     peyNotakeyABA[[i]][[h]] <-  peyNotakeyABA[[i]][[h]][!(is.na(peyNotakeyABA[[i]][[h]][[2]]) | peyNotakeyABA[[i]][[h]][[2]]==""), ]
     # akeyABA[[i]][[h]][1] <- log2(akeyABA[[i]][[h]][1]+1)
     #Cleaning
@@ -213,38 +221,73 @@ for(i in 1:5){
 
 #ABA
 #akeyPeyABAwind here you can calculate the PCA for each window for the selected sets akeyABAwind/akeyPeyABAwind/peyNotAkeyABAwind/wholeABAwind
-windowPCA<-akeyPeyABAwind[[5]] #example
-windowPCA$Window<-NULL
-
-brainTopStruct<-read.csv("desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
-windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
-
-pca_res <- prcomp(windowPCASt[,-1][,-1][,-1][,-1], scale. = TRUE)
 
 
+correspStage<-list()
+correspStage[[1]]<-"Prenatal"
+correspStage[[2]]<-"Infant"
+correspStage[[3]]<-"Child"
+correspStage[[4]]<-"Adolescent"
+correspStage[[5]]<-"Adult"
+
+jackSplot<-list()
+for( i in 1:5){
+  #CHANGE:akeyABAwind/akeyPeyABAwind/peyNotakeyABAwind/wholeABAwind
+  windowPCA<-wholeABAwind[[i]] #example
+  windowPCA$Window<-NULL
+  brainTopStruct<-read.csv("desertsHomo/0.code/brainRegionCorresp.csv",sep=":")
+  windowPCASt=merge(brainTopStruct,windowPCA,by="Regioncode")
+  
+  
+  counts<-data.frame(t(windowPCASt[,-1][,-1][,-1][,-1]))
+  meta<-data.frame(t(data.frame(t(windowPCASt[1:4]))))
+  seurat_obj<-CreateSeuratObject(counts, project = "SeuratProject", assay = "RNA", meta.data = meta)
+  #We have 16 features so we define the maximum number of PCS as 15
+  numpcs<-15
+  
+  #Then at some point we have 12 items in one case, we define in it in 11 pcs
+  if(nrow(counts)==12){
+    numpcs<-11
+  }
+  all.genes <- rownames(counts)
+  seurat_obj <- NormalizeData(seurat_obj)
+  seurat_obj <- ScaleData(seurat_obj, features = all.genes)
+  seurat_obj<-  FindVariableFeatures(seurat_obj)
+  seurat_obj <- RunPCA(seurat_obj,npcs =numpcs)
+  seurat_obj <- JackStraw(seurat_obj, num.replicate = 100)
+  seurat_obj <- ScoreJackStraw(seurat_obj, dims = 1:numpcs)
+  jackSplot[[i]]<-JackStrawPlot(seurat_obj, dims = 1:numpcs)+ggtitle(correspStage[[i]])
+
+}
+correspStage[[i]]
+tsne_res <- tsne(windowPCASt[,-1][,-1][,-1][,-1])
+ev <- pca_res$sdev^2
 pca_res.ve <- ev/sum(ev)
-
-par(mfrow = c(1,2), mar = c(4,5,3,1))
-plot(pca_res.ve,
-     xlab = "Principal Component",
-     ylab = "Proportion of Variance Explained", 
-     ylim = c(0,1), 
-     type = 'b',
-     main = 'Scree plot')
-
-plot(cumsum(pca_res.ve), 
-     xlab = "Principal Component", 
-     ylab = "Cumulative Proportion of\nVariance Explained", 
-     ylim = c(0,1),
-     type = 'b',
-     main = 'Scree plot')
-
-cumsum(ev/sum(ev))
+varPCA<-{par(mfrow = c(1,2), mar = c(4,5,3,1))
+  plot(pca_res.ve,
+       xlab = "Principal Component",
+       ylab = "Proportion of Variance Explained",  
+       type = 'b',
+       main = paste('Scree plot,','Krule: ',toString(length(ev[ev>=1]))))
+  
+  plot(cumsum(pca_res.ve), 
+       xlab = "Principal Component", 
+       ylab = "Cumulative Proportion of\nVariance Explained", 
+       type = 'b',
+       main = paste('Scree plot,','Krule: ',toString(length(ev[ev>=1]))))
+}
+numPCA<-length(ev[ev>=1]) # Number of selected PCA by Kaiser’s rule
 #With alternative sets
 
 # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure)
 PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) #Neocortex
-PCi
+
+autoplot(pca_res, data = PCi, colour = 'Species', shape = FALSE,label.size=6)
+tsnei<-data.frame(tsne_res,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) #Neocortex
+tsnei
+set.seed(123)
+
+
 #Generating the plot of the pca for each window: w1,w2,w3,w4,w5
 w5<-ggplot(PCi,aes(x=PC1,y=PC2,col=topStructure))+
   geom_point(size=3,alpha=1)+ #Size and alpha just for fun
@@ -252,7 +295,15 @@ w5<-ggplot(PCi,aes(x=PC1,y=PC2,col=topStructure))+
   theme_classic()#+
   #   theme(legend.position = "none")
 
-w5
+ind.p <- fviz_pca_ind(pca_res, geom = "point", col.ind = PCi$topStructure)
+plot2<-ggpubr::ggpar(ind.p,
+              title = ,
+              caption = "Source: factoextra",
+              xlab = "PC1", ylab = "PC2",
+              legend.title = "Species", legend.position = "top",
+              ggtheme = theme_gray(), palette = "jco"
+)
+ggarrange(plot1,plot2)
 #Joining plots
 # ggarrange(w1, w2,w3,w4,w5, labels = c("prenatal", "infant","child","adolsecent","adult"),
 #          common.legend = TRUE, legend = "right")
@@ -260,14 +311,25 @@ w5
 # ggsave(file="ABA_PCA_WindowsAkeyPeyNCXnoLog.pdf", width = 11.69, height = 8.27) #axample
 
 #Euclidean distance between brain regions
-library(hash)
 
+
+correspStage<-list()
+correspStage[[1]]<-"Prenatal"
+correspStage[[2]]<-"Infant"
+correspStage[[3]]<-"Child"
+correspStage[[4]]<-"Adolescent"
+correspStage[[5]]<-"Adult"
+
+library(hash)
+plotsKmeans<-list()
+plotsPCA<-list()
+varPCA<-list()
 structDistWind<-list()
 for (i in 1:5){
   
 #CHANGE:akeyABAwind/akeyPeyABAwind/peyNotakeyABAwind/wholeABAwind
   
-  windowPCA<-peyNotakeyABAwind[[i]]
+  windowPCA<-akeyABAwind[[i]]
   
   windowPCA$Window<-NULL
   
@@ -279,12 +341,54 @@ for (i in 1:5){
   if(length(windowPCAStTemp)==0){
     windowPCAStTemp<-windowPCASt[,-1][,-1][,-1][,-1]
   }
+  
   pca_res <- prcomp(windowPCAStTemp, scale. = TRUE)
-  # PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$topStructure) 
-  PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) #with neocortex
+  #tsne_res <- tsne(windowPCAStTemp) # Alternative to PCA
+  PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) 
+  #PCi<-data.frame(tsne_res,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) #with neocortex
+  
+  #PCA plots
+  ind.p <- fviz_pca_ind(pca_res, geom = "point", col.ind = PCi$topStructure)
+  plotsPCA[[i]]<-ggpubr::ggpar(ind.p,
+                       title = correspStage[[i]],
+                       caption = "Source: factoextra",
+                       xlab = "PC1", ylab = "PC2",
+                       legend.title = "Species", legend.position = "top",
+                       ggtheme = theme_gray(), palette = "jco"
+  )
+  #tsnei<-data.frame(tsne_res,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) #Neocortex
+
   ev <- pca_res$sdev^2
+ 
+  # res.km <- kmeans(scale(windowPCAStTemp), 3, nstart = 25)
+  # 
+  # ind.coord <- as.data.frame(get_pca_ind(pca_res)$coord)
+  # # Add clusters obtained using the K-means algorithm
+  # ind.coord$cluster <- factor(res.km$cluster)
+  # # Add Species groups from the original data sett
+  # ind.coord$brainAreas <- windowPCASt$brainAreas
+  # 
+  
+  eigenvalue <- round(get_eigenvalue(pca_res), 1)
+  variance.percent <- eigenvalue$variance.percent
+  
+  # plot<-ggscatter(
+  #   ind.coord, x = "Dim.1", y = "Dim.2", 
+  #   color = "cluster", palette = "npg", ellipse = TRUE, ellipse.type = "convex",
+  #   shape = "brainAreas", size = 1.5,  legend = "right", ggtheme = theme_bw()
+  # ) + xlab(correspStage[[i]])+ stat_mean(aes(color = cluster), size = 0.5)
+  # 
+  # plotsKmeans[[i]]<-plot
   
   numPCA<-length(ev[ev>=1]) # Number of selected PCA by Kaiser’s rule
+  #numPCA<-ncol(tsne_res) #In case tnse and not PCA
+  # 
+  # pca_res.ve <- ev/sum(ev)
+  # vardf<-data.frame(var=pca_res.ve, PCA=1:length(pca_res.ve))
+  # varPCA[[i]]<- ggplot(vardf, aes(PCA, var)) +labs(x="Principal Component",ylab="Proportion of Variance Explained")+
+  #   geom_line() +
+  #   geom_point()
+  
   structDist<-hash()
   for (structure in unique(PCi$topStructure)){
     dfStructure<-PCi %>% filter(topStructure==structure)
@@ -305,7 +409,7 @@ for (i in 1:5){
         # zOtherstruct<-dfOtherStructures[rowOth,]$PC3
         distance<-dist(matrix(c(as.vector(pcasStruct),as.vector(pcasOtherStruct)),nrow=2,ncol=numPCA),diag=TRUE)
         # distance<-dist(matrix(c(xstruct,ystruct,zstruct,xOtherstruct,yOtherstruct,zOtherstruct),nrow=2,ncol=3),diag=TRUE)
-   
+        distance
         #print(c("Distance:",distance))
         listDist<-append(listDist,distance[1])
         nrowsOthers
@@ -478,6 +582,27 @@ for (i in 1:5){
 supplfig_x<-ggarrange(boxplotsDist[[1]], boxplotsDist[[2]],boxplotsDist[[3]],
           boxplotsDist[[4]],boxplotsDist[[5]],plotWill,
           common.legend = TRUE, legend = "right")
-write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_ABA_distances/wilcox_peyNoyAkeyABA.csv")
+write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/tnse_ABA_distances/wilcox_PeyNotAkeyABA.csv")
 # ggsave(file="ABA_Boxplots_DistancesAkeyPey.pdf", width = 11.69, height = 8.27)
-ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/PCA_ABA_distances/filtered_peyNoyAkey_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/tnse_ABA_distances/filtered_PeyNotAkeyABAwind_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+# supplfig_x<-ggarrange(plotsKmeans[[1]], plotsKmeans[[2]],plotsKmeans[[3]],
+#                       plotsKmeans[[4]],plotsKmeans[[5]],
+#                       common.legend = TRUE, legend = "right")
+# ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/Kmeans_ABA/filtered_PeyNotAkey_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+
+supplfig_x<-ggarrange(varPCA[[1]], varPCA[[2]],varPCA[[3]],
+                      varPCA[[4]],varPCA[[5]],
+                      common.legend = TRUE, legend = "right")
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/varPCA/variancePCA_ABA_whole_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+
+supplfig_x<-ggarrange(plotsPCA[[1]], plotsPCA[[2]],plotsPCA[[3]],
+                      plotsPCA[[4]],plotsPCA[[5]],
+                      common.legend = TRUE, legend = "right")
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/PCA_ABA_whole_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+supplfig_x<-ggarrange(jackSplot[[1]], jackSplot[[2]],jackSplot[[3]],
+                      jackSplot[[4]],jackSplot[[5]])
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/JackStraw_ABA_whole_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
