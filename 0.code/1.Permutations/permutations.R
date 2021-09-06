@@ -19,7 +19,7 @@ library(ggpubr)
 library(grid)
 library(gridExtra)
 library(lattice)
-library(xlsx)
+#library(xlsx)
 library(readxl)
 library(tidyr)
 library(DescTools)
@@ -434,25 +434,25 @@ detect_outlier_tb <- function(stats_dataframe, diffdf, which) {
 # Permutations for ABA data
 # --
 
-permutationrunABA1 = permutation_test_s(100,abadult,100) # 100 = the seed; has to change from perm run to perm run
+permutationrunABA1 = permutation_test_s(50,abadult,100) # 100 = the seed; has to change from perm run to perm run
 cleanpermABA1 = clean_perm_results_s(permutationrunABA1)
-permutationrunABA2 = permutation_test_s(100,abadult,101)
+permutationrunABA2 = permutation_test_s(50,abadult,101)
 cleanpermABA2 = clean_perm_results_s(permutationrunABA2)
-permutationrunABA3 = permutation_test_s(100,abadult,103)
+permutationrunABA3 = permutation_test_s(50,abadult,103)
 cleanpermABA3 = clean_perm_results_s(permutationrunABA3)
-permutationrunABA4 = permutation_test_s(100,abadult,104)
+permutationrunABA4 = permutation_test_s(50,abadult,104)
 cleanpermABA4 = clean_perm_results_s(permutationrunABA4)
-permutationrunABA5 = permutation_test_s(100,abadult,105)
+permutationrunABA5 = permutation_test_s(50,abadult,105)
 cleanpermABA5 = clean_perm_results_s(permutationrunABA5)
-permutationrunABA6 = permutation_test_s(100,abadult,106)
+permutationrunABA6 = permutation_test_s(50,abadult,106)
 cleanpermABA6 = clean_perm_results_s(permutationrunABA6)
-permutationrunABA7 = permutation_test_s(100,abadult,107)
+permutationrunABA7 = permutation_test_s(50,abadult,107)
 cleanpermABA7 = clean_perm_results_s(permutationrunABA7)
-permutationrunABA8 = permutation_test_s(100,abadult,108)
+permutationrunABA8 = permutation_test_s(50,abadult,108)
 cleanpermABA8 = clean_perm_results_s(permutationrunABA8)
-permutationrunABA9 = permutation_test_s(100,abadult,109)
+permutationrunABA9 = permutation_test_s(50,abadult,109)
 cleanpermABA9 = clean_perm_results_s(permutationrunABA9)
-permutationrunABA10 = permutation_test_s(100,abadult,110)
+permutationrunABA10 = permutation_test_s(50,abadult,110)
 cleanpermABA10 = clean_perm_results_s(permutationrunABA10) #cleans, normalizes by log2
 permutationrun = rbind(cleanpermABA1, cleanpermABA2, #joins the results int
                        cleanpermABA3, cleanpermABA4,
@@ -474,26 +474,26 @@ outliers_ABA_chenpey = detect_outlier_tb(permutationstats_pey, pdiffplot2, "ABA_
 # --
 
 sestan = clean_sestan()
-permutationrun1 = permutation_test_s(100, sestan, 100) # 100 = the seed has to change from perm run to perm run
-cleanperm1 = clean_perm_results_s(permutationrun1)
-permutationrun2 = permutation_test_s(100, sestan, 101)
-cleanperm2 = clean_perm_results_s(permutationrun2)
-permutationrun3 = permutation_test_s(100, sestan, 102)
-cleanperm3 = clean_perm_results_s(permutationrun3)
-permutationrun4 = permutation_test_s(100, sestan, 103)
-cleanperm4 = clean_perm_results_s(permutationrun4)
-permutationrun5 = permutation_test_s(100, sestan, 104)
-cleanperm5 = clean_perm_results_s(permutationrun5)
-permutationrun6 = permutation_test_s(100, sestan, 105)
-cleanperm6 = clean_perm_results_s(permutationrun6)
-permutationrun7 = permutation_test_s(100, sestan, 106)
-cleanperm7 = clean_perm_results_s(permutationrun7)
-permutationrun8 = permutation_test_s(100, sestan, 107)
-cleanperm8 = clean_perm_results_s(permutationrun8)
-permutationrun9 = permutation_test_s(100, sestan, 108)
-cleanperm9 = clean_perm_results_s(permutationrun9)
-permutationrun10 = permutation_test_s(100, sestan, 109)
-cleanperm10 = clean_perm_results_s(permutationrun10)  #cleans, normalizes by log2
+permutationrun1 = permutation_test_s(50, sestan, 100) # 100 = the seed has to change from perm run to perm run
+cleanperm1 = clean_perm_results(permutationrun1)
+permutationrun2 = permutation_test_s(50, sestan, 101)
+cleanperm2 = clean_perm_results(permutationrun2)
+permutationrun3 = permutation_test_s(50, sestan, 102)
+cleanperm3 = clean_perm_results(permutationrun3)
+permutationrun4 = permutation_test_s(50, sestan, 103)
+cleanperm4 = clean_perm_results(permutationrun4)
+permutationrun5 = permutation_test_s(50, sestan, 104)
+cleanperm5 = clean_perm_results(permutationrun5)
+permutationrun6 = permutation_test_s(50, sestan, 105)
+cleanperm6 = clean_perm_results(permutationrun6)
+permutationrun7 = permutation_test_s(50, sestan, 106)
+cleanperm7 = clean_perm_results(permutationrun7)
+permutationrun8 = permutation_test_s(50, sestan, 107)
+cleanperm8 = clean_perm_results(permutationrun8)
+permutationrun9 = permutation_test_s(50, sestan, 108)
+cleanperm9 = clean_perm_results(permutationrun9)
+permutationrun10 = permutation_test_s(50, sestan, 109)
+cleanperm10 = clean_perm_results(permutationrun10)  #cleans, normalizes by log2
 permrun_s = rbind(cleanperm1, cleanperm2, 
                   cleanperm3, cleanperm4, 
                   cleanperm5, cleanperm6, 
@@ -501,7 +501,7 @@ permrun_s = rbind(cleanperm1, cleanperm2,
                   cleanperm9, cleanperm10)
 
 #Statistics, including posthoc, + difference plot  outlier tests
-stats_sestperm_chen = stats_permutations_s(permrun_s, akey, sestan, "akey")
+stats_sestperm_chen = stats_permutations(permrun_s, akey, sestan, "akey")
 diffplot1 = difference_perm_sestan(stats_sestperm_chen, "sestan_", "chen", 8)
 outliers_sestan_chen = detect_outlier_tb(stats_sestperm_chen, diffplot1, "sestan_chen")
 
@@ -510,7 +510,7 @@ diffplot2 = difference_perm_sestan(stats_sestperm_chenpey, "sestan_", "chenpey",
 outliers_sestan_chenpey = detect_outlier_tb(stats_sestperm_chenpey, diffplot2, "sestan_chenpey")
 
 #Posthocs for specific stages
-ph_chen_fetal1 = stats_permutations_stages(permrun_s, akey, sestan, "akey", "fetal1")
+ph_chen_fetal1 = stats_permutations_stages(rawperm, akey, sestan, "akey", "fetal1")
 ph_chen_fetal2 = stats_permutations_stages(permrun_s, akey, sestan, "akey", "fetal2")
 ph_chen_fetal3 = stats_permutations_stages(permrun_s, akey, sestan, "akey", "fetal3")
 ph_chen_birth_inf = stats_permutations_stages(permrun_s, akey, sestan, "akey", "birth_inf")

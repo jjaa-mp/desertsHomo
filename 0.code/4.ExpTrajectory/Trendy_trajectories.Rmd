@@ -159,6 +159,55 @@ plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "B
 dev.off()
 ```
 
+#THALAMUS
+```{r}
+mdtakey <- filter(finalakeySestan1, Regioncode == "MD")
+mdtakey <- arrange(mdtakey, Window)
+time.vector <- mdtakey$Window
+mdtakey <- mdtakey %>% unite("code", c("Braincode","Regioncode","Window"))
+rownames(mdtakey) <- mdtakey$code
+mdtakey$code <- NULL
+
+mdtakey1 <- as_tibble(mdtakey)
+
+cols.num <- colnames(mdtakey1)
+mdtakey1[,cols.num] <- lapply(mdtakey1[cols.num],as.character)
+mdtakey1[,cols.num] <- lapply(mdtakey1[cols.num],as.numeric)
+
+finalmdt <- t(mdtakey1)
+colnames(finalmdt) <- time.vector 
+set.seed(10)
+res <- trendy(Data = finalmdt, tVectIn = time.vector, maxK = 3, minNumInSeg = 2, meanCut = 2)
+res <- results(res)
+res.top <- topTrendy(res)
+
+rmdt <- as.data.frame(res.top$AdjustedR2)
+names(rmdt) <- "MD - R2"
+write.csv(rmdt, file="~/desertsHomo/1.data/trendy_adjR2/MDT_GenesDesertPosSel_adjR2.csv", row.names = TRUE, quote=T)
+
+#Good fit in Des & Pos sel.
+rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol]
+
+res.trend <- trendHeatmap(res.top)
+##Heatmap homemade
+class(res.top$Trends)
+library(pheatmap)
+pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1), filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_UpDown_Deserts.pdf")
+
+sb_inDesPey <- res.top$Trends[rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol],]
+
+pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_UpDown_DesertsPosSel.pdf")
+
+
+#Selected genes
+par(mfrow=c(2,2))
+plot2 <- plotFeature(finalmdt,tVectIn = time.vector,featureNames = c("ROBO2", "ST7"),trendyOutData = res)
+
+pdf("~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_GenesDesertPosSel.pdf")
+par(mfrow=c(3,2))
+plot2 <- plotFeature(finalmdt,tVectIn = time.vector,featureNames = c("ROBO2", "ST7"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child"), xlab="")
+dev.off()
+```
 
 #ABADATA
 ```{r}
@@ -280,7 +329,7 @@ pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks
 
 sb_inDesPey <- res.top$Trends[rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol],]
 
-pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_UpDown_DesertsPosSel.pdf")
+pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_UpDown_DesertsPosSel_ABA.pdf")
 
 
 #Selected genes
@@ -303,5 +352,95 @@ dev.off()
 par(mfrow=c(3,2))
 plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "CADPS2", "GPR22", "BCAP29"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child","Adult" ), xlab="")
 dev.off()
+
+
+
+#THALAMUS
+ab_t <- as.data.frame(cbind(ab1[[1]][[15]], ab1[[2]][[15]], ab1[[3]][[15]], ab1[[4]][[15]], ab1[[5]][[15]]))
+colnames(ab_t) <- c("MD_1", "gene_name","MD_2", "gene_name","MD_3", "gene_name","MD_4","gene_name", "MD_5","gene_name")
+rownames(ab_t) <- NULL
+
+
+ab_1 <- as.data.frame(cbind(ab1[[1]][[15]]))
+ab_1 <- ab_1[!(is.na(ab_1$gene_name) | ab_1$gene_name==""), ]
+rownames(ab_1) <- NULL
+colnames(ab_1)[1] <- "MD_1"
+
+ab_2 <- as.data.frame(cbind(ab1[[2]][[15]]))
+ab_2 <- ab_2[!(is.na(ab_2$gene_name) | ab_2$gene_name==""), ]
+rownames(ab_2) <- NULL
+colnames(ab_2)[1] <- "MD_2"
+
+ab_3 <- as.data.frame(cbind(ab1[[3]][[15]]))
+ab_3 <- ab_3[!(is.na(ab_3$gene_name) | ab_3$gene_name==""), ]
+rownames(ab_3) <- NULL
+colnames(ab_3)[1] <- "MD_3"
+
+ab_4 <- as.data.frame(cbind(ab1[[4]][[15]]))
+ab_4 <- ab_4[!(is.na(ab_4$gene_name) | ab_4$gene_name==""), ]
+rownames(ab_4) <- NULL
+colnames(ab_4)[1] <- "MD_4"
+
+
+ab_5 <- as.data.frame(cbind(ab1[[5]][[15]]))
+ab_5 <- ab_5[!(is.na(ab_5$gene_name) | ab_5$gene_name==""), ]
+rownames(ab_5) <- NULL
+colnames(ab_5)[1] <- "MD_5"
+
+aabb  <- right_join(ab_1, ab_2, by = "gene_name")
+aabb  <- right_join(aabb, ab_3, by = "gene_name")
+aabb  <- right_join(aabb, ab_4, by = "gene_name")
+aabb  <- right_join(aabb, ab_5, by = "gene_name")
+aabb <- aabb[!(is.na(aabb$gene_name) | aabb$gene_name==""), ]
+rownames(aabb) <- aabb$gene_name
+aabb$gene_name<- NULL
+
+time.vector <- c(rep(1:5))
+
+colnames(aabb) <- time.vector 
+set.seed(10)
+res <- trendy(Data = aabb, tVectIn = time.vector, maxK = 2, minNumInSeg = 2, meanCut = 2)
+#res_alt <- trendy(Data = aabb, tVectIn = time.vector, maxK = 2, minNumInSeg = 1, meanCut = 2)
+
+
+res <- results(res)
+res.top <- topTrendy(res)
+
+#res_alt <- results(res_alt)
+#res_alt.top <- topTrendy(res_alt)
+
+#Good fit in Des & Pos sel.
+rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol]
+#rownames(res_alt.top$Trends)[rownames(res_alt.top$Trends) %in% both$hgnc_symbol]
+
+
+res.trend <- trendHeatmap(res.top)
+#res_alt.trend <- trendHeatmap(res_alt.top)
+
+rMD_aba <- as.data.frame(res.top$AdjustedR2)
+names(rMD_aba) <- "MD Thalamus - R2"
+write.csv(rMD_aba, file="~/desertsHomo/1.data/trendy_adjR2/MD_GenesDesertPosSel_adjR2_ABA.csv", row.names = TRUE, quote=T)
+
+##Heatmap homemade
+library(pheatmap)
+class(res.top$Trends)
+pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1), filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_UpDown_Deserts_ABA.pdf")
+
+sb_inDesPey <- res.top$Trends[rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol],]
+
+pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_UpDown_DesertsPosSel_ABA.pdf")
+
+
+#Selected genes
+par(mfrow=c(2,2))
+pdf("~/desertsHomo/2.plots/trendy_segmentedRegression/MDT_GenesDesertsPosSel_ABA.pdf")
+plot2 <- plotFeature(aabb,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "SLC16A1"),trendyOutData = res)
+dev.off()
+
+
+#par(mfrow=c(3,2))
+#pdf("~/MDT_GenesDesertsPosSel_ABA_alt.pdf")
+#plot2 <- plotFeature(aabb,tVectIn = time.vector,featureNames = c("ST7", "ROBO2", "CADPS2", "GPR22", "BCAP29", "KCND2", "SLC15A1"),trendyOutData = res_alt)
+#dev.off()
 ```
 

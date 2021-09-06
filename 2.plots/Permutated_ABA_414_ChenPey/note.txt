@@ -1,1 +1,3 @@
-Plots and permutation post-hoc here correspond to the wider permuted regions (15 million basepairs) and log2 normalization. For the previous run results, please check the `log_plus_quantile` folder.
+- Plots and permutation post-hoc here correspond to the wider permuted regions (15 million basepairs) and log2 normalization, controlled by gene density. 
+- For the previous run results, please check the `log_plus_quantile` folder.
+- For a log2 normalized version without gene density control, please check the `pre_gene_density` folder.
