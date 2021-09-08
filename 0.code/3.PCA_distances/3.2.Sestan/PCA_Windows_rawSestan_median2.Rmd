@@ -2,6 +2,8 @@
 ```{r}
 #Packages
 library(biomaRt)
+library("stringr")   
+library(Seurat)
 library(factoextra)
 library(ABAData)
 library(ABAEnrichment)
@@ -391,9 +393,9 @@ correspStage[[7]]<-"Child"
 correspStage[[8]]<-"Adolescent"
 correspStage[[9]]<-"Adult"
 
-akeySestan <- finalselectionDataWhole
+akeySestan <- finalselectionDataAkey
 
-#jackSplot<-list()
+jackSplot<-list()
 for( i in 2:9){
   #CHANGE:akeyABAwind/akeyPeyABAwind/peyNotakeyABAwind/wholeABAwind
 #akeySestan <- from jm_Allen finalraw2 inputPC
@@ -429,11 +431,36 @@ for( i in 2:9){
 
 }
 
+
+pvalues <- data.frame(stage=character(),
+                 PC1=character(), PC2=character(), PC3=character(), 
+                 PC4=character(), PC5=character(), PC6=character(),
+                 PC7=character(), PC8=character(), PC9=character(),
+                 PC10=character(), PC11=character(), PC12=character(),
+                 PC13=character(), PC14=character(), PC15=character())
+for(i in 2:9){
+  vals<-jackSplot[[i]]['data']$data$PC.Score %>% purrr::map(levels)
+  out<-strsplit(as.character(vals[[1]]), ":")
+  elements<-list()
+  elements[[1]]<-correspStage[[i]]
+  for(j in 1:15){
+    elements[[j+1]]<-substr(out[[j]][[2]],2,nchar(out[[j]][[2]]))
+  }
+  pvalues [ nrow(pvalues) + 1 , ] <- elements
+    
+}
+pvalues
+# ~/AA_investigation/Introgression_deserts/code/new_july/JSPCA_Sestan_distances/
+write.csv(pvalues, file="C:\\Users\\Usuario\\Documents\\AA_investigation\\Introgression_deserts\\code\\new_july\\JS_PCA_Sestan_distances\\JS_pvaluesWhole.csv")
+write.table(pvalues,"C:\\Users\\Usuario\\Documents\\prueba.csv")
+file.access("C:\\Users\\Usuario\\Documents\\AA_investigation\\Introgression_deserts\\code\\new_july\\JS_PCA_Sestan_distances", 2)
+setwd("C:\\Users\\Usuario\\Documents\\AA_investigation\\Introgression_deserts\\code\\new_july\\JS_PCA_Sestan_distances")
+getwd()
 supplfig_x<-ggarrange(jackSplot[[2]],jackSplot[[3]],
                       jackSplot[[4]],jackSplot[[5]], 
                       jackSplot[[6]],jackSplot[[7]],
                       jackSplot[[8]],jackSplot[[9]])
-ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/JackStraw_Sestan_whole_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/JackStraw_Sestan_Akey_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 jackStrawPCAAkey=c(0,10,7,7,9,7,8,6,9)
 jackStrawPCAAkeyPey=c(0,12,8,8,7,7,9,7,11)
 jackStrawPCAPeyNotAkey=c(0,12,7,10,9,6,7,6,8)
