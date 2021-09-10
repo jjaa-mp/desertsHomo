@@ -393,7 +393,7 @@ correspStage[[7]]<-"Child"
 correspStage[[8]]<-"Adolescent"
 correspStage[[9]]<-"Adult"
 
-akeySestan <- finalselectionDataAkey
+akeySestan <- finalselectionDataPeyAkey
 
 jackSplot<-list()
 for( i in 2:9){
@@ -460,7 +460,7 @@ supplfig_x<-ggarrange(jackSplot[[2]],jackSplot[[3]],
                       jackSplot[[4]],jackSplot[[5]], 
                       jackSplot[[6]],jackSplot[[7]],
                       jackSplot[[8]],jackSplot[[9]])
-ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/JackStraw_Sestan_Akey_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/JackStraw_Sestan_PeyAkey_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 jackStrawPCAAkey=c(0,10,7,7,9,7,8,6,9)
 jackStrawPCAAkeyPey=c(0,12,8,8,7,7,9,7,11)
 jackStrawPCAPeyNotAkey=c(0,12,7,10,9,6,7,6,8)
@@ -486,6 +486,11 @@ correspStage[[9]]<-"Adult"
 
 #finalselectionDataAkey/finalselectionDataPeyAkey/finalselectionDataPeyNotAkey/finalselectionDataWhole
 
+# jackStrawPCAAkey=c(0,10,7,7,9,7,8,6,9)
+# jackStrawPCAAkeyPey=c(0,12,8,8,7,7,9,7,11)
+# jackStrawPCAPeyNotAkey=c(0,12,7,10,9,6,7,6,8)
+# jackStrawPCAWhole=c(0,12,10,9,9,8,8,8,11)
+
 #finalselectionDataWhole<-finalselectionData
 akeySestan <- finalselectionDataWhole #Input from jm_Allen
 
@@ -507,19 +512,34 @@ for (i in 2:9){
   pca_res <- prcomp(windowPCASt[,-1][,-1], scale. = TRUE)
   #tsne_res <- tsne(windowPCASt[,-1][,-1],max_iter = 1000)
   ev <- pca_res$sdev^2
-  jackStrawPCAAkey
+ 
   #numPCA<-length(ev[ev>=1]) # Number of selected PCA by Kaiser’s rule
   #numPCA<-ncol(tsne_res) #In case tnse and not PCA
   #jackStrawPCAAkey/jackStrawPCAAkeyPey/jackStrawPCAPeyNotAkey/jackStrawPCAWhole
-  numPCA<-jackStrawPCAAkey[[i]]
-  
+  #numPCA<-jackStrawPCAAkey[[i]] #jackstrawNumber of selected elements
+  numPCA<-15
   
   PCi<-data.frame(pca_res$x,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas) 
   
   #PCi<-data.frame(tsne_res,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas)
   PCi$topStructure <- str_replace(PCi$topStructure, ("Primary Auditory Cortex|Inferior Temporal Cortex|Orbital Prefrontal Cortex|Superior Temporal Cortex|Primary Visual Cortex|Dorsolateral Prefrontal Cortex|Posterior Inferior Parietal Cortex|Primary Motor Cortex|Medial Prefrontal Cortex|Primary Somatosensory Cortex|Ventrolateral Prefrontal Cortex"), "Neocortex")
   
-  
+  {
+pdf(file = paste0("~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/PCAs_Sestan_Raw","_",gsub("/", "-",correspStage[[i]]),".pdf"),width = 15,height = 15) # The height of the plot in inches
+
+pairs(PCi[ , 1:12],cex.labels = 1.5,
+      cex=0.5,
+      
+    col = factor(PCi$topStructure),   # Change color by group
+    pch = super.sym$pch[1:6],   # Change points by group
+    labels = colnames(PCi), oma=c(25,3,6,3),
+    main = paste0("PCAs Raw data"," - ",correspStage[[i]]))
+par(xpd = TRUE)
+legend("bottomright", fill = factor(levels(factor(PCi$topStructure))), legend = c( levels(factor(PCi$topStructure))))
+
+# Step 3: Run dev.off() to create the file!
+dev.off()
+}
   
   
   # res.km <- kmeans(scale(windowPCASt[,-1][,-1]), 3, nstart = 25)
@@ -590,6 +610,9 @@ for (i in 2:9){
 structDistWind[[i]]<-structDist
 }
 
+PCi
+pairs(~PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8+ 
+        PC9 + PC10 + PC11 + PC12 + PC13 + PC14 + PC15, col = factor(PCi$topStructure), pch = 19, data = PCi)
 #Boxplots
 correspStage<-list()
 correspStage[[2]]<-"Fetal_1"
@@ -793,7 +816,35 @@ supplfig_x<-ggarrange(plotsPCA[[2]], plotsPCA[[2]],plotsPCA[[3]],
                       plotsPCA[[6]], plotsPCA[[7]],plotsPCA[[8]],
                       plotsPCA[[9]],
                       common.legend = TRUE, legend = "right")
+PCAs<-pairs(~PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8+ 
+        PC9 + PC10 + PC11 + PC12 + PC13 + PC14 + PC15, col = factor(PCi$topStructure), pch = 19, data = PCi)
+PCi[,1:15]
 ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/PCA_Sestan_whole_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+
+# Scatterplot Matrices from the glus Package
+install.packages("gclus")
+library(lattice)
+PCi$topStructure
+super.sym <- trellis.par.get("superpose.symbol")
+splom(~PCi[,1:15], groups=topStructure, data=PCi,
+   panel=panel.superpose,
+   key=list(title="",
+   points=list(pch=super.sym$pch[1:15],
+   col=super.sym$col[1:15]),
+   text=PCi$topStructure))
+super.sym <- trellis.par.get("superpose.symbol")
+
+
+super.sym$col[1:6]
+super.sym$col[1:6]
+pairs(PCi[ , 1:15],
+    col = factor(PCi$topStructure),   # Change color by group
+    pch = super.sym$pch[1:6],                            # Change points by group
+    labels = unique(PCi$topStructure),
+    main = "This is an even nicer pairs plot in R")
+library(ggplot2)
+ggpairs(PCi, columns = 1:15, ggplot2::aes(colour=topStructure))
+ggsave(PCAs, file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/PCAs_Sestan_Akey.pdf", width = 11.69, height = 8.27, units = "in")
 ```
 
 
