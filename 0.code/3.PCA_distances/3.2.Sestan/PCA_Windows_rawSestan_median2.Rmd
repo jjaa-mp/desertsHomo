@@ -193,7 +193,7 @@ for (i in 2:9){
       }
       distancesStruct<-append(distancesStruct,listDist)
       sdStruct<-append(sdStruct,sd(listDist))
-      print(paste("Distance ",structure,": list->",head(listDist),"; sd->",sd(listDist)))
+      # print(paste("Distance ",structure,": list->",head(listDist),"; sd->",sd(listDist)))
     }
   structDist[[structure]]<-c(distancesStruct,mean(sdStruct))
   }
@@ -287,7 +287,7 @@ for (i in 2:9){
   pairwiseData<-pairwiseWilcox[[correspStage[[i]]]]
   for(str in keys(structDist)){
     for(str2 in keys(structDist)){
-      print(paste(str,"-->",str2,": ",pairwiseData[str,str2],is.null(pairwiseData[str,str2]),is.na(pairwiseData[str,str2])))
+      # print(paste(str,"-->",str2,": ",pairwiseData[str,str2],is.null(pairwiseData[str,str2]),is.na(pairwiseData[str,str2])))
       #isSaved[[paste(str,str2)]-->isSaved[[paste(str2,str)] for just half of the tables
       if((is.null(isSaved[[paste(str,str2)]]))&&(str!=str2)){
         if(!is.null(pairwiseData[str,str2])){
@@ -470,7 +470,7 @@ jackStrawPCAWhole=c(0,12,10,9,9,8,8,8,11)
 
 
 
-#AKEY
+# AKEY
 ```{r}
 setwd("~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code")
 
@@ -492,12 +492,13 @@ correspStage[[9]]<-"Adult"
 # jackStrawPCAWhole=c(0,12,10,9,9,8,8,8,11)
 
 #finalselectionDataWhole<-finalselectionData
-akeySestan <- finalselectionDataWhole #Input from jm_Allen
+akeySestan <- finalselectionDataAkey #Input from jm_Allen
 
 structDistWind<-list()
 varPCA<-list()
 plotsPCA<-list()
 plotsKmeans<-list()
+PCis<-list()
 for (i in 2:9){
   
 #akeySestan <- from jm_Allen finalraw2 inputPC
@@ -523,23 +524,23 @@ for (i in 2:9){
   
   #PCi<-data.frame(tsne_res,BrainRegion=windowPCASt$Regioncode,topStructure=windowPCASt$brainAreas)
   PCi$topStructure <- str_replace(PCi$topStructure, ("Primary Auditory Cortex|Inferior Temporal Cortex|Orbital Prefrontal Cortex|Superior Temporal Cortex|Primary Visual Cortex|Dorsolateral Prefrontal Cortex|Posterior Inferior Parietal Cortex|Primary Motor Cortex|Medial Prefrontal Cortex|Primary Somatosensory Cortex|Ventrolateral Prefrontal Cortex"), "Neocortex")
-  
-  {
-pdf(file = paste0("~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/PCAs_Sestan_Raw","_",gsub("/", "-",correspStage[[i]]),".pdf"),width = 15,height = 15) # The height of the plot in inches
-
-pairs(PCi[ , 1:12],cex.labels = 1.5,
-      cex=0.5,
-      
-    col = factor(PCi$topStructure),   # Change color by group
-    pch = super.sym$pch[1:6],   # Change points by group
-    labels = colnames(PCi), oma=c(25,3,6,3),
-    main = paste0("PCAs Raw data"," - ",correspStage[[i]]))
-par(xpd = TRUE)
-legend("bottomright", fill = factor(levels(factor(PCi$topStructure))), legend = c( levels(factor(PCi$topStructure))))
-
-# Step 3: Run dev.off() to create the file!
-dev.off()
-}
+  PCis[[i]]<-PCi
+#   {
+# pdf(file = paste0("~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/PCAs_Sestan_Raw","_",gsub("/", "-",correspStage[[i]]),".pdf"),width = 15,height = 15) # The height of the plot in inches
+# 
+# pairs(PCi[ , 1:12],cex.labels = 1.5,
+#       cex=0.5,
+#       
+#     col = factor(PCi$topStructure),   # Change color by group
+#     pch = super.sym$pch[1:6],   # Change points by group
+#     labels = colnames(PCi), oma=c(25,3,6,3),
+#     main = paste0("PCAs Raw data"," - ",correspStage[[i]]))
+# par(xpd = TRUE)
+# legend("bottomright", fill = factor(levels(factor(PCi$topStructure))), legend = c( levels(factor(PCi$topStructure))))
+# 
+# # Step 3: Run dev.off() to create the file!
+# dev.off()
+# }
   
   
   # res.km <- kmeans(scale(windowPCASt[,-1][,-1]), 3, nstart = 25)
@@ -603,7 +604,7 @@ dev.off()
       }
       distancesStruct<-append(distancesStruct,listDist)
       sdStruct<-append(sdStruct,sd(listDist))
-      print(paste("Distance ",structure,": list->",head(listDist),"; sd->",sd(listDist)))
+      # print(paste("Distance ",structure,": list->",head(listDist),"; sd->",sd(listDist)))
     }
   structDist[[structure]]<-c(distancesStruct,mean(sdStruct))
   }
@@ -887,7 +888,11 @@ wilcox_AkeyPeySestan<-read.csv("~/AA_investigation/Introgression_deserts/code/ne
 wilcox_AkeyPeySestan$X<-NULL
 wilcox_AkeyPeySestan$Structure <- paste0(wilcox_AkeyPeySestan$Structure," - AkeyPey")
 
+
+
 wilcox_AkeySestan<-read.csv("~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_AkeySestan.csv")
+
+
 wilcox_AkeySestan$X<-NULL
 wilcox_AkeySestan$Structure <- paste0(wilcox_AkeySestan$Structure," - Akey")
 
@@ -903,6 +908,7 @@ wilcox_wholeSestan$Structure <- paste0(wilcox_wholeSestan$Structure," - whole")
 wilcoxAll<-rbind(wilcox_AkeySestan,wilcox_AkeyPeySestan,wilcox_PeyNotAkeySestan,wilcox_wholeSestan)
 
 library(stringr)
+library(ggplot2)
 library(dplyr)
 structures<-c("Cerebellum","Neocortex","Amygdala","Striatum","Hippocampus","Mediodorsal Nucleus of the Thalamus")
 graphSupp<-list()
@@ -913,8 +919,8 @@ for (i in 1:6){
 wilcoxStruct$window <- factor(wilcoxStruct$window, levels=c("Fetal_1", "Fetal_2", "Fetal_3","Birth/Inf","Inf/Child","Child","Adolescence","Adult"))
 graphSupp[[i]] <- ggplot(wilcoxStruct, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5)
-subfigx
+  geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("B)")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5) +
+  scale_color_manual(labels = c("Akey", "AkeyPey","PeyNotAkey","Whole"), values = c("blue", "red","green","brown"))
 }
 
 
@@ -923,5 +929,61 @@ supplfig_x<-ggarrange(graphSupp[[1]], graphSupp[[2]],graphSupp[[3]],
                       graphSupp[[4]],graphSupp[[5]],
                       graphSupp[[6]], legend = "right")
 supplfig_x
-ggsave(graphSupp[[6]], file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/wilcox_plot_thalamus.pdf", width = 11.69, height = 8.27, units = "in")
+ggsave(graphSupp[[6]], file="~/AA_investigation/Introgression_deserts/code/new_july/plotsPCA/wilcox_plot_thalamusTEST.pdf", width = 11.69, height = 8.27, units = "in")
+```
+
+
+## Multiple Plots
+
+a) PCs 1/2  Deserts  CBL - Adult
+b) Adult across datasets or Boxplot?
+c) Line plot Trajectory CBL - Log2pval
+
+
+Subsitute each of the down ones for the corresponding
+```{r}
+traj_fig <- tot_pl %>% filter(Structure %in% "DFC" | Structure %in% "M1C" | Structure %in% "S1C" | Structure %in% "CBC") 
+
+figtop1 <- ggparcoord(traj_fig,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=as.factor(dataset)), title="A")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+labs(color="Dataset")+ facet_wrap(~Structure, ncol = 4)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
+
+#Akey
+vpreli1 <- preli1
+vpreli1$Structure <- str_replace(vpreli1$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
+
+test <- vpreli1 %>%
+    group_by(Structure) %>%
+    dplyr::summarise_all(mean, na.rm=TRUE)
+figtop2<-ggparcoord(test,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="B")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)
+
+#AKeyPey
+vpreli2 <- preli2
+vpreli2$Structure <- str_replace(vpreli2$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
+
+test2 <- vpreli2 %>%
+    group_by(Structure) %>%
+    dplyr::summarise_all(mean, na.rm=TRUE)
+figtop3<-ggparcoord(test2,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="C")+theme(plot.title = element_text(size=10),legend.position = "right", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)
+
+lay <- rbind(c(1,1,2,2),
+             c(1,1,2,2),
+             c(3,3,3,3),
+             c(3,3,3,3))
+
+# A basic scatterplot with color 
+PCi<-PCis[[4]]
+PCAPlot<-ggplot(PCi[,1:2], aes(x=PC1, y=PC2, color=PCi$topStructure)) + 
+    geom_point(size=2) + ggtitle("A)")+labs(color='Structure') + theme(legend.position = "none")#
+PCAPlot
+wilcox_AkeyPeySestan$window <- factor(wilcox_AkeyPeySestan$window, 
+    levels=c("Fetal_1","Fetal_2","Fetal_3","Birth/Inf","Inf/Child", "Child","Adolescence", "Adult"))
+subfigx <- ggplot(wilcox_AkeyPeySestan, aes(x=window, y=log2pvalAVG, group=Structure)) +
+  geom_line(aes(color=Structure))+
+  geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("C)")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5)
+subfigx
+grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
+fig2_main <- grid.arrange(PCAPlot, graphSupp[[6]], subfigx, layout_matrix = lay)
+ggsave(file="../../../2.plots/fig_combined_PCA_Struct_Thalamus_AkeyPey.pdf", fig2_main, width = 11.69, height = 8.27, units = "in")
 ```
