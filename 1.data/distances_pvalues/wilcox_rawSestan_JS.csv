@@ -1,49 +1,49 @@
-Structure,window,pval,log2pvalAVG
-Amygdala,Fetal_1,0.200042524,-2.321621381
-Cerebellum,Fetal_1,0.236610914,-2.079411473
-Hippocampus,Fetal_1,0.200192691,-2.320538795
-Mediodorsal Nucleus of the Thalamus,Fetal_1,1.08179E-10,-33.10585384
-Neocortex,Fetal_1,0.223726688,-2.16019073
-Striatum,Fetal_1,0.387350989,-1.368286672
-Amygdala,Fetal_2,1.67512E-05,-15.86537489
-Cerebellum,Fetal_2,0.306261742,-1.707162937
-Hippocampus,Fetal_2,0.600010656,-0.736939971
-Mediodorsal Nucleus of the Thalamus,Fetal_2,0.018626979,-5.746462459
-Neocortex,Fetal_2,0.484142567,-1.04649615
-Striatum,Fetal_2,0.403499219,-1.309362214
-Amygdala,Fetal_3,0.208381094,-2.262703706
-Cerebellum,Fetal_3,0.24874366,-2.007268343
-Hippocampus,Fetal_3,0.391102753,-1.354380403
-Mediodorsal Nucleus of the Thalamus,Fetal_3,0.239844779,-2.059827063
-Neocortex,Fetal_3,0.011005665,-6.505609806
-Striatum,Fetal_3,0.202622971,-2.303130355
-Amygdala,Birth/Inf,0.030459358,-5.036970667
-Cerebellum,Birth/Inf,0.270818923,-1.884599549
-Hippocampus,Birth/Inf,0.259015413,-1.948890143
-Mediodorsal Nucleus of the Thalamus,Birth/Inf,0.302638299,-1.724333521
-Neocortex,Birth/Inf,0.268376216,-1.897671271
-Striatum,Birth/Inf,0.009212018,-6.762267095
-Amygdala,Inf/Child,0.200000166,-2.321926895
-Cerebellum,Inf/Child,1.11813E-09,-29.73626087
-Hippocampus,Inf/Child,0.200002424,-2.32191061
-Mediodorsal Nucleus of the Thalamus,Inf/Child,0.200451506,-2.318674839
-Neocortex,Inf/Child,0.200003686,-2.321901509
-Striatum,Inf/Child,0.000452602,-11.10946815
-Amygdala,Child,0.361870652,-1.466453987
-Cerebellum,Child,9.42157E-17,-53.23680967
-Hippocampus,Child,0.279361667,-1.839794022
-Mediodorsal Nucleus of the Thalamus,Child,0.354679284,-1.495413025
-Neocortex,Child,0.4005985,-1.319771075
-Striatum,Child,0.593919886,-0.751659756
-Amygdala,Adolescence,0.055893176,-4.161184043
-Cerebellum,Adolescence,3.53678E-26,-84.54769364
-Hippocampus,Adolescence,0.284149143,-1.815279729
-Mediodorsal Nucleus of the Thalamus,Adolescence,0.400867414,-1.318802946
-Neocortex,Adolescence,0.339075559,-1.560321299
-Striatum,Adolescence,3.76352E-09,-27.98527041
-Amygdala,Adult,0.200209078,-2.320420703
-Cerebellum,Adult,0.404372861,-1.30624192
-Hippocampus,Adult,0.200356399,-2.319359511
-Mediodorsal Nucleus of the Thalamus,Adult,0.006496838,-7.266046581
-Neocortex,Adult,0.40028087,-1.320915426
-Striatum,Adult,0.402408584,-1.313267015
+"","Structure","window","pvalAVG","log2(pvalAVG)"
+"1","Amygdala - whole","Fetal_1",0.221424426904794,-2.17511371002842
+"2","Cerebellum - whole","Fetal_1",0.0010222527291169,-9.93403237021731
+"3","Hippocampus - whole","Fetal_1",0.2002537364324,-2.32009893349081
+"4","Mediodorsal Nucleus of the Thalamus - whole","Fetal_1",1.47910396316017e-06,-19.366845109271
+"5","Neocortex - whole","Fetal_1",0.200015168025237,-2.3218186848622
+"6","Striatum - whole","Fetal_1",0.220642220006139,-2.18021921707922
+"7","Amygdala - whole","Fetal_2",0.200076718333508,-2.32137479520467
+"8","Cerebellum - whole","Fetal_2",0.000614973964392742,-10.667187045905
+"9","Hippocampus - whole","Fetal_2",0.200006512877527,-2.32188111517174
+"10","Mediodorsal Nucleus of the Thalamus - whole","Fetal_2",0.20020662986957,-2.3204383448814
+"11","Neocortex - whole","Fetal_2",0.000287436833526202,-11.7644674320873
+"12","Striatum - whole","Fetal_2",0.200612573289367,-2.31751606593744
+"13","Amygdala - whole","Fetal_3",0.605514196486936,-0.723767310093762
+"14","Cerebellum - whole","Fetal_3",0.42859292779129,-1.22232005057662
+"15","Hippocampus - whole","Fetal_3",0.432512942790083,-1.20918478937573
+"16","Mediodorsal Nucleus of the Thalamus - whole","Fetal_3",6.12051445409064e-14,-43.8933404060326
+"17","Neocortex - whole","Fetal_3",0.566490281601286,-0.819876888719586
+"18","Striatum - whole","Fetal_3",0.0429439301549212,-4.54140195955727
+"19","Amygdala - whole","Birth/Inf",0.400000000016994,-1.32192809482607
+"20","Cerebellum - whole","Birth/Inf",1.28845156864135e-29,-95.9702764427037
+"21","Hippocampus - whole","Birth/Inf",0.200001498126551,-2.32191728822911
+"22","Mediodorsal Nucleus of the Thalamus - whole","Birth/Inf",0.200104222308803,-2.32117648566618
+"23","Neocortex - whole","Birth/Inf",0.400000000091521,-1.32192809455727
+"24","Striatum - whole","Birth/Inf",0.400105720326839,-1.32154683979003
+"25","Amygdala - whole","Inf/Child",0.20288123205346,-2.30129268309857
+"26","Cerebellum - whole","Inf/Child",2.5262063558161e-09,-28.5603803619895
+"27","Hippocampus - whole","Inf/Child",0.200027033898902,-2.32173309970636
+"28","Mediodorsal Nucleus of the Thalamus - whole","Inf/Child",0.0896029472111846,-3.48031000373032
+"29","Neocortex - whole","Inf/Child",0.200600278797728,-2.31760448385342
+"30","Striatum - whole","Inf/Child",0.291910936583678,-1.77639983177084
+"31","Amygdala - whole","Child",0.190354617045677,-2.39323853203673
+"32","Cerebellum - whole","Child",1.45033082260497e-05,-16.0732584557871
+"33","Hippocampus - whole","Child",0.25517135428628,-1.97046171464328
+"34","Mediodorsal Nucleus of the Thalamus - whole","Child",1.45033082260497e-05,-16.0732584557871
+"35","Neocortex - whole","Child",0.334881845091902,-1.57827592937077
+"36","Striatum - whole","Child",0.000302440419726799,-11.6910614177597
+"37","Amygdala - whole","Adolescence",0.000861445871439911,-10.180952231339
+"38","Cerebellum - whole","Adolescence",2.43773946592542e-40,-131.591579849726
+"39","Hippocampus - whole","Adolescence",0.205760188852634,-2.28096422296115
+"40","Mediodorsal Nucleus of the Thalamus - whole","Adolescence",0.200904247751565,-2.31542002735507
+"41","Neocortex - whole","Adolescence",0.00586874024047822,-7.41273343104803
+"42","Striatum - whole","Adolescence",6.57496639732688e-05,-13.8926569531929
+"43","Amygdala - whole","Adult",0.000586005987236451,-10.7367969747787
+"44","Cerebellum - whole","Adult",1.20522303060374e-19,-62.8473336560957
+"45","Hippocampus - whole","Adult",0.000586005987236451,-10.7367969747787
+"46","Mediodorsal Nucleus of the Thalamus - whole","Adult",1.20522303060374e-19,-62.8473336560957
+"47","Neocortex - whole","Adult",1.05526023618869e-07,-23.1758978404814
+"48","Striatum - whole","Adult",1.05526023618869e-07,-23.1758978404814

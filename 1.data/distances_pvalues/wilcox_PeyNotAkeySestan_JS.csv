@@ -1,49 +1,49 @@
-Structure,window,pval,log2pvalAVG
-Amygdala,Fetal_1,8.39922E-05,-13.53938469
-Cerebellum,Fetal_1,2.33576E-06,-18.70767799
-Hippocampus,Fetal_1,8.66761E-05,-13.49400603
-Mediodorsal Nucleus of the Thalamus,Fetal_1,1.62295E-14,-45.80837588
-Neocortex,Fetal_1,5.01954E-06,-17.60401463
-Striatum,Fetal_1,1.09135E-10,-33.09316114
-Amygdala,Fetal_2,0.016499116,-5.921467431
-Cerebellum,Fetal_2,0.616401417,-0.698057917
-Hippocampus,Fetal_2,0.600039549,-0.736870503
-Mediodorsal Nucleus of the Thalamus,Fetal_2,7.99067E-15,-46.8306041
-Neocortex,Fetal_2,0.400068328,-1.321681674
-Striatum,Fetal_2,0.400010177,-1.321891388
-Amygdala,Fetal_3,0.8,-0.321928095
-Cerebellum,Fetal_3,0.608276767,-0.717200192
-Hippocampus,Fetal_3,0.600534311,-0.735681419
-Mediodorsal Nucleus of the Thalamus,Fetal_3,1.54484E-25,-82.42074236
-Neocortex,Fetal_3,0.209456321,-2.255278669
-Striatum,Fetal_3,0.600645243,-0.735414947
-Amygdala,Birth/Inf,0.155581064,-2.684261614
-Cerebellum,Birth/Inf,9.57507E-22,-69.82313476
-Hippocampus,Birth/Inf,0.20000637,-2.321882146
-Mediodorsal Nucleus of the Thalamus,Birth/Inf,0.228386558,-2.130450354
-Neocortex,Birth/Inf,0.209814769,-2.252811864
-Striatum,Birth/Inf,0.374095392,-1.418521901
-Amygdala,Inf/Child,0.200047022,-2.32158894
-Cerebellum,Inf/Child,0.201242418,-2.312993663
-Hippocampus,Inf/Child,0.200008013,-2.321870295
-Mediodorsal Nucleus of the Thalamus,Inf/Child,0.216296594,-2.208917145
-Neocortex,Inf/Child,0.200000156,-2.321926969
-Striatum,Inf/Child,0.217593892,-2.200290036
-Amygdala,Child,0.400017967,-1.321863293
-Cerebellum,Child,2.9156E-19,-61.57284141
-Hippocampus,Child,0.342621029,-1.545314392
-Mediodorsal Nucleus of the Thalamus,Child,0.319571885,-1.645787607
-Neocortex,Child,0.276663667,-1.853794903
-Striatum,Child,0.536547773,-0.898221464
-Amygdala,Adolescence,0.000858358,-10.18613334
-Cerebellum,Adolescence,0.200047714,-2.321583949
-Hippocampus,Adolescence,0.293493995,-1.76859711
-Mediodorsal Nucleus of the Thalamus,Adolescence,0.180815737,-2.467407851
-Neocortex,Adolescence,0.286613872,-1.802819656
-Striatum,Adolescence,0.200102774,-2.321186931
-Amygdala,Adult,1.78157E-05,-15.77648863
-Cerebellum,Adult,1.8455E-103,-341.2745546
-Hippocampus,Adult,0.311013772,-1.684949631
-Mediodorsal Nucleus of the Thalamus,Adult,0.400000047,-1.321927926
-Neocortex,Adult,0.110805332,-3.173900795
-Striatum,Adult,0.200857953,-2.315752509
+"","Structure","window","pvalAVG","log2(pvalAVG)"
+"1","Amygdala - PeyNotAkey","Fetal_1",0.00978141062918526,-6.67574174576513
+"2","Cerebellum - PeyNotAkey","Fetal_1",0.00260674055090271,-8.58353728619704
+"3","Hippocampus - PeyNotAkey","Fetal_1",0.009781410828779,-6.67574171632634
+"4","Mediodorsal Nucleus of the Thalamus - PeyNotAkey","Fetal_1",5.63244535732922e-14,-44.0132319160729
+"5","Neocortex - PeyNotAkey","Fetal_1",1.99593745073973e-10,-32.222214439081
+"6","Striatum - PeyNotAkey","Fetal_1",0.00260674055095901,-8.58353728616588
+"7","Amygdala - PeyNotAkey","Fetal_2",0.400002579288845,-1.32191879209929
+"8","Cerebellum - PeyNotAkey","Fetal_2",2.02478362901392e-07,-22.2357289162275
+"9","Hippocampus - PeyNotAkey","Fetal_2",0.0271094730511351,-5.20505911916283
+"10","Mediodorsal Nucleus of the Thalamus - PeyNotAkey","Fetal_2",0.400000144673762,-1.32192757308716
+"11","Neocortex - PeyNotAkey","Fetal_2",0.400000630458535,-1.32192582099065
+"12","Striatum - PeyNotAkey","Fetal_2",0.0271063412046487,-5.20522579744524
+"13","Amygdala - PeyNotAkey","Fetal_3",0.8,-0.321928094887362
+"14","Cerebellum - PeyNotAkey","Fetal_3",0.402990639407796,-1.31118176639911
+"15","Hippocampus - PeyNotAkey","Fetal_3",0.401135079764998,-1.31783995773019
+"16","Mediodorsal Nucleus of the Thalamus - PeyNotAkey","Fetal_3",6.64402695827951e-26,-83.6380725399937
+"17","Neocortex - PeyNotAkey","Fetal_3",0.404102917236474,-1.30720532845037
+"18","Striatum - PeyNotAkey","Fetal_3",0.400022801936317,-1.32184585663021
+"19","Amygdala - PeyNotAkey","Birth/Inf",0.207814698928249,-2.26663039386511
+"20","Cerebellum - PeyNotAkey","Birth/Inf",1.0737210781313e-19,-63.0140145315646
+"21","Hippocampus - PeyNotAkey","Birth/Inf",0.0152464996985684,-6.0353781239614
+"22","Mediodorsal Nucleus of the Thalamus - PeyNotAkey","Birth/Inf",0.312611271538548,-1.6775582976771
+"23","Neocortex - PeyNotAkey","Birth/Inf",0.239846879345934,-2.05981442616903
+"24","Striatum - PeyNotAkey","Birth/Inf",0.329396952612783,-1.60210088672887
+"25","Amygdala - PeyNotAkey","Inf/Child",0.0760906084469388,-3.71613779101504
+"26","Cerebellum - PeyNotAkey","Inf/Child",0.20542731283931,-2.28330008519718
+"27","Hippocampus - PeyNotAkey","Inf/Child",0.0760906011970272,-3.716137928475
+"28","Mediodorsal Nucleus of the Thalamus - PeyNotAkey","Inf/Child",0.20542731284829,-2.28330008513411
+"29","Neocortex - PeyNotAkey","Inf/Child",1.27109839461778e-08,-26.2293490466689
+"30","Striatum - PeyNotAkey","Inf/Child",0.400000005452091,-1.3219280752231
+"31","Amygdala - PeyNotAkey","Child",0.00916250370527207,-6.77004240799664
+"32","Cerebellum - PeyNotAkey","Child",1.95188327376421e-14,-45.5421265487788
+"33","Hippocampus - PeyNotAkey","Child",0.474101940743664,-1.07673079611639
+"34","Mediodorsal Nucleus of the Thalamus - PeyNotAkey","Child",0.0971086834368236,-3.36425588289317
+"35","Neocortex - PeyNotAkey","Child",0.410222879876365,-1.28552013558146
+"36","Striatum - PeyNotAkey","Child",0.421946360003251,-1.24486848713016
+"37","Amygdala - PeyNotAkey","Adolescence",0.00858199889049141,-6.86447057009206
+"38","Cerebellum - PeyNotAkey","Adolescence",4.1056424695664e-19,-61.0790258037236
+"39","Hippocampus - PeyNotAkey","Adolescence",0.0512602471547902,-4.28601575507558
+"40","Mediodorsal Nucleus of the Thalamus - PeyNotAkey","Adolescence",0.058188615193585,-4.10311927737032
+"41","Neocortex - PeyNotAkey","Adolescence",0.0016501377237549,-9.24319784498717
+"42","Striatum - PeyNotAkey","Adolescence",4.11639879847028e-19,-61.0752510449466
+"43","Amygdala - PeyNotAkey","Adult",4.49666984235888e-06,-17.762711607994
+"44","Cerebellum - PeyNotAkey","Adult",1.42247664217199e-95,-315.074764051398
+"45","Hippocampus - PeyNotAkey","Adult",0.0788065102663387,-3.66554137302458
+"46","Mediodorsal Nucleus of the Thalamus - PeyNotAkey","Adult",0.204048098824949,-2.29301882623497
+"47","Neocortex - PeyNotAkey","Adult",0.118049180168878,-3.08254007255334
+"48","Striatum - PeyNotAkey","Adult",0.235224195550312,-2.08789162907916

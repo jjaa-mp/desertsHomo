@@ -1,49 +1,49 @@
-Structure,window,pval,log2pvalAVG
-Amygdala,Fetal_1,0.065844618,-3.924790663
-Cerebellum,Fetal_1,0.2,-2.321928095
-Hippocampus,Fetal_1,0.065844618,-3.924790663
-Mediodorsal Nucleus of the Thalamus,Fetal_1,7.9519E-15,-46.83762192
-Neocortex,Fetal_1,3.01346E-13,-41.5936437
-Striatum,Fetal_1,0.2,-2.321928095
-Amygdala,Fetal_2,0.006254009,-7.321003102
-Cerebellum,Fetal_2,0.606226173,-0.722071955
-Hippocampus,Fetal_2,0.600005502,-0.736952365
-Mediodorsal Nucleus of the Thalamus,Fetal_2,6.71683E-14,-43.75921212
-Neocortex,Fetal_2,0.400039442,-1.321785846
-Striatum,Fetal_2,0.400017108,-1.321866393
-Amygdala,Fetal_3,0.8,-0.321928095
-Cerebellum,Fetal_3,0.622837561,-0.683072144
-Hippocampus,Fetal_3,0.589057972,-0.763518472
-Mediodorsal Nucleus of the Thalamus,Fetal_3,3.45611E-26,-84.58097967
-Neocortex,Fetal_3,0.308111231,-1.698476825
-Striatum,Fetal_3,0.672383631,-0.572643491
-Amygdala,Birth/Inf,0.276915764,-1.852480912
-Cerebellum,Birth/Inf,3.00234E-22,-71.49632859
-Hippocampus,Birth/Inf,5.52939E-07,-20.78637533
-Mediodorsal Nucleus of the Thalamus,Birth/Inf,0.426303996,-1.230045516
-Neocortex,Birth/Inf,0.206772017,-2.273887139
-Striatum,Birth/Inf,0.356159697,-1.489403824
-Amygdala,Inf/Child,0.200008548,-2.321866436
-Cerebellum,Inf/Child,0.006589342,-7.245649825
-Hippocampus,Inf/Child,0.200000312,-2.321925845
-Mediodorsal Nucleus of the Thalamus,Inf/Child,0.150184189,-2.735195154
-Neocortex,Inf/Child,0.200000009,-2.321928027
-Striatum,Inf/Child,0.343897262,-1.539950464
-Amygdala,Child,0.20000066,-2.321923336
-Cerebellum,Child,1.2578E-16,-52.81995161
-Hippocampus,Child,0.273011287,-1.8729675
-Mediodorsal Nucleus of the Thalamus,Child,0.163170912,-2.615544201
-Neocortex,Child,0.299816113,-1.737850175
-Striatum,Child,0.209656028,-2.253903786
-Amygdala,Adolescence,0.001954238,-8.999177872
-Cerebellum,Adolescence,1.60842E-23,-75.71870241
-Hippocampus,Adolescence,0.200056472,-2.321520793
-Mediodorsal Nucleus of the Thalamus,Adolescence,0.201905929,-2.30824482
-Neocortex,Adolescence,8.16247E-06,-16.90256264
-Striatum,Adolescence,3.24068E-16,-51.45455279
-Amygdala,Adult,1.2626E-06,-19.59516972
-Cerebellum,Adult,1.12271E-98,-325.3819652
-Hippocampus,Adult,0.200003095,-2.321905771
-Mediodorsal Nucleus of the Thalamus,Adult,0.200002,-2.32191367
-Neocortex,Adult,0.202470567,-2.304215893
-Striatum,Adult,0.2024704,-2.304217087
+"","Structure","window","pvalAVG","log2(pvalAVG)"
+"1","Amygdala - AkeyPey","Fetal_1",0.0048662402639688,-7.68297673152939
+"2","Cerebellum - AkeyPey","Fetal_1",7.88230665476568e-25,-80.0695844947327
+"3","Hippocampus - AkeyPey","Fetal_1",0.179711068996853,-2.47624882296182
+"4","Mediodorsal Nucleus of the Thalamus - AkeyPey","Fetal_1",0.177759968016114,-2.49199763262804
+"5","Neocortex - AkeyPey","Fetal_1",0.00291470286412162,-8.42243546755121
+"6","Striatum - AkeyPey","Fetal_1",3.12012039446113e-09,-28.2557511553023
+"7","Amygdala - AkeyPey","Fetal_2",0.406452545527868,-1.29884117143833
+"8","Cerebellum - AkeyPey","Fetal_2",0.000151993946002452,-12.6836985180265
+"9","Hippocampus - AkeyPey","Fetal_2",0.588504666898869,-0.764874238867213
+"10","Mediodorsal Nucleus of the Thalamus - AkeyPey","Fetal_2",0.273838137137386,-1.86860471174116
+"11","Neocortex - AkeyPey","Fetal_2",0.00297863799935441,-8.39113148442826
+"12","Striatum - AkeyPey","Fetal_2",0.47605388288149,-1.07080321848359
+"13","Amygdala - AkeyPey","Fetal_3",0.200000600447944,-2.32192376357751
+"14","Cerebellum - AkeyPey","Fetal_3",1.29910241194553e-07,-22.8759814971809
+"15","Hippocampus - AkeyPey","Fetal_3",0.00115753165199083,-9.75473264102896
+"16","Mediodorsal Nucleus of the Thalamus - AkeyPey","Fetal_3",0.201123652627502,-2.31384533884421
+"17","Neocortex - AkeyPey","Fetal_3",0.200033408228172,-2.32168712558715
+"18","Striatum - AkeyPey","Fetal_3",0.20000000026168,-2.32192809299974
+"19","Amygdala - AkeyPey","Birth/Inf",0.801781841683512,-0.318718350396674
+"20","Cerebellum - AkeyPey","Birth/Inf",0.00358604306887873,-8.12339146938256
+"21","Hippocampus - AkeyPey","Birth/Inf",0.80156599500636,-0.319106788794725
+"22","Mediodorsal Nucleus of the Thalamus - AkeyPey","Birth/Inf",0.660800943579894,-0.597712348055758
+"23","Neocortex - AkeyPey","Birth/Inf",0.604113643178703,-0.727108126415859
+"24","Striatum - AkeyPey","Birth/Inf",0.7431005162051,-0.428370723393424
+"25","Amygdala - AkeyPey","Inf/Child",0.801922314864124,-0.318465610562163
+"26","Cerebellum - AkeyPey","Inf/Child",0.107656612049641,-3.21549116527276
+"27","Hippocampus - AkeyPey","Inf/Child",0.80169418893044,-0.318876077970881
+"28","Mediodorsal Nucleus of the Thalamus - AkeyPey","Inf/Child",0.898792720250642,-0.153939655394943
+"29","Neocortex - AkeyPey","Inf/Child",0.80343012389817,-0.315755539922015
+"30","Striatum - AkeyPey","Inf/Child",0.801817264106265,-0.318654614075712
+"31","Amygdala - AkeyPey","Child",0.0857497059548819,-3.54372446563984
+"32","Cerebellum - AkeyPey","Child",0.246435988871922,-2.02071513603124
+"33","Hippocampus - AkeyPey","Child",0.610437840356864,-0.712083698895937
+"34","Mediodorsal Nucleus of the Thalamus - AkeyPey","Child",0.500392396561092,-0.998868226900309
+"35","Neocortex - AkeyPey","Child",0.425468051504479,-1.2328772912171
+"36","Striatum - AkeyPey","Child",0.404126911646681,-1.30711966812112
+"37","Amygdala - AkeyPey","Adolescence",0.41076129762001,-1.28362783913693
+"38","Cerebellum - AkeyPey","Adolescence",8.77112048242228e-49,-159.641715495388
+"39","Hippocampus - AkeyPey","Adolescence",0.560252835290241,-0.835850050038227
+"40","Mediodorsal Nucleus of the Thalamus - AkeyPey","Adolescence",0.600523674801107,-0.735706971612781
+"41","Neocortex - AkeyPey","Adolescence",0.151552233971696,-2.7221129764099
+"42","Striatum - AkeyPey","Adolescence",0.600875758874815,-0.734861374474279
+"43","Amygdala - AkeyPey","Adult",0.00517343828349743,-7.59466086566179
+"44","Cerebellum - AkeyPey","Adult",1.37719059209075e-107,-354.984577922279
+"45","Hippocampus - AkeyPey","Adult",0.00570259738611428,-7.45416510528786
+"46","Mediodorsal Nucleus of the Thalamus - AkeyPey","Adult",0.010876035649572,-6.52270340441228
+"47","Neocortex - AkeyPey","Adult",1.95868101043951e-15,-48.8590389629838
+"48","Striatum - AkeyPey","Adult",1.10840089987112e-20,-66.2900821105422
