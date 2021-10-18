@@ -183,7 +183,7 @@ res.top <- topTrendy(res)
 
 rmdt <- as.data.frame(res.top$AdjustedR2)
 names(rmdt) <- "MD - R2"
-write.csv(rmdt, file="~/desertsHomo/1.data/trendy_adjR2/MDT_GenesDesertPosSel_adjR2.csv", row.names = TRUE, quote=T)
+#write.csv(rmdt, file="~/desertsHomo/1.data/trendy_adjR2/MDT_GenesDesertPosSel_adjR2.csv", row.names = TRUE, quote=T)
 
 #Good fit in Des & Pos sel.
 rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol]

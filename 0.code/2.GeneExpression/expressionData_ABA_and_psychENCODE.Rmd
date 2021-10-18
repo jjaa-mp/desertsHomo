@@ -52,7 +52,7 @@ length(results$hgnc_symbol[!(is.na(results$hgnc_symbol) | results$hgnc_symbol=="
 results <-  results[!(is.na(results$hgnc_symbol) | results$hgnc_symbol==""), ] #Cleaning
 
 ##Pey coordinates (Ensembl 1-based):
-pey_coords <- read.delim("~/2020_pey_coords.bed", header=FALSE) #File with start 0-based
+pey_coords <- read.delim("~/Desktop/gcloud_2021_06/rstudio_2021_06/2020_pey_coords.bed", header=FALSE) #File with start 0-based
 ###Preparing bed file for input in bioMart
 pey_coords$V1 <- gsub("chr", "\\1", pey_coords$V1)
 pey_coords[2] <- pey_coords[2]+1 #Moving to 1-based for Ensembl
@@ -475,7 +475,7 @@ plak_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2
 
 #AkeyPey in Sestan data
 ```{r}
-mRNAseqData=read.table("~/tmp_psychENCODE/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+mRNAseqData=read.table("~/Desktop/gcloud_2021_06/rstudio_2021_06/tmp_psychENCODE/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
 modsb1= mRNAseqData %>% 
   separate(Geneid,c("EnsemblID","Genename"),extra="merge")
 modsb1$EnsemblID<-NULL
@@ -537,11 +537,11 @@ logakeypeysestan1[3:ncol(logakeypeysestan1)] <- log2(logakeypeysestan1[3:ncol(lo
 
 #Brining the metadata of the database
 library(readxl)
-metadatamRNAseq=read_xlsx("~/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
+metadatamRNAseq=read_xlsx("~/Desktop/gcloud_2021_06/rstudio_2021_06/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
 
 
 modMetadatamRNAseq=na.omit(metadatamRNAseq)
-modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
+modMetadatamRNAseq=modMetadatamRNAseq %>% dplyr::select(1:3)
 modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
 
 #With log
@@ -557,12 +557,23 @@ finalakeypeySestan$Window <- NULL
 
 finalakeypeySestan <- as_tibble(finalakeypeySestan)
 
+#For plotting_0
+g0 <- finalakeypeySestan %>%
+  pivot_longer(!Label, names_to = "Gene", values_to = "expr")
+g0 <- g0 %>% 
+  separate(Label, c("Structure","Window"))
+
+ggplot(g0, aes(x=Window,y=expr, colour=Structure)) + geom_line(aes(colour = factor(Structure)))+
+  geom_point(aes(group = factor(Structure)))+
+  stat_smooth(method="loess", span=0.1, se=TRUE, aes(fill=Structure, alpha=0.3) +
+  theme_bw())
+#
 finalakeypeySestan_w_mean <- finalakeypeySestan %>%
     group_by(Label) %>%
     dplyr::summarise_all(median, na.rm=TRUE)
 
 
-#For plotting
+#For plotting_1
 dfakeypeySestan <- data.frame(Structure=finalakeypeySestan_w_mean$Label, Means=rowMeans(finalakeypeySestan_w_mean[,-1]))
 
 dfakeypeySestan <- dfakeypeySestan %>% 
