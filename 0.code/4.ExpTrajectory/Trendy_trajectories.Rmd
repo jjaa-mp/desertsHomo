@@ -34,7 +34,18 @@ akeySestan1 <- akeySestan1[, !duplicated(colnames(akeySestan1))]
 
 akeySestan1=akeySestan1 %>% separate(info, c("Braincode","Regioncode"))
 
+#Transformation
+logakeySestan1 <- akeySestan1
 
+cols.num <- colnames(logakeySestan1[3:ncol(logakeySestan1)])
+
+logakeySestan1[,cols.num] <- lapply(logakeySestan1[cols.num],as.character)
+logakeySestan1[,cols.num] <- lapply(logakeySestan1[cols.num],as.numeric)
+
+logakeySestan1[3:ncol(logakeySestan1)] <- log2(logakeySestan1[3:ncol(logakeySestan1)]+1)
+
+#Normality after transformation
+#lognormcheck <- logakeypeySestan %>% pivot_longer(!("Braincode"|"Regioncode"), names_to = "Genes", values_to = "RPKM")
 #Brining the metadata of the database
 library(readxl)
 metadatamRNAseq=read_xlsx("~/Desktop/gcloud_2021_06/rstudio_2021_06/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
@@ -42,7 +53,8 @@ modMetadatamRNAseq=na.omit(metadatamRNAseq)
 modMetadatamRNAseq=modMetadatamRNAseq %>% dplyr::select(1:3)
 modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
 
-finalakeySestan1=merge(modMetadatamRNAseq,akeySestan1,by=c("Braincode", "Regioncode"))
+#finalakeySestan1=merge(modMetadatamRNAseq,akeySestan1,by=c("Braincode", "Regioncode"))
+finalakeySestan1=merge(modMetadatamRNAseq,logakeySestan1,by=c("Braincode", "Regioncode"))
 
 
 
@@ -96,6 +108,7 @@ class(res.top$Trends)
 pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1), filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_UpDown_Deserts.pdf")
 
 sb_inDesPey <- res.top$Trends[rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol],]
+sb_inDesPey
 
 pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_UpDown_DesertsPosSel.pdf")
 
@@ -106,7 +119,7 @@ plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "RO
 
 pdf("~/desertsHomo/2.plots/trendy_segmentedRegression/CBC_GenesDesertPosSel.pdf")
 par(mfrow=c(3,2))
-plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "CADPS2", "GPR22", "BCAP29"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child","Adult" ), xlab="")
+plot2 <- plotFeature(finalcbc,tVectIn = time.vector,featureNames = c("SYT6", "ROBO2", "CADPS2"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child","Adult" ), xlab="")
 dev.off()
 ```
 
@@ -131,6 +144,10 @@ set.seed(10)
 res <- trendy(Data = finalstr, tVectIn = time.vector, maxK = 3, minNumInSeg = 2, meanCut = 2)
 res <- results(res)
 res.top <- topTrendy(res)
+#Good fit in Des & Pos sel.
+rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol]
+
+res.trend <- trendHeatmap(res.top)
 
 rstr <- as.data.frame(res.top$AdjustedR2)
 names(rstr) <- "Striatum - R2"
@@ -142,6 +159,7 @@ rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol]
 res.trend <- trendHeatmap(res.top)
 ##Heatmap homemad
 class(res.top$Trends)
+library(pheatmap)
 pheatmap(res.top$Trends, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1), filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/STR_UpDown_Deserts.pdf")
 
 sb_inDesPey <- res.top$Trends[rownames(res.top$Trends)[rownames(res.top$Trends) %in% both$hgnc_symbol],]
@@ -149,13 +167,15 @@ sb_inDesPey <- res.top$Trends[rownames(res.top$Trends)[rownames(res.top$Trends) 
 pheatmap(sb_inDesPey, cluster_rows=FALSE, cluster_cols = FALSE, legend_breaks = c(-1,0,1),filename = "~/desertsHomo/2.plots/trendy_segmentedRegression/STR_UpDown_DesertsPosSel.pdf")
 
 
+colnames(finalstr) <- time.vector 
+
 #Selected genes
 par(mfrow=c(2,2))
-plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "BCAP29", "ST7"),trendyOutData = res)
+plot2 <- plotFeature(finalstr,tVectIn = time.vector, featureNames = c("ROBO2", "SYT6", "ST7"),trendyOutData = res)
 
 pdf("~/desertsHomo/2.plots/trendy_segmentedRegression/STR_GenesDesertPosSel.pdf")
 par(mfrow=c(3,2))
-plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "BCAP29", "ST7", "SYT6"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child"), xlab="")
+plot2 <- plotFeature(finalstr,tVectIn = time.vector,featureNames = c("ROBO2", "ST7", "SYT6"),trendyOutData = res, customLabels.x = c("Fetal_1","Fetal_3","Child"), xlab="")
 dev.off()
 ```
 

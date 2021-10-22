@@ -1,0 +1,17 @@
+Structure	window	pvalAVG	log2pvalAVG
+Amygdala	Fetal_1	3.39428e-05	-14.84653521
+Cerebellum	Fetal_1	2.1407e-54	-178.2860366
+Hippocampus	Fetal_1	3.98269e-19	-61.12289086
+Mediodorsal Nucleus of the Thalamus	Fetal_1	4.4684399999999997e-45	-147.3269916
+Mediodorsal Nucleus of the Thalamus	Fetal_2	0.046252637	-4.434320581
+Neocortex	Fetal_2	1.54954e-07	-22.62165665
+Amygdala	Fetal_3	0.044069218	-4.5040849
+Cerebellum	Fetal_3	1.27431e-16	-52.80112976
+Hippocampus	Fetal_3	0.039956834	-4.645413911
+Cerebellum	Inf/Child	4.80818e-13	-40.91957353
+Striatum	Inf/Child	1.10328e-07	-23.11169366
+Cerebellum	Child	1.63693e-55	-181.9950493
+Cerebellum	Adolescence	1.45312e-51	-168.8791833
+Neocortex	Adolescence	0.000246975	-11.9833465
+Striatum	Adolescence	1.90484e-12	-38.93346482
+Cerebellum	Adult	5.8304e-150	-495.7456144

@@ -1,0 +1,22 @@
+Structure	window	pvalAVG	log2(pvalAVG)
+Cerebellum - whole	Fetal_1	0.0010222527291169	-9.93403237021731
+Mediodorsal Nucleus of the Thalamus - whole	Fetal_1	1.47910396316017e-06	-19.366845109271
+Cerebellum - whole	Fetal_2	0.0006149739643927	-10.667187045905
+Neocortex - whole	Fetal_2	0.0002874368335262	-11.7644674320873
+Mediodorsal Nucleus of the Thalamus - whole	Fetal_3	6.12051445409064e-14	-43.8933404060326
+Striatum - whole	Fetal_3	0.0429439301549212	-4.54140195955727
+Cerebellum - whole	Birth/Inf	1.28845156864135e-29	-95.9702764427037
+Cerebellum - whole	Inf/Child	2.5262063558161e-09	-28.5603803619895
+Cerebellum - whole	Child	1.45033082260497e-05	-16.0732584557871
+Mediodorsal Nucleus of the Thalamus - whole	Child	1.45033082260497e-05	-16.0732584557871
+Striatum - whole	Child	0.0003024404197267	-11.6910614177597
+Amygdala - whole	Adolescence	0.0008614458714399	-10.180952231339
+Cerebellum - whole	Adolescence	2.43773946592542e-40	-131.591579849726
+Neocortex - whole	Adolescence	0.0058687402404782	-7.41273343104803
+Striatum - whole	Adolescence	6.57496639732688e-05	-13.8926569531929
+Amygdala - whole	Adult	0.0005860059872364	-10.7367969747787
+Cerebellum - whole	Adult	1.20522303060374e-19	-62.8473336560957
+Hippocampus - whole	Adult	0.0005860059872364	-10.7367969747787
+Mediodorsal Nucleus of the Thalamus - whole	Adult	1.20522303060374e-19	-62.8473336560957
+Neocortex - whole	Adult	1.05526023618869e-07	-23.1758978404814
+Striatum - whole	Adult	1.05526023618869e-07	-23.1758978404814
