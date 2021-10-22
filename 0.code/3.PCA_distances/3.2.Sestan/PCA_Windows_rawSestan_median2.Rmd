@@ -941,11 +941,11 @@ colnames(willcoxStage)[1]<-"Datasets"
 willcoxStage$log2pvalAVG<- (-1)*willcoxStage$log2pvalAVG
 histogram<-ggplot(willcoxStage, aes(Datasets, log2pvalAVG, fill = Datasets)) +     # Manually specifying colors
   geom_bar(stat = "identity") +xlab("")+ ylab("-log2pvalAVG")+ 
-  scale_fill_manual(values =   c("Akey" = "blue",
-                               "AkeyPey" = "red",
-                               "PeyNotAkey" = "green",
-                               "whole" = "brown"))
- 
+  scale_fill_manual(values =   c("Akey" = "#7CD0FE",
+                               "AkeyPey" = "#FE7C7C",
+                               "PeyNotAkey" = "#7CFEAD",
+                               "whole" = "#FEA05E"))+ggtitle("B)")
+histogram
 # c("Akey", "AkeyPey","PeyNotAkey","Whole")
 # values = c("blue", "red","green","brown")
 
@@ -1026,5 +1026,5 @@ grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
 fig2_main <- grid.arrange(PCAPlot, histogram, subfigx, layout_matrix = lay)
 fig2_main
 PCAPlot
-ggsave(file="../../../2.plots/fig_combined2_PCA_Adult_Struct_Cerebellum_Akey.pdf", fig2_main, width = 20, height = 8.27, units = "in")
+ggsave(file="../../../2.plots/new_vers_fig_combined2_PCA_Adult_Struct_Cerebellum_Akey.pdf", fig2_main, width = 20, height = 8.27, units = "in")
 ```
