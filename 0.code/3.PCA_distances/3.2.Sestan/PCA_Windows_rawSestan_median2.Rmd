@@ -395,7 +395,7 @@ correspStage[[7]]<-"Child"
 correspStage[[8]]<-"Adolescent"
 correspStage[[9]]<-"Adult"
 
-akeySestan <- finalselectionDataPeyNotAkey
+akeySestan <- finalselectionDataAkey
 
 jackSplot<-list()
 for( i in 2:9){
@@ -458,7 +458,7 @@ for(i in 2:9){
     
 }
 # ~/AA_investigation/Introgression_deserts/code/new_july/JSPCA_Sestan_distances/
-write.csv(pvalues, file="C:\\Users\\Usuario\\Documents\\AA_investigation\\Introgression_deserts\\code\\new_july\\JS_PCA_Sestan_distances\\JS_pvaluesPeyNotAkey.csv")
+write.csv(pvalues, file="C:\\Users\\Usuario\\Documents\\AA_investigation\\Introgression_deserts\\code\\new_july\\JS_PCA_Sestan_distances\\JS_pvaluesAkey_final.csv")
 write.table(pvalues,"C:\\Users\\Usuario\\Documents\\prueba.csv")
 file.access("C:\\Users\\Usuario\\Documents\\AA_investigation\\Introgression_deserts\\code\\new_july\\JS_PCA_Sestan_distances", 2)
 setwd("C:\\Users\\Usuario\\Documents\\AA_investigation\\Introgression_deserts\\code\\new_july\\JS_PCA_Sestan_distances")
@@ -493,15 +493,15 @@ correspStage[[9]]<-"Adult"
 
 #finalselectionDataAkey/finalselectionDataPeyAkey/finalselectionDataPeyNotAkey/finalselectionDataWhole
 
-# jackStrawPCAAkey=c(0,10,9,9,9,9,8,7,9)
-# jackStrawPCAAkeyPey=c(0,1,1,1,1,1,1,1,1)
-# jackStrawPCAPeyNotAkey=c(0,12,7,8,11,9,9,9,10)
-# jackStrawPCAWhole=c(0,12,9,11,9,10,9,8,12)
-# PCAs2<-c(0,2,2,2,2,2,2,2,2)
+jackStrawPCAAkey=c(0,10,9,9,9,9,8,7,9)
+jackStrawPCAAkeyPey=c(0,1,1,1,1,1,1,1,1)
+jackStrawPCAPeyNotAkey=c(0,12,7,8,11,9,9,9,10)
+jackStrawPCAWhole=c(0,12,9,11,9,10,9,8,12)
+PCAs2<-c(0,2,2,2,2,2,2,2,2)
 
 #finalselectionDataWhole<-finalselectionData
-akeySestan <-finalselectionDataWhole #Input from jm_Allen
-jackStraw<-jackStrawPCAWhole
+akeySestan <-finalselectionDataAkey #Input from jm_Allen
+jackStraw<-jackStrawPCAAkey
 
 structDistWind<-list()
 varPCA<-list()
@@ -627,7 +627,7 @@ PoVdf<-plyr::ldply(PoVs, rbind)
 colnames(PoVdf) <- paste("PC", colnames(PoVdf), sep = "")
 rownames(PoVdf)<-c("Fetal_1","Fetal_2","Fetal_3","Birth/Inf","Infan_Child","Child","Adolescent","Adult")
 
-write.csv(PoVdf, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/var_PCA_Whole_JS.csv")
+write.csv(PoVdf, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/var_2PCA_Whole_JS.csv")
 pairs(~PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8+ 
         PC9 + PC10 + PC11 + PC12 + PC13 + PC14 + PC15, col = factor(PCi$topStructure), pch = 19, data = PCi)
 #Boxplots
@@ -792,7 +792,7 @@ pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) 
   geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
 #write.csv(willCoxPvals, file="~/desertsHomo/1.data/distances_pvalues/wilcox_akeySestan.csv")
 
-write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_WholeSestan_JS.csv")
+write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_AkeyPey_PC2.csv")
 
 ##PREPARING SUPPL FIGURE
 #load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
@@ -928,6 +928,28 @@ library(stringr)
 library(ggplot2)
 library(dplyr)
 structures<-c("Cerebellum","Neocortex","Amygdala","Striatum","Hippocampus","Mediodorsal Nucleus of the Thalamus")
+
+
+# Histogram of selected dataset
+wilcoxStruct<-wilcoxAll %>%
+  filter(str_detect(Structure, structures[[i]]))
+wilcoxStruct$window <- factor(wilcoxStruct$window, levels=c("Fetal_1", "Fetal_2", "Fetal_3","Birth/Inf","Inf/Child","Child","Adolescence","Adult"))
+willcoxStage<-wilcoxStruct%>%
+  filter(str_detect(window, "Adult"))
+willcoxStage$Structure<-str_split_fixed(willcoxStage$Structure, " - ", 2)[,2]
+colnames(willcoxStage)[1]<-"Datasets"
+willcoxStage$log2pvalAVG<- (-1)*willcoxStage$log2pvalAVG
+histogram<-ggplot(willcoxStage, aes(Datasets, log2pvalAVG, fill = Datasets)) +     # Manually specifying colors
+  geom_bar(stat = "identity") +xlab("")+ ylab("-log2pvalAVG")+ 
+  scale_fill_manual(values =   c("Akey" = "blue",
+                               "AkeyPey" = "red",
+                               "PeyNotAkey" = "green",
+                               "whole" = "brown"))
+ 
+# c("Akey", "AkeyPey","PeyNotAkey","Whole")
+# values = c("blue", "red","green","brown")
+
+# Graph per structure datasets
 graphSupp<-list()
 for (i in 1:6){
   wilcoxStruct<-wilcoxAll %>%
@@ -1000,7 +1022,8 @@ subfigx <- ggplot(wilcox_AkeySestan, aes(x=window, y=log2pvalAVG, group=Structur
   geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("C)")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5)
 subfigx
 grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
-fig2_main <- grid.arrange(PCAPlot, graphSupp[[1]], subfigx, layout_matrix = lay)
+# histogram <--> graphSupp[[1]]
+fig2_main <- grid.arrange(PCAPlot, histogram, subfigx, layout_matrix = lay)
 fig2_main
 PCAPlot
 ggsave(file="../../../2.plots/fig_combined2_PCA_Adult_Struct_Cerebellum_Akey.pdf", fig2_main, width = 20, height = 8.27, units = "in")
