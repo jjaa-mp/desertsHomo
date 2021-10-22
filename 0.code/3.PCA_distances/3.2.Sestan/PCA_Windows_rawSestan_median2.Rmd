@@ -907,7 +907,7 @@ wilcox_AkeyPeySestan$Structure <- paste0(wilcox_AkeyPeySestan$Structure," - Akey
 
 wilcox_AkeyPeySestanPC2<-read.csv("~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_AkeyPey_2PCA.csv")
 wilcox_AkeyPeySestanPC2$X<-NULL
-wilcox_AkeyPeySestanPC2$Structure <- paste0(wilcox_AkeyPeySestanPC2$Structure," - AkeyPey")
+wilcox_AkeyPeySestanPC2$Structure <- paste0(wilcox_AkeyPeySestanPC2$Structure," - Chen et al. 2020 & Peyregne et al. 2017")
 
 
 
@@ -1014,16 +1014,14 @@ test2 <- vpreli2 %>%
 figtop3<-ggparcoord(test2,
            columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="C")+theme(plot.title = element_text(size=10),legend.position = "right", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)
 
-lay <- rbind(c(1,2,3),
-               c(4,5,6),
-               C(7,8,9))
+lay <- rbind(c(1,2,3))
 
 # A basic scatterplot with color using the PCis from original script
 PCisAkey<-PCis
 PCi<-PCis[[4]]
 # PCisAkeyAdolescent // PCiAkeyAdult
-PCAPlotG<-ggplot(PCi[,1:2], aes(x=PC1, y=PC2, color=PCi$topStructure)) + 
-    geom_point(size=2) + ggtitle("G)")+labs(color='Structure') + theme(legend.position = "none")#
+PCAPlot<-ggplot(PCi[,1:2], aes(x=PC1, y=PC2, color=PCi$topStructure)) + 
+    geom_point(size=2) + ggtitle("A)")+labs(color='Structure') + theme(legend.position = "none")#
 #PCAPlotAkeyPey<-PCAPlotMdt
 #PCAPlotAkey<-PCAPlot
 # wilcox_AkeySestan
