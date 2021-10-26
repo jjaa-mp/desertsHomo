@@ -934,8 +934,8 @@ library(dplyr)
 structures<-c("Cerebellum","Neocortex","Amygdala","Striatum","Hippocampus","Mediodorsal Nucleus of the Thalamus")
 
 # Histogram of selected dataset !!
-struct<-6 # Cerebellum =1, striatum=4, MDT=6
-stage<- "Fetal_1" # Adult
+struct<-4 # Cerebellum =1, striatum=4, MDT=6
+stage<- "Adolescence" # Adult, Fetal_1, Adolescence
 wilcoxStruct<-wilcoxAll %>%
   filter(str_detect(Structure, structures[[struct]]))
 wilcoxStruct$window <- factor(wilcoxStruct$window, levels=c("Fetal_1", "Fetal_2", "Fetal_3","Birth/Inf","Inf/Child","Child","Adolescence","Adult"))
@@ -1031,13 +1031,11 @@ wilcox_AkeyPeySestanPC2$window <- factor(wilcox_AkeyPeySestanPC2$window,
 subfigxAkeyPey <- ggplot(wilcox_AkeyPeySestanPC2, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme( axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "bottom", legend.direction = "vertical")+ggtitle("B)")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5)
-subfigx
+subfigxAkeyPey
 grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
 # histogram <--> graphSupp[[1]]
-fig2_main <- grid.arrange(PCAPlotAkey, subfigxAkeyPey, histogramMdt,
-                          PCAPlotD,  subfigxAkeyPey, histogramMdt,
-                          PCAPlotG, subfigxAkeyPey, histogramMdt, 
+fig2_main <- grid.arrange(PCAPlot, subfigxAkeyPey, histogramMdt, 
                           layout_matrix = lay)
 
-ggsave(file="../../../2.plots/new_vers_horizontal_fig_combined-ALL.pdf", fig2_main, width = 20, height = 8.27, units = "in")
+ggsave(file="../../../2.plots/new_vers_horizontal_fig_combined2_PCA_Fetal1_Struct_Mdt_AkeyPey.pdf", fig2_main, width = 20, height = 8.27, units = "in")
 ```
