@@ -903,7 +903,7 @@ ggsave(file="~/desertsHomo/2.plots/Sestan_AkeyPey_log2_median/sf_pvals_ak_akpey.
 ```{r}
 wilcox_AkeyPeySestan<-read.csv("~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_AkeyPeySestan_JS.csv")
 wilcox_AkeyPeySestan$X<-NULL
-wilcox_AkeyPeySestan$Structure <- paste0(wilcox_AkeyPeySestan$Structure," - AkeyPey")
+wilcox_AkeyPeySestan$Structure <- paste0(wilcox_AkeyPeySestan$Structure," - Chen et al. 2020 & Peyregne et al. 2017")
 
 wilcox_AkeyPeySestanPC2<-read.csv("~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_AkeyPey_2PCA.csv")
 wilcox_AkeyPeySestanPC2$X<-NULL
@@ -926,7 +926,7 @@ wilcox_wholeSestan<-read.csv("~/AA_investigation/Introgression_deserts/code/new_
 wilcox_wholeSestan$X<-NULL
 wilcox_wholeSestan$Structure <- paste0(wilcox_wholeSestan$Structure," - whole")
 
-wilcoxAll<-rbind(wilcox_AkeySestan,wilcox_AkeyPeySestanPC2,wilcox_PeyNotAkeySestan,wilcox_wholeSestan)
+wilcoxAll<-rbind(wilcox_AkeySestan,wilcox_AkeyPeySestan,wilcox_PeyNotAkeySestan,wilcox_wholeSestan)
 
 library(stringr)
 library(ggplot2)
@@ -934,8 +934,8 @@ library(dplyr)
 structures<-c("Cerebellum","Neocortex","Amygdala","Striatum","Hippocampus","Mediodorsal Nucleus of the Thalamus")
 
 # Histogram of selected dataset !!
-struct<-4 # Cerebellum =1, striatum=4, MDT=6
-stage<- "Adolescence" # Adult, Fetal_1, Adolescence
+struct<-6 # Cerebellum =1, striatum=4, MDT=6
+stage<- "Fetal_1" # Adult, Fetal_1, Adolescence
 wilcoxStruct<-wilcoxAll %>%
   filter(str_detect(Structure, structures[[struct]]))
 wilcoxStruct$window <- factor(wilcoxStruct$window, levels=c("Fetal_1", "Fetal_2", "Fetal_3","Birth/Inf","Inf/Child","Child","Adolescence","Adult"))
@@ -943,17 +943,17 @@ willcoxStage<-wilcoxStruct%>%
   filter(str_detect(window, stage))
 willcoxStage$Structure<-str_split_fixed(willcoxStage$Structure, " - ", 2)[,2]
 colnames(willcoxStage)[1]<-"Datasets"
-willcoxStage$Datasets<-c("Chen et al. 2020", "Chen et al. 2020 & Peyregne et al. 2017","Peyregne et al. 2017","Li et al. 2018 (Whole)")
+willcoxStage$Datasets<-c("Chen et al. 2020", "Chen et al. 2020 & Peyregne et al. 2017","Peyregne et al. 2017 without Chen et al. 2020","Li et al. 2018 (Whole)")
 willcoxStage$log2pvalAVG<- (-1)*willcoxStage$log2pvalAVG
-histogramMdt<-ggplot(willcoxStage, aes(Datasets, log2pvalAVG, fill = Datasets)) + theme(legend.position="bottom",legend.direction = "vertical",axis.text.y=element_blank(),
+histogramMdt1<-ggplot(willcoxStage, aes(Datasets, log2pvalAVG, fill = Datasets)) + theme(legend.position="bottom",legend.direction = "vertical",axis.text.y=element_blank(),
                                                                                      plot.subtitle = element_text(hjust=0.5)) +     # Manually specifying colors
   geom_bar(stat = "identity", width = 0.6) +xlab("")+ ylab("-log2pvalAVG")+ 
   scale_fill_manual(values =   c("Chen et al. 2020" = "#7CD0FE",
                                "Chen et al. 2020 & Peyregne et al. 2017" = "#FE7C7C",
-                               "Peyregne et al. 2017" = "#7CFEAD",
+                               "Peyregne et al. 2017 without Chen et al. 2020" = "#7CFEAD",
                                "Li et al. 2018 (Whole)" = "#FEA05E"))+ggtitle("C)", subtitle=stage)+coord_flip()
-
-histogramMdt
+histogramCereb
+# histogramMdt
 # c("Akey", "AkeyPey","PeyNotAkey","Whole")
 # values = c("blue", "red","green","brown")
 
@@ -967,7 +967,7 @@ wilcoxStruct$window <- factor(wilcoxStruct$window, levels=c("Fetal_1", "Fetal_2"
 graphSupp[[i]] <- ggplot(wilcoxStruct, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("C)")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5) +
-  scale_color_manual(labels = c("Chen et al. 2020", "Chen et al. 2020 & Peyregne et al. 2017","Peyregne et al. 2017","Li et al. 2018 (Whole)"), values = c("blue", "red","green","brown"))+labs(color='Dataset')
+  scale_color_manual(labels = c("Chen et al. 2020", "Chen et al. 2020 & Peyregne et al. 2017","Peyregne et al. 2017 without Chen et al. 2020","Li et al. 2018 (Whole)"), values = c("blue", "red","green","brown"))+labs(color='Dataset')
 }
 
 
@@ -1018,24 +1018,25 @@ lay <- rbind(c(1,2,3))
 
 # A basic scatterplot with color using the PCis from original script
 PCisAkey<-PCis
-PCi<-PCis[[4]]
+PCi<-PCis[[2]]
 # PCisAkeyAdolescent // PCiAkeyAdult
 PCAPlot<-ggplot(PCi[,1:2], aes(x=PC1, y=PC2, color=PCi$topStructure)) + 
     geom_point(size=2) + ggtitle("A)")+labs(color='Structure') + theme(legend.position = "none")#
+PCAPlot
 #PCAPlotAkeyPey<-PCAPlotMdt
 #PCAPlotAkey<-PCAPlot
 # wilcox_AkeySestan
-wilcox_AkeyPeySestanPC2$window <- factor(wilcox_AkeyPeySestanPC2$window, 
+wilcox_AkeyPeySestan$window <- factor(wilcox_AkeyPeySestan$window, 
     levels=c("Fetal_1","Fetal_2","Fetal_3","Birth/Inf","Inf/Child", "Child","Adolescence", "Adult"))
 # subfigxAkey
-subfigxAkeyPey <- ggplot(wilcox_AkeyPeySestanPC2, aes(x=window, y=log2pvalAVG, group=Structure)) +
+subfigxAkeyPey1PC <- ggplot(wilcox_AkeyPeySestan, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme( axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "bottom", legend.direction = "vertical")+ggtitle("B)")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5)
-subfigxAkeyPey
+subfigxAkeyPey2PC
 grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
 # histogram <--> graphSupp[[1]]
-fig2_main <- grid.arrange(PCAPlot, subfigxAkeyPey, histogramMdt, 
+fig2_main <- grid.arrange(PCAPlot, subfigxAkeyPey1PC, histogramMdt1, 
                           layout_matrix = lay)
 
-ggsave(file="../../../2.plots/new_vers_horizontal_fig_combined2_PCA_Fetal1_Struct_Mdt_AkeyPey.pdf", fig2_main, width = 20, height = 8.27, units = "in")
+ggsave(file="../../../2.plots/new_vers_horizontal_fig_combined2_PCA_Fetal1_Struct_Mdt_AkeyPey_1PCAkeyPey.pdf", fig2_main, width = 20, height = 8.27, units = "in")
 ```
