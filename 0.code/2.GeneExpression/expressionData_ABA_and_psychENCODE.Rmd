@@ -355,7 +355,7 @@ df_raw2[,10] <- NULL
 df_raw2 <- df_raw2[complete.cases(df_raw2), ]
 colnames(df_raw2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(df_raw2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
+levels(colnames(df_raw2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
 ##write.csv(df_raw2, file="median_filtered_rawSestan.csv", row.names = FALSE)
 a<- ggparcoord(df_raw2,
                columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
@@ -372,7 +372,7 @@ dfraw2_pl <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2),
 
 #Akey in Sestan data
 ```{r}
-mRNAseqData=read.table("~/tmp_psychENCODE/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+mRNAseqData=read.table("~/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
 modsb1= mRNAseqData %>% 
   separate(Geneid,c("EnsemblID","Genename"),extra="merge")
 modsb1$EnsemblID<-NULL
@@ -419,7 +419,7 @@ logakeySestan1[3:ncol(logakeySestan1)] <- log2(logakeySestan1[3:ncol(logakeySest
 
 #Brining the metadata of the database
 library(readxl)
-metadatamRNAseq=read_xlsx("~/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
+metadatamRNAseq=read_xlsx("~/mRNA-seq_QC.xlsx",skip = 3)
 modMetadatamRNAseq=na.omit(metadatamRNAseq)
 modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
 modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
@@ -453,7 +453,7 @@ preli1[,10] <- NULL
 preli1 <- preli1[complete.cases(preli1), ]
 colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
+levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 #write.csv(preli1, file="~/desertsHomo/1.data/median_tables/median_Akey_Sestan.csv", row.names = FALSE)
 
@@ -583,7 +583,7 @@ preli2[,10] <- NULL
 preli2 <- preli2[complete.cases(preli2), ]
 colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 #write.csv(preli2, file="~/desertsHomo/1.data/median_tables/median_AkeyPey_Sestan.csv", row.names = FALSE)
 
@@ -703,7 +703,7 @@ preli2[,10] <- NULL
 preli2 <- preli2[complete.cases(preli2), ]
 colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 #write.csv(preli2, file="~/desertsHomo/1.data/median_tables/median_peyNotAkey_Sestan.csv", row.names = FALSE)
 
@@ -897,15 +897,15 @@ preli3 <- as_tibble(preli3) #rawfiltered
 
 colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
+levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 colnames(preli3) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli3)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
+levels(colnames(preli3)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 preli1$dataset <- c("Deserts")
 preli2$dataset <- c("Deserts and Pos. Sel.")
@@ -947,12 +947,12 @@ prelites2 <- prelites2[complete.cases(prelites2), ]
 
 colnames(prelites2) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
+levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 n <-ggparcoord(prelites2,
 columns = 3:10, groupColumn = 2, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")+theme(axis.text.x = element_text(angle = 45,hjust = 1))
 j1<-n + facet_wrap(~Genename)+scale_color_discrete(name="Structure",labels=unique(prelites2$Structure))
-#ggsave(file="~/desertsHomo/2.plots/Sestan_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_1.pdf", j1, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/desertsHomo/2.plots/Sestan_AkeyPey_log2_median/GenesAkeyPey_log2_median_perGenes_1.pdf", j1, width = 11.69, height = 8.27, units = "in")
 
 n1 <-ggparcoord(prelites2,
 columns = 3:10, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel", mapping=aes(color=factor(Genename)))+xlab("")+ylab("expression")
