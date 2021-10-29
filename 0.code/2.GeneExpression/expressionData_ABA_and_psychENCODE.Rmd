@@ -353,9 +353,9 @@ dfrawSestan2 <- dfrawSestan2 %>%
 df_raw2 <- pivot_wider(dfrawSestan2, names_from = Window, values_from = Means)
 df_raw2[,10] <- NULL
 df_raw2 <- df_raw2[complete.cases(df_raw2), ]
-colnames(df_raw2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+colnames(df_raw2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(df_raw2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+levels(colnames(df_raw2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
 ##write.csv(df_raw2, file="median_filtered_rawSestan.csv", row.names = FALSE)
 a<- ggparcoord(df_raw2,
                columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
@@ -451,9 +451,9 @@ dfakeySestan1 <- dfakeySestan1 %>%
 preli1 <- pivot_wider(dfakeySestan1, names_from = Window, values_from = Means)
 preli1[,10] <- NULL
 preli1 <- preli1[complete.cases(preli1), ]
-colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
 
 #write.csv(preli1, file="~/desertsHomo/1.data/median_tables/median_Akey_Sestan.csv", row.names = FALSE)
 
@@ -581,9 +581,9 @@ dfakeypeySestan <- dfakeypeySestan %>%
 preli2 <- pivot_wider(dfakeypeySestan, names_from = Window, values_from = Means)
 preli2[,10] <- NULL
 preli2 <- preli2[complete.cases(preli2), ]
-colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
 
 #write.csv(preli2, file="~/desertsHomo/1.data/median_tables/median_AkeyPey_Sestan.csv", row.names = FALSE)
 
@@ -701,9 +701,9 @@ dfpeyNotAkeySestan <- dfpeyNotAkeySestan %>%
 preli2 <- pivot_wider(dfpeyNotAkeySestan, names_from = Window, values_from = Means)
 preli2[,10] <- NULL
 preli2 <- preli2[complete.cases(preli2), ]
-colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
 
 #write.csv(preli2, file="~/desertsHomo/1.data/median_tables/median_peyNotAkey_Sestan.csv", row.names = FALSE)
 
@@ -895,17 +895,17 @@ preli2 <- as_tibble(preli2) #AKEYpey
 preli3 <- read.csv(file="~/desertsHomo/1.data/median_tables/median_filtered_rawSestan.csv")
 preli3 <- as_tibble(preli3) #rawfiltered
 
-colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
 
-colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
 
-colnames(preli3) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+colnames(preli3) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(preli3)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+levels(colnames(preli3)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
 
 preli1$dataset <- c("Deserts")
 preli2$dataset <- c("Deserts and Pos. Sel.")
@@ -924,7 +924,7 @@ columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mappi
 n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
 
 an <- n + facet_wrap(~Structure)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
-#ggsave(file="~/desertsHomo/2.plots/Sestan_raw_filtered_median2_trajectories/Sestan_temporal_Structures_filteredRawmedian2.pdf", an, width = 11.69, height = 8.27, units = "in")
+ggsave(file="~/desertsHomo/2.plots/Sestan_raw_filtered_median2_trajectories/Sestan_temporal_Structures_filteredRawmedian2.pdf", an, width = 11.69, height = 8.27, units = "in")
 ```
 
 #FIGURE #S2
@@ -945,9 +945,9 @@ prelites2 <- prelites2[complete.cases(prelites2), ]
 
 #levels(prelites2$Genename) <- unique(prelites2$Genename)
 
-colnames(prelites2) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Ifan", "Infan/Child", "Child", "Adolescence", "Adult")
+colnames(prelites2) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
-levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Inf/Child", "Child", "Adolescence", "Adult")
+levels(colnames(prelites2)) <- c("Structure", "Genename", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "InfancyChild", "Child", "Adolescence", "Adult")
 
 n <-ggparcoord(prelites2,
 columns = 3:10, groupColumn = 2, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=factor(Structure)))+xlab("")+ylab("expression")+theme(axis.text.x = element_text(angle = 45,hjust = 1))
