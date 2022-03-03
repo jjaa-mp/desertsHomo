@@ -18,7 +18,6 @@ library(tidyr)
 library(tidyverse)
 library(DescTools)
 library(reshape2)
-library(dplyr)
 library(Matrix)
 library(pheatmap)
 library(plyr)
@@ -51,8 +50,50 @@ results <- results[!duplicated(results$hgnc_symbol),]
 length(results$hgnc_symbol[!(is.na(results$hgnc_symbol) | results$hgnc_symbol=="")])
 results <-  results[!(is.na(results$hgnc_symbol) | results$hgnc_symbol==""), ] #Cleaning
 
+#akchr1
+filterlist1 <- c("1:105400000:120600000")
+##Select only protein-coding from Akey
+akchr1=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+              filters = c("chromosomal_region","biotype"),
+              values = list(chromosomal_region=filterlist1,biotype="protein_coding"), mart = ensembl)
+akchr1 <- akchr1[!duplicated(akchr1$hgnc_symbol),]
+
+length(akchr1$hgnc_symbol[!(is.na(akchr1$hgnc_symbol) | akchr1$hgnc_symbol=="")])
+akchr1 <-  akchr1[!(is.na(akchr1$hgnc_symbol) | akchr1$hgnc_symbol==""), ] #Cleaning
+#akchr3
+filterlist3 <- c("3:74100000:89300000")
+##Select only protein-coding from Akey
+akchr3=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+              filters = c("chromosomal_region","biotype"),
+              values = list(chromosomal_region=filterlist3,biotype="protein_coding"), mart = ensembl)
+akchr3 <- akchr3[!duplicated(akchr3$hgnc_symbol),]
+length(akchr3$hgnc_symbol[!(is.na(akchr3$hgnc_symbol) | akchr3$hgnc_symbol=="")])
+akchr3 <-  akchr3[!(is.na(akchr3$hgnc_symbol) | akchr3$hgnc_symbol==""), ] #Cleaning
+#akchr7
+filterlist7 <- c("7:106200000:123200000")
+##Select only protein-coding from Akey
+akchr7=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+              filters = c("chromosomal_region","biotype"),
+              values = list(chromosomal_region=filterlist7,biotype="protein_coding"), mart = ensembl)
+akchr7 <- akchr7[!duplicated(akchr7$hgnc_symbol),]
+length(akchr7$hgnc_symbol[!(is.na(akchr7$hgnc_symbol) | akchr7$hgnc_symbol=="")])
+akchr7 <-  akchr7[!(is.na(akchr7$hgnc_symbol) | akchr7$hgnc_symbol==""), ] #Cleaning
+
+#akchr8
+filterlist8 <- c("8:49400000:66500000")
+##Select only protein-coding from Akey
+akchr8=getBM(attributes = c("hgnc_symbol", "chromosome_name", "start_position", "end_position","gene_biotype"),
+              filters = c("chromosomal_region","biotype"),
+              values = list(chromosomal_region=filterlist8,biotype="protein_coding"), mart = ensembl)
+akchr8 <- akchr8[!duplicated(akchr8$hgnc_symbol),]
+#255
+length(akchr8$hgnc_symbol[!(is.na(akchr8$hgnc_symbol) | akchr8$hgnc_symbol=="")])
+akchr8 <-  akchr8[!(is.na(akchr8$hgnc_symbol) | akchr8$hgnc_symbol==""), ] #Cleaning
+
+
+
 ##Pey coordinates (Ensembl 1-based):
-pey_coords <- read.delim("~/Desktop/gcloud_2021_06/rstudio_2021_06/2020_pey_coords.bed", header=FALSE) #File with start 0-based
+pey_coords <- read.delim("~/desertsHomo/1.data/input_data/2020_pey_coords.bed", header=FALSE) #File with start 0-based
 ###Preparing bed file for input in bioMart
 pey_coords$V1 <- gsub("chr", "\\1", pey_coords$V1)
 pey_coords[2] <- pey_coords[2]+1 #Moving to 1-based for Ensembl
@@ -372,12 +413,15 @@ dfraw2_pl <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2),
 
 #Akey in Sestan data
 ```{r}
-mRNAseqData=read.table("~/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+mRNAseqData=read.table("~/desertsHomo/1.data/input_data/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+
 modsb1= mRNAseqData %>% 
   separate(Geneid,c("EnsemblID","Genename"),extra="merge")
 modsb1$EnsemblID<-NULL
+
 #Filtering for Akey alone
 akeySestan1 <- modsb1 %>% filter(modsb1$Genename %in% results$hgnc_symbol)
+
 akeySestan1=t(akeySestan1)
 
 #As dataframe
@@ -419,9 +463,11 @@ logakeySestan1[3:ncol(logakeySestan1)] <- log2(logakeySestan1[3:ncol(logakeySest
 
 #Brining the metadata of the database
 library(readxl)
-metadatamRNAseq=read_xlsx("~/mRNA-seq_QC.xlsx",skip = 3)
+metadatamRNAseq=read_xlsx("~/desertsHomo/1.data/input_data/mRNA-seq_QC.xlsx",skip = 3)
+
 modMetadatamRNAseq=na.omit(metadatamRNAseq)
-modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
+#modMetadatamRNAseq=modMetadatamRNAseq %>% select(1:3)
+modMetadatamRNAseq=modMetadatamRNAseq[,c(1,2,3)]
 modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
 
 #With log
@@ -457,6 +503,10 @@ levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Bir
 
 #write.csv(preli1, file="~/desertsHomo/1.data/median_tables/median_Akey_Sestan.csv", row.names = FALSE)
 
+
+
+
+#Figure structure
 a<- ggparcoord(preli1,
               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
 b <- ggparcoord(preli1,
@@ -473,9 +523,121 @@ plak_sestan <-grid.arrange(a1, b1, c1, ncol = 2, layout_matrix = rbind(c(1, 1, 2
 
 ```
 
+#Deserts - per chromosome
+```{r}
+mRNAseqData=read.table("~/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+
+modsb1= mRNAseqData %>% 
+  separate(Geneid,c("EnsemblID","Genename"),extra="merge")
+modsb1$EnsemblID<-NULL
+
+#Filtering for chr1 alone
+akchr1_table <- modsb1 %>% filter(modsb1$Genename %in% akchr1$hgnc_symbol)
+#Filtering for chr3 alone
+akchr3_table <- modsb1 %>% filter(modsb1$Genename %in% akchr3$hgnc_symbol)
+#Filtering for chr7 alone
+akchr7_table <- modsb1 %>% filter(modsb1$Genename %in% akchr7$hgnc_symbol)
+#Filtering for chr8 alone
+akchr8_table <- modsb1 %>% filter(modsb1$Genename %in% akchr8$hgnc_symbol)
+
+library(readxl)
+metadatamRNAseq=read_xlsx("~/desertsHomo/1.data/input_data/mRNA-seq_QC.xlsx",skip = 3)
+  
+data_plot <- function(akey_chr){
+    
+  akey_chr=t(akey_chr)
+  
+  #As dataframe
+  akey_chr=as.data.frame(akey_chr)
+  
+  colnames(akey_chr) <- as.matrix(unlist(akey_chr[1,]))
+  akey_chr <- akey_chr[-1, ]
+  
+  akey_chr <- cbind(info = rownames(akey_chr), akey_chr)
+  rownames(akey_chr) <- 1:nrow(akey_chr)
+  
+  #duplicated columns - issue in raw data. Here: 
+  colnames(akey_chr)[duplicated(colnames(akey_chr))] #1
+  akey_chr <- akey_chr[, !duplicated(colnames(akey_chr))]
+  
+  akey_chr=akey_chr %>% 
+    separate(info, c("Braincode","Regioncode"))
+  
+  #Transformation
+  logakey_chr <- akey_chr
+  
+  cols.num <- colnames(logakey_chr[3:ncol(logakey_chr)])
+  
+  logakey_chr[,cols.num] <- lapply(logakey_chr[cols.num],as.character)
+  logakey_chr[,cols.num] <- lapply(logakey_chr[cols.num],as.numeric)
+  
+  logakey_chr[3:ncol(logakey_chr)] <- log2(logakey_chr[3:ncol(logakey_chr)]+1)
+
+  #Brining the metadata of the database
+
+  modMetadatamRNAseq=na.omit(metadatamRNAseq)
+  modMetadatamRNAseq=modMetadatamRNAseq[,c(1,2,3)]
+  modMetadatamRNAseq=as.data.frame(modMetadatamRNAseq)
+  
+  #With log
+  finalakey_chr=merge(modMetadatamRNAseq,logakey_chr,by=c("Braincode", "Regioncode")) #input
+
+  finalakey_chr$Braincode <- NULL
+  finalakey_chr$Label<- paste(finalakey_chr$Regioncode, finalakey_chr$Window, sep="_")
+  finalakey_chr$Regioncode <- NULL
+  finalakey_chr$Window <- NULL
+  
+  finalakey_chr <- as_tibble(finalakey_chr)
+  
+  finalakey_chr_w_mean <- finalakey_chr %>%
+      group_by(Label) %>%
+      dplyr::summarise_all(median, na.rm=TRUE)
+  
+  #For plotting
+  dfakey_chr <- data.frame(Structure=finalakey_chr_w_mean$Label, Means=rowMeans(finalakey_chr_w_mean[,-1]))
+  dfakey_chr <- dfakey_chr %>% 
+    separate(Structure, c("Structure","Window"))
+  preli1 <- pivot_wider(dfakey_chr, names_from = Window, values_from = Means)
+  preli1[,10] <- NULL
+  preli1 <- preli1[complete.cases(preli1), ]
+  colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
+  #PLOT
+  levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
+  return(preli1)
+}
+
+akey_chr1_plot <- data_plot(akchr1_table)
+aa <- ggparcoord(akey_chr1_plot,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts chromosome 1")+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")
+
+
+akey_chr3_plot <- data_plot(akchr3_table)
+bb <- ggparcoord(akey_chr3_plot,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts chromosome 3")+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")
+
+
+akey_chr7_plot <- data_plot(akchr7_table)
+cc <-ggparcoord(akey_chr7_plot,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts chromosome 7")+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")
+
+
+akey_chr8_plot <- data_plot(akchr8_table)
+dd <- ggparcoord(akey_chr8_plot,
+           columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts chromosome 8")+theme(plot.title = element_text(size=10))+xlab("")+ylab("expression")
+
+
+a1<-arrangeGrob(aa)
+b1<-arrangeGrob(bb)
+c1<-arrangeGrob(cc)
+d1<-arrangeGrob(dd)
+
+grid.arrange(a1, b1, c1, d1, ncol = 2)
+```
+
+
 #AkeyPey in Sestan data
 ```{r}
-mRNAseqData=read.table("~/Desktop/gcloud_2021_06/rstudio_2021_06/tmp_psychENCODE/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
+mRNAseqData=read.table("~/desertsHomo/1.data/input_data/mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.normalized.CQNCombat.txt",sep="\t",header=TRUE)
 modsb1= mRNAseqData %>% 
   separate(Geneid,c("EnsemblID","Genename"),extra="merge")
 modsb1$EnsemblID<-NULL
@@ -537,7 +699,7 @@ logakeypeysestan1[3:ncol(logakeypeysestan1)] <- log2(logakeypeysestan1[3:ncol(lo
 
 #Brining the metadata of the database
 library(readxl)
-metadatamRNAseq=read_xlsx("~/Desktop/gcloud_2021_06/rstudio_2021_06/tmp_psychENCODE/mRNA-seq_QC.xlsx",skip = 3)
+metadatamRNAseq=read_xlsx("~/desertsHomo/1.data/input_data/mRNA-seq_QC.xlsx",skip = 3)
 
 
 modMetadatamRNAseq=na.omit(metadatamRNAseq)
