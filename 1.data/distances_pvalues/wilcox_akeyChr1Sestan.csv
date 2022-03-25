@@ -1,0 +1,49 @@
+"","Structure","window","log2pvalAVG"
+"1","Amygdala","Fetal_1",-17.4847026699058
+"2","Cerebellum","Fetal_1",-60.2468386005606
+"3","Hippocampus","Fetal_1",-17.4847026805128
+"4","Mediodorsal Nucleus of the Thalamus","Fetal_1",-60.24738916365
+"5","Neocortex","Fetal_1",-3.16121531410105
+"6","Striatum","Fetal_1",-3.16121531410054
+"7","Amygdala","Fetal_2",-8.31587440012884
+"8","Cerebellum","Fetal_2",-1.32153868784977
+"9","Hippocampus","Fetal_2",-0.731806817450626
+"10","Mediodorsal Nucleus of the Thalamus","Fetal_2",-2.32168505247797
+"11","Neocortex","Fetal_2",-1.32126889594453
+"12","Striatum","Fetal_2",-1.31851438080778
+"13","Amygdala","Fetal_3",-0.736965349199907
+"14","Cerebellum","Fetal_3",-0.73696559391845
+"15","Hippocampus","Fetal_3",-0.736963679813722
+"16","Mediodorsal Nucleus of the Thalamus","Fetal_3",-105.187309746838
+"17","Neocortex","Fetal_3",-20.0865578819443
+"18","Striatum","Fetal_3",-0.736965594166171
+"19","Amygdala","Birth/Inf",-2.09708930788955
+"20","Cerebellum","Birth/Inf",-2.70483851971724
+"21","Hippocampus","Birth/Inf",-1.7958994981672
+"22","Mediodorsal Nucleus of the Thalamus","Birth/Inf",-8.91417316837723
+"23","Neocortex","Birth/Inf",-2.70784067127452
+"24","Striatum","Birth/Inf",-2.98687375355958
+"25","Amygdala","Inf/Child",-2.1832136309826
+"26","Cerebellum","Inf/Child",-87.4949597319447
+"27","Hippocampus","Inf/Child",-1.32192747184006
+"28","Mediodorsal Nucleus of the Thalamus","Inf/Child",-10.3583058437404
+"29","Neocortex","Inf/Child",-2.70011208126615
+"30","Striatum","Inf/Child",-1.42039189313495
+"31","Amygdala","Child",-2.32163376241254
+"32","Cerebellum","Child",-59.2753622329286
+"33","Hippocampus","Child",-2.321928094886
+"34","Mediodorsal Nucleus of the Thalamus","Child",-2.32162721424525
+"35","Neocortex","Child",-2.32073684958982
+"36","Striatum","Child",-12.5713631632923
+"37","Amygdala","Adolescence",-44.1258284835278
+"38","Cerebellum","Adolescence",-1.28367879511878
+"39","Hippocampus","Adolescence",-1.0800762743049
+"40","Mediodorsal Nucleus of the Thalamus","Adolescence",-1.08360913549548
+"41","Neocortex","Adolescence",-6.84150998226845
+"42","Striatum","Adolescence",-1.25751940151186
+"43","Amygdala","Adult",-1.32192672250735
+"44","Cerebellum","Adult",-41.582690784195
+"45","Hippocampus","Adult",-1.92634920078476
+"46","Mediodorsal Nucleus of the Thalamus","Adult",-20.6576084108222
+"47","Neocortex","Adult",-1.92635042941615
+"48","Striatum","Adult",-58.3835772005066

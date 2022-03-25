@@ -444,7 +444,10 @@ correspStage[[8]]<-"Adolescent"
 correspStage[[9]]<-"Adult"
 
 #finalselectionDataAkey/finalselectionDataPeyAkey/finalselectionDataPeyNotAkey/finalselectionDataWhole
-
+jackStrawPCAAkeyChr1=c(0,7,6,7,5,6,6,6,8)
+jackStrawPCAAkeyChr3=c(0,1,1,1,1,1,1,1,1)#not enough values
+jackStrawPCAAkeyChr7=c(0,6,3,4,4,4,4,2,4)
+jackStrawPCAAkeyChr8=c(0,2,3,3,3,3,3,3,5)
 jackStrawPCAAkey=c(0,10,9,9,9,9,8,7,9)
 jackStrawPCAAkeyPey=c(0,1,1,1,1,1,1,1,1)
 jackStrawPCAPeyNotAkey=c(0,12,7,8,11,9,9,9,10)
@@ -452,8 +455,8 @@ jackStrawPCAWhole=c(0,12,9,11,9,10,9,8,12)
 PCAs2<-c(0,2,2,2,2,2,2,2,2)
 
 #finalselectionDataWhole<-finalselectionData
-akeySestan <-finalselectionDataPeyAkey #Input from jm_Allen
-jackStraw<-jackStrawPCAAkeyPey # jackStrawPCAAkey
+akeySestan <-finalselectionDataAkeyChr[[8]] #Input from jm_Allen
+jackStraw<-jackStrawPCAAkeyChr8 # jackStrawPCAAkey
 
 structDistWind<-list()
 varPCA<-list()
@@ -572,16 +575,16 @@ for (i in 2:9){
   }
 structDistWind[[i]]<-structDist
 }
-PoVs
-library(stringi)
-PoVdf<-stri_list2matrix(PoVs, byrow=TRUE)
-PoVdf<-plyr::ldply(PoVs, rbind)
-colnames(PoVdf) <- paste("PC", colnames(PoVdf), sep = "")
-rownames(PoVdf)<-c("Fetal_1","Fetal_2","Fetal_3","Birth/Inf","Infan_Child","Child","Adolescent","Adult")
-
-write.csv(PoVdf, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/var_2PCA_Whole_JS.csv")
-pairs(~PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8+ 
-        PC9 + PC10 + PC11 + PC12 + PC13 + PC14 + PC15, col = factor(PCi$topStructure), pch = 19, data = PCi)
+# PoVs
+# library(stringi)
+# PoVdf<-stri_list2matrix(PoVs, byrow=TRUE)
+# PoVdf<-plyr::ldply(PoVs, rbind)
+# colnames(PoVdf) <- paste("PC", colnames(PoVdf), sep = "")
+# rownames(PoVdf)<-c("Fetal_1","Fetal_2","Fetal_3","Birth/Inf","Infan_Child","Child","Adolescent","Adult")
+# 
+# write.csv(PoVdf, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/var_2PCA_Whole_JS.csv")
+# pairs(~PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8+ 
+#         PC9 + PC10 + PC11 + PC12 + PC13 + PC14 + PC15, col = factor(PCi$topStructure), pch = 19, data = PCi)
 #Boxplots
 correspStage<-list()
 correspStage[[2]]<-"Fetal_1"
@@ -653,7 +656,7 @@ for (i in 2:9){
 
 #load("~/tmp_wilcoxtests/pairwiseWilcox_filteredRawSestan.RData")
 
-colMeans(wilcoxTests, na.rm = TRUE)
+# colMeans(wilcoxTests, na.rm = TRUE)
 
 wilcoxTests<-data.frame(matrix(ncol=48,nrow = 6))
 wilcoxTestsCol<-c()
@@ -736,15 +739,10 @@ willCoxPvals$window <- str_replace(willCoxPvals$window, "9", "Adult")
 willCoxPvals$window = factor(willCoxPvals$window, 
     levels=c("Fetal_1","Fetal_2","Fetal_3","Birth/Inf","Inf/Child", "Child","Adolescence", "Adult"))
 
-ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
-  geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))
-pvalAKEY <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
-  geom_line(aes(color=Structure))+
-  geom_point(aes(color=Structure))+xlab("")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+geom_hline(yintercept = log2(0.01), colour="black", size=1.25, alpha=0.5)
-#write.csv(willCoxPvals, file="~/desertsHomo/1.data/distances_pvalues/wilcox_akeySestan.csv")
 
-write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_AkeyPey_PC2.csv")
+write.csv(willCoxPvals, file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/distances_pvalues/wilcox_akeyChr8Sestan.csv")
+
+#write.csv(willCoxPvals, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/wilcox_AkeyPey_PC2.csv")
 
 ##PREPARING SUPPL FIGURE
 #load("~/tmp_wilcoxtests/ggplot_wilcox_filteredRawSestan")
@@ -752,17 +750,17 @@ subfigx <- ggplot(willCoxPvals, aes(x=window, y=log2pvalAVG, group=Structure)) +
   geom_line(aes(color=Structure))+
   geom_point(aes(color=Structure))+xlab("")+ylab("log2pvalAVG")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1), legend.position = "right")+ggtitle("Pairwise Wilcox test")+geom_hline(yintercept = log2(0.01), colour="black", size=0.5, alpha=0.5)
 #load("~/tmp_wilcoxtests/boxplotsFilteredRawSestan.R")
-ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
-          boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
-          boxplotsDist[[8]],boxplotsDist[[9]],
-          common.legend = TRUE, legend = "right")
+# ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
+#           boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
+#           boxplotsDist[[8]],boxplotsDist[[9]],
+#           common.legend = TRUE, legend = "right")
 
 supplfig_x <- ggarrange(boxplotsDist[[2]], boxplotsDist[[3]],boxplotsDist[[4]],
           boxplotsDist[[5]],boxplotsDist[[6]],boxplotsDist[[7]],
           boxplotsDist[[8]],boxplotsDist[[9]], subfigx,
           common.legend = TRUE, legend = "right")
-supplfig_x
-#ggsave(supplfig_x, file="~/desertsHomo/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_rawSestan_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
+#supplfig_x
+ggsave(supplfig_x, file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/2.plots/Sestan_raw_filtered_median2_trajectories/filtered_AkeySestanChr8_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 
 ggsave(supplfig_x, file="~/AA_investigation/Introgression_deserts/code/new_july/JS_PCA_Sestan_distances/filtered_AkeyPey_2PCA_supplfig.pdf", width = 11.69, height = 8.27, units = "in")
 
