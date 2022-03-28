@@ -487,6 +487,11 @@ finalakeySestan1 <- as_tibble(finalakeySestan1)
 
 finalakeySestan1_w_mean <- finalakeySestan1 %>%
     group_by(Label) %>%
+    dplyr::summarise_all(median, na.rm=TRUE)
+
+
+finalakeySestan1_w_sd <- finalakeySestan1 %>%
+    group_by(Label) %>%
     dplyr::summarise_all(sd, na.rm=TRUE)
 
 #For plotting
@@ -502,7 +507,22 @@ colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infan
 levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 #write.csv(preli1, file="~/desertsHomo/1.data/median_tables/median_Akey_Sestan.csv", row.names = FALSE)
-write.csv(preli1, file=paste0("~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/sd_Akey_Sestan.csv"), row.names = FALSE)
+
+
+
+dfakeySestan1 <- data.frame(Structure=finalakeySestan1_w_sd$Label, Means=rowMeans(finalakeySestan1_w_sd[,-1]))
+
+dfakeySestan1 <- dfakeySestan1 %>% 
+  separate(Structure, c("Structure","Window"))
+preli1 <- pivot_wider(dfakeySestan1, names_from = Window, values_from = Means)
+preli1[,10] <- NULL
+preli1 <- preli1[complete.cases(preli1), ]
+colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
+#PLOT
+levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
+
+
+#write.csv(preli1, file=paste0("~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/sd_Akey_Sestan.csv"), row.names = FALSE)
 
 
 
@@ -753,7 +773,21 @@ colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infan
 #PLOT
 levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
 
-#write.csv(preli2, file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/sd_AkeyPey_Sestan.csv", row.names = FALSE)
+#write.csv(preli2, file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/median_AkeyPey_Sestan.csv", row.names = FALSE)
+
+#For plotting_1
+dfakeypeySestan <- data.frame(Structure=finalakeypeySestan_w_sd$Label, Means=rowMeans(finalakeypeySestan_w_sd[,-1]))
+
+dfakeypeySestan <- dfakeypeySestan %>% 
+  separate(Structure, c("Structure","Window"))
+preli2 <- pivot_wider(dfakeypeySestan, names_from = Window, values_from = Means)
+preli2[,10] <- NULL
+preli2 <- preli2[complete.cases(preli2), ]
+colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
+#PLOT
+levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Inf", "Infancy/Child", "Child", "Adolescence", "Adult")
+
+write.csv(preli2, file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/sd_AkeyPey_Sestan.csv", row.names = FALSE)
 
 a<- ggparcoord(preli2,
               columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="Genes in Deserts and Pos Sel- VFC (green) & AMY (black)")+scale_color_manual(values = c( "#ABABAB", "#000000", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB",  "#ABABAB", "#ABABAB", "#ABABAB","#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#ABABAB", "#238b45"))+theme(plot.title = element_text(size=10),legend.position = "none")+xlab("")+ylab("expression")
@@ -927,8 +961,7 @@ an <- n + facet_wrap(~Structure)
 traj_fig <- tot_pl %>% filter(Structure %in% "DFC" | Structure %in% "M1C" | Structure %in% "S1C" | Structure %in% "CBC") 
 traj_fig$Param<-"mean"
 
-
-# Desviation in the first plot
+# Desviation in the first plot // Not used for to generate the plot
 # mat = matrix(ncol = 6, nrow = 0)
 # 
 # new_traj_fig<-data.frame(mat)
@@ -959,6 +992,7 @@ traj_fig$Param<-"mean"
 figtop1 <- ggparcoord(traj_fig,
            columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax", mapping=aes(color=as.factor(dataset)), title="A")+theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+labs(color="Dataset")+ facet_wrap(~Structure, ncol = 4)+scale_color_discrete(name="Dataset",labels=unique(tot_pl$dataset))
 plot(figtop1)
+
 #Akey
 vpreli1 <- preli1mean
 vpreli1$Structure <- str_replace(vpreli1$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
@@ -1003,6 +1037,14 @@ figtop2<-ggplot(new_traj_fig, aes(Stage, dataf, colour=Structure)) +
   geom_point() +
   theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+ xlab("")+ ylab("expression")+ 
   ggtitle("B")
+
+#Without sd
+vpreli1 <- preli1
+vpreli1$Structure <- str_replace(vpreli1$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
+
+test <- vpreli1 %>%
+    group_by(Structure) %>%
+    dplyr::summarise_all(mean, na.rm=TRUE)
 figtop2<-ggparcoord(test,
            columns = 2:9, groupColumn = 1, showPoints = TRUE, scale = "globalminmax",title="B")+theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+geom_line(size=1.7, alpha=0.7)
 
@@ -1011,14 +1053,14 @@ figtop2<-ggparcoord(test,
 vpreli1 <- preli2mean
 vpreli1$Structure <- str_replace(vpreli1$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
 
-testmean <- vpreli1 %>%
+testmean <- vpreli2 %>%
     group_by(Structure) %>%
     dplyr::summarise_all(mean, na.rm=TRUE)
 
-vpreli1 <- preli2sd
-vpreli1$Structure <- str_replace(vpreli1$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
+vpreli2 <- preli2sd
+vpreli2$Structure <- str_replace(vpreli2$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
 
-testsd <- vpreli1 %>%
+testsd <- vpreli2 %>%
     group_by(Structure) %>%
     dplyr::summarise_all(mean, na.rm=TRUE)
 
@@ -1051,7 +1093,8 @@ figtop3<-ggplot(new_traj_fig, aes(Stage, dataf, colour=Structure)) +
   geom_point() +
   theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+ xlab("")+ ylab("expression")+ 
   ggtitle("C")
-figtop3
+
+#Without sd
 vpreli2 <- preli2
 vpreli2$Structure <- str_replace(vpreli2$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
 
@@ -1168,34 +1211,51 @@ fig4 <- grid.arrange(part2, part3, part4, part5, part6, part7, part8, part9,leg2
 ```{r}
 getwd()
 setwd("~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/")
-preli1 <- read.csv(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/sd_Akey_Sestan.csv")
+preli1 <- read.csv(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/median_Akey_Sestan.csv")
 preli1 <- as_tibble(preli1) #AKEY
 
-preli2 <- read.csv(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/sd_AkeyPey_Sestan.csv")
+preli1sd <- read.csv(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/sd_Akey_Sestan.csv")
+preli1sd <- as_tibble(preli1sd) #AKEY
+
+preli2 <- read.csv(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/median_AkeyPey_Sestan.csv")
 preli2 <- as_tibble(preli2) #AKEYpey
 
-preli3 <- read.csv(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/sd_filtered_rawSestan.csv")
+preli2sd <- read.csv(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/sd_AkeyPey_Sestan.csv")
+preli2sd <- as_tibble(preli2sd) #AKEYpey
+
+preli3 <- read.csv(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/1.data/median_tables/median_filtered_rawSestan.csv")
 preli3 <- as_tibble(preli3) #rawfiltered
 
 colnames(preli1) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
 levels(colnames(preli1)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 
+colnames(preli1sd) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
+#PLOT
+levels(colnames(preli1sd)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
+
+
 colnames(preli2) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
 levels(colnames(preli2)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
+
+
+colnames(preli2sd) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
+#PLOT
+levels(colnames(preli2sd)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 colnames(preli3) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 #PLOT
 levels(colnames(preli3)) <- c("Structure", "Fetal_1", "Fetal_2", "Fetal_3", "Birth/Infancy", "Infancy/Child", "Child", "Adolescence", "Adult")
 
 preli1$dataset <- c("Deserts")
+preli1mean<-preli1
+preli1sd$dataset <- c("Deserts")
 preli2$dataset <- c("Deserts and Pos. Sel.")
+preli2mean<-preli2
+preli2sd$dataset <- c("Deserts and Pos. Sel.")
+
 preli3$dataset <- c("Global profile")
-#preli1mean<-preli1
-#preli2mean<-preli2
-preli1sd<-preli1
-preli2sd<-preli2
 tot_pl <-rbind(preli1, preli2, preli3)
 tot_pl <- as_tibble(tot_pl)
 tot_pl <- tot_pl %>% mutate(dataset=as.character(dataset))
