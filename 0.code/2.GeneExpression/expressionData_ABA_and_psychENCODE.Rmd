@@ -1012,8 +1012,8 @@ mat = matrix(ncol = 6, nrow = 0)
 
 # converting the matrix to data
 # frame
-new_traj_fig<-data.frame(mat)
-colnames(new_traj_fig)<-c("Structure","Stage","dataf","sdf","datasetf")
+new_traj_fig_akey<-data.frame(mat)
+colnames(new_traj_fig_akey)<-c("Structure","Stage","dataf","sdf","datasetf")
 stage<-1
 for (i in colnames(testmean)[2:9]){
   Structure<-unlist(as.list(testmean[1]))
@@ -1023,16 +1023,15 @@ for (i in colnames(testmean)[2:9]){
   sdf<-unlist(as.list(testsd[i]))
   datasetf<-unlist(as.list(testmean[10]))
   temp<-data.frame(Structure,Stage,dataf,sdf,datasetf)
-  new_traj_fig<-rbind(new_traj_fig,temp)
+  new_traj_fig_akey<-rbind(new_traj_fig_akey,temp)
   
 }
 
-new_traj_fig$Stage = factor(new_traj_fig$Stage, 
+new_traj_fig_akey$Stage = factor(new_traj_fig_akey$Stage, 
     levels=c("Fetal_1","Fetal_2","Fetal_3","Birth/Infancy","Infancy/Child", "Child","Adolescence", "Adult"))
-new_traj_fig$datasetf=factor(new_traj_fig$datasetf, levels=c("Deserts", "Deserts and Pos. Sel.","Global profile"))
+new_traj_fig_akey$datasetf=factor(new_traj_fig_akey$datasetf, levels=c("Deserts", "Deserts and Pos. Sel.","Global profile"))
 
-figtop2<-ggplot(new_traj_fig, aes(Stage, dataf, colour=Structure)) +
-  geom_errorbar(aes(ymax=dataf+sdf/10, ymin=dataf-sdf/10)) +
+figtop2<-ggplot(new_traj_fig_akey, aes(Stage, dataf, colour=Structure)) +
   geom_line(aes(color=Structure, group=Structure),size=0.8)+
   geom_point() +
   theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+ xlab("")+ ylab("expression")+ 
@@ -1050,8 +1049,8 @@ figtop2<-ggparcoord(test,
 
 #AKeyPey
 
-vpreli1 <- preli2mean
-vpreli1$Structure <- str_replace(vpreli1$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
+vpreli2 <- preli2mean
+vpreli2$Structure <- str_replace(vpreli2$Structure, ("A1C|DFC|IPC|ITC|M1C|MFC|OFC|S1C|STC|V1C|VFC"), "NCX")
 
 testmean <- vpreli2 %>%
     group_by(Structure) %>%
@@ -1068,8 +1067,8 @@ mat = matrix(ncol = 6, nrow = 0)
 
 # converting the matrix to data
 # frame
-new_traj_fig<-data.frame(mat)
-colnames(new_traj_fig)<-c("Structure","Stage","dataf","sdf","datasetf")
+new_traj_fig_akeypey<-data.frame(mat)
+colnames(new_traj_fig_akeypey)<-c("Structure","Stage","dataf","sdf","datasetf")
 stage<-1
 for (i in colnames(testmean)[2:9]){
   Structure<-unlist(as.list(testmean[1]))
@@ -1079,16 +1078,15 @@ for (i in colnames(testmean)[2:9]){
   sdf<-unlist(as.list(testsd[i]))
   datasetf<-unlist(as.list(testmean[10]))
   temp<-data.frame(Structure,Stage,dataf,sdf,datasetf)
-  new_traj_fig<-rbind(new_traj_fig,temp)
+  new_traj_fig_akeypey<-rbind(new_traj_fig_akeypey,temp)
   
 }
 
-new_traj_fig$Stage = factor(new_traj_fig$Stage, 
+new_traj_fig_akeypey$Stage = factor(new_traj_fig_akeypey$Stage, 
     levels=c("Fetal_1","Fetal_2","Fetal_3","Birth/Infancy","Infancy/Child", "Child","Adolescence", "Adult"))
-new_traj_fig$datasetf=factor(new_traj_fig$datasetf, levels=c("Deserts", "Deserts and Pos. Sel.","Global profile"))
+new_traj_fig_akeypey$datasetf=factor(new_traj_fig_akeypey$datasetf, levels=c("Deserts", "Deserts and Pos. Sel.","Global profile"))
 
-figtop3<-ggplot(new_traj_fig, aes(Stage, dataf, colour=Structure)) +
-  geom_errorbar(aes(ymax=dataf+sdf/10, ymin=dataf-sdf/10)) +
+figtop3<-ggplot(new_traj_fig_akeypey, aes(Stage, dataf, colour=Structure)) +
   geom_line(aes(color=Structure, group=Structure),size=0.8)+
   geom_point() +
   theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+ xlab("")+ ylab("expression")+ 
@@ -1111,6 +1109,77 @@ lay <- rbind(c(1,1,1,1,1,1),
 grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
 fig2_main <- grid.arrange(figtop1, figtop2, figtop3, layout_matrix = lay)
 ggsave(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/2.plots/Sestan_AkeyPey_log2_median/fig_combined_dev.pdf", fig2_main, width = 11.69, height = 8.27, units = "in")
+```
+
+#Figure 2.1 ans 2.2 . Details
+
+```{r}
+
+#Akey
+# Graphic with geomerrorbar
+# ggplot(new_traj_fig_akey, aes(x=Stage, y=dataf, colour=Structure)) +
+#   geom_errorbar(aes(ymax=dataf+sdf, ymin=dataf-sdf)) + 
+#   geom_line(aes(color=Structure, group=Structure),size=0.8)+
+#   facet_wrap(~Structure)+
+#   geom_point()+
+#   theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+labs(color="Dataset")
+
+#Using geomribbon
+figtop2<-ggplot(new_traj_fig_akey, aes(Stage, dataf, colour=Structure)) +
+  geom_line(aes(color=Structure, group=Structure),size=0.8)+
+  geom_point() +
+  theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+ xlab("")+ ylab("expression")+ 
+  ggtitle("A")
+sdfigop2 <-ggplot(new_traj_fig_akey, aes(x=Stage, y=dataf, colour=Structure,fill=Structure)) +
+  #geom_errorbar(aes(ymax=dataf+sdf, ymin=dataf-sdf)) + 
+  geom_line(aes(color=Structure, group=Structure),size=0.8)+
+  facet_wrap(~Structure,nrow=3,ncol=2)+
+  geom_ribbon(data=new_traj_fig_akey, aes(ymax=dataf+sdf, ymin=dataf-sdf, group = Structure), alpha = 0.2)+
+  geom_point()+
+  theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+ 
+  ggtitle("B")
+
+
+lay <- rbind(c(1,1,1,2,2,2),
+             c(1,1,1,2,2,2), 
+             c(1,1,1,2,2,2))
+
+grid.arrange(figtop2, sdfigop2, layout_matrix = lay)
+fig2_main <- grid.arrange(figtop2, sdfigop2, layout_matrix = lay)
+ggsave(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/2.plots/Sestan_AkeyPey_log2_median/fig_combined_dev_akey.pdf", fig2_main, width = 11.69, height = 8.27, units = "in")
+#Akey
+# Graphic with geomerrorbar
+# ggplot(new_traj_fig_akeypey, aes(x=Stage, y=dataf, colour=Structure)) +
+#   geom_errorbar(aes(ymax=dataf+sdf, ymin=dataf-sdf)) + 
+#   geom_line(aes(color=Structure, group=Structure),size=0.8)+
+#   facet_wrap(~Structure)+
+#   geom_point()+
+#   theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+labs(color="Dataset")
+
+#Using geomribbon
+figtop2<-ggplot(new_traj_fig_akeypey, aes(Stage, dataf, colour=Structure)) +
+  geom_line(aes(color=Structure, group=Structure),size=0.8)+
+  geom_point() +
+  theme(plot.title = element_text(size=10),legend.position = "none", axis.text.x = element_text(angle = 45,  hjust = 1))+ xlab("")+ ylab("expression")+ 
+  ggtitle("A")
+sdfigop2 <-ggplot(new_traj_fig_akeypey, aes(x=Stage, y=dataf, colour=Structure,fill=Structure)) +
+  #geom_errorbar(aes(ymax=dataf+sdf, ymin=dataf-sdf)) + 
+  geom_line(aes(color=Structure, group=Structure),size=0.8)+
+  facet_wrap(~Structure,nrow=3,ncol=2)+
+  geom_ribbon(data=new_traj_fig_akeypey, aes(ymax=dataf+sdf, ymin=dataf-sdf, group = Structure), alpha = 0.2)+
+  geom_point()+
+  theme(plot.title = element_text(size=10), axis.text.x = element_text(angle = 45,  hjust = 1))+xlab("")+ylab("expression")+ 
+  ggtitle("B")
+
+
+lay <- rbind(c(1,1,1,2,2,2),
+             c(1,1,1,2,2,2), 
+             c(1,1,1,2,2,2))
+
+grid.arrange(figtop2, sdfigop2, layout_matrix = lay)
+fig2_main <- grid.arrange(figtop2, sdfigop2, layout_matrix = lay)
+ggsave(file="~/Master_CCiL_2/Interdisc/tesina/tesina_data_code/github_code/desertsHomo/2.plots/Sestan_AkeyPey_log2_median/fig_combined_dev_akeypey.pdf", fig2_main, width = 11.69, height = 8.27, units = "in")
+
 ```
 
 #Fig3 - Boxplots Akey + Selected structures
